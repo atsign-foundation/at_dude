@@ -1,7 +1,11 @@
 import 'dart:ui';
 
 import 'package:at_app_flutter/at_app_flutter.dart';
+import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:at_commons/at_commons.dart';
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
+import 'package:at_dude/main.dart';
+import 'package:at_dude/screens/screens.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/widgets.dart';
@@ -15,7 +19,7 @@ class SendDudeScreen extends StatefulWidget {
 }
 
 class _SendDudeScreenState extends State<SendDudeScreen> {
-  String stringList = '';
+  String dude = '';
   bool _buttonPressed = false;
 
   @override
@@ -23,10 +27,46 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     super.initState();
   }
 
+  void _handleSendDudeToContact(String contactAtsign) async {
+    var atClientManager = AtClientManager.getInstance();
+    Future<AtClientPreference> futurePreference = loadAtClientPreference();
+    var preference = await futurePreference;
+    String? currentAtsign;
+    late AtClient atClient;
+    atClient = atClientManager.atClient;
+    atClientManager.atClient.setPreferences(preference);
+    currentAtsign = atClient.getCurrentAtSign();
+
+    var metaData = Metadata()
+      ..isPublic = true
+      ..isEncrypted = true
+      ..namespaceAware = true;
+
+    var key = AtKey()
+      ..key = 'dude'
+      ..sharedBy = currentAtsign
+      ..sharedWith = contactAtsign
+      ..metadata = metaData;
+
+    await atClient.put(
+      key,
+      dude,
+    );
+
+    atClientManager.syncService.sync();
+    Navigator.of(context).popAndPushNamed(HistoryScreen.routeName);
+    print(currentAtsign);
+    print(dude);
+  }
+
   @override
   Widget build(BuildContext context) {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
     SizeConfig().init(context);
+    var atClientManager = AtClientManager.getInstance();
+    AtClient atClient = atClientManager.atClient;
+    String? currentAtsign = atClient.getCurrentAtSign();
+
     List<String> strArr = ['D', 'u', 'd', 'e'];
 
     return Scaffold(
@@ -36,10 +76,11 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Center(
-              child: Text(stringList, style: TextStyle(color: Colors.black))),
+          Expanded(
+              child: Center(
+                  child: Text(dude, style: TextStyle(color: Colors.black)))),
           GestureDetector(
               child: ElevatedButton(
                 style: TextButton.styleFrom(
@@ -54,11 +95,11 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                   // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
                   setState(() {
-                    stringList = strArr.join("").toString();
+                    dude = strArr.join("").toString();
                   });
                 },
                 child: Text(
-                  'Select Dude',
+                  'Send Dude',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
@@ -67,7 +108,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                 do {
                   strArr.insert(1, "u");
                   setState(() {
-                    stringList = strArr.join("").toString();
+                    dude = strArr.join("").toString();
                   });
                   await Future.delayed(Duration(milliseconds: 250));
                 } while (_buttonPressed);
@@ -76,18 +117,16 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                 setState(() {
                   _buttonPressed = false;
                 });
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => ContactsScreen(
+                    onSendIconPressed: (String atsign) =>
+                        _handleSendDudeToContact(atsign),
+                  ),
+                ));
                 // String stringList = strArr.join("");
                 // TODO: Send "Duuuuuude" to atsign
               }),
-          ElevatedButton(
-            onPressed: () {
-              // any logic
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const ContactsScreen(),
-              ));
-            },
-            child: const Text('Send to contact'),
-          ),
+
           // ListView.builder(itemBuilder: itemBuilder)
         ],
       ),

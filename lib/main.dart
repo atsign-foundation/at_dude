@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/screens/send_dude_screen.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
@@ -27,6 +28,7 @@ Future<void> main() async {
       home: const MyApp(),
       routes: {
         SendDudeScreen.routeName: (context) => const SendDudeScreen(),
+        HistoryScreen.routeName: (context) => const HistoryScreen(),
       },
     ),
   );
