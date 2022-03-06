@@ -22,7 +22,14 @@ Future<void> main() async {
   } catch (e) {
     _logger.finer('Environment failed to load from .env: ', e);
   }
-  runApp(const MyApp());
+  runApp(
+    MaterialApp(
+      home: const MyApp(),
+      routes: {
+        SendDudeScreen.routeName: (context) => const SendDudeScreen(),
+      },
+    ),
+  );
 }
 
 Future<AtClientPreference> loadAtClientPreference() async {
@@ -50,68 +57,44 @@ class _MyAppState extends State<MyApp> {
   // * load the AtClientPreference in the background
   Future<AtClientPreference> futurePreference = loadAtClientPreference();
 
-  void _handleOnboarding() async {
-    Onboarding(
-      context: context,
-      atClientPreference: await futurePreference,
-      domain: AtEnv.rootDomain,
-      rootEnvironment: AtEnv.rootEnvironment,
-      appAPIKey: AtEnv.appApiKey,
-      onboard: (value, atsign) {
-        _logger.finer('Successfully onboarded $atsign');
-      },
-      onError: (error) {
-        _logger.severe('Onboarding throws $error error');
-      },
-      nextScreen: const HomeScreen(),
-    );
-  }
-
   @override
   void initState() {
-    // TODO: implement initState
-    // _handleOnboarding();
     super.initState();
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => _handleOnboard(context));
+  }
+
+  void _handleOnboard(BuildContext context) async {
+    if (mounted) {
+      Onboarding(
+        context: context,
+        atClientPreference: await futurePreference,
+        domain: AtEnv.rootDomain,
+        rootEnvironment: AtEnv.rootEnvironment,
+        appAPIKey: AtEnv.appApiKey,
+        onboard: (value, atsign) {
+          _logger.finer('Successfully onboarded $atsign');
+        },
+        onError: (error) {
+          _logger.severe('Onboarding throws $error error');
+        },
+        nextScreen: const SendDudeScreen(),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // * The onboarding screen (first screen)
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('At Dude'),
-        ),
-        body: Builder(
-          builder: (context) => Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                // * The Onboarding widget
-                // * This widget contains the required logic for onboarding an @sign into the app
-                // * Read more here: https://pub.dev/packages/at_onboarding_flutter
-                Onboarding(
-                  context: context,
-                  atClientPreference: await futurePreference,
-                  domain: AtEnv.rootDomain,
-                  rootEnvironment: AtEnv.rootEnvironment,
-                  appAPIKey: AtEnv.appApiKey,
-                  onboard: (value, atsign) {
-                    _logger.finer('Successfully onboarded $atsign');
-                  },
-                  onError: (error) {
-                    _logger.severe('Onboarding throws $error error');
-                  },
-                  nextScreen: const SendDudeScreen(),
-                );
-              },
-              child: const Text('Onboard an @sign'),
-            ),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('At Dude'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          child: Text("Onboard"),
+          onPressed: () => _handleOnboard(context),
         ),
       ),
-      routes: {
-        SendDudeScreen.routeName: (context) => const SendDudeScreen(),
-      },
     );
   }
 }
