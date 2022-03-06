@@ -29,8 +29,8 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
             label: 'Send Dude',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.waving_hand_outlined),
-            label: 'Dudes',
+            icon: Icon(Icons.history_outlined),
+            label: 'History',
           ),
         ]);
   }
