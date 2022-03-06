@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +15,20 @@ class SendDudeScreen extends StatefulWidget {
 }
 
 class _SendDudeScreenState extends State<SendDudeScreen> {
+  String stringList = '';
+  bool _buttonPressed = false;
+
   @override
-  void initState() {}
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
     SizeConfig().init(context);
     List<String> strArr = ['D', 'u', 'd', 'e'];
-    String stringList = '';
-    bool _buttonPressed = false;
+
     return Scaffold(
       appBar: AppBar(title: Text('Send Dude')),
       bottomNavigationBar: DudeBottomNavigationBar(
@@ -32,40 +38,45 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(stringList),
+          Center(
+              child: Text(stringList, style: TextStyle(color: Colors.black))),
           GestureDetector(
-              child: FloatingActionButton(
-                onPressed: () {},
-                child: Text('Dude'),
+              child: ElevatedButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                onPressed: () {
+                  // TODO: Send dude to atsign
+                  // Snackbar will display String "Dude"
+                  // on pressed of the elevated button
+                  // var snackBar =
+                  //     SnackBar(content: Text(strArr.join("").toString()));
+                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+                  setState(() {
+                    stringList = strArr.join("").toString();
+                  });
+                },
+                child: Text(
+                  'Select Dude',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
               ),
-              onTap: () {
-                // TODO: Send dude to atsign
-                // Snackbar will display String "Dude"
-                // on pressed of the elevated button
-                var snackBar = SnackBar(content: Text(strArr.toString()));
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                stringList = strArr.join("");
-              },
               onLongPressStart: (_) async {
                 _buttonPressed = true;
                 do {
-                  stringList = strArr.join("");
-                  setState(() {});
-                  var snackBar = SnackBar(
-                      duration: const Duration(milliseconds: 500),
-                      content: Text(stringList));
                   strArr.insert(1, "u");
-
-                  print("strArr tapdown => $strArr");
-                  await Future.delayed(Duration(seconds: 1));
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  setState(() {
+                    stringList = strArr.join("").toString();
+                  });
+                  await Future.delayed(Duration(milliseconds: 250));
                 } while (_buttonPressed);
               },
               onLongPressEnd: (_) {
                 setState(() {
                   _buttonPressed = false;
                 });
-                String stringList = strArr.join("");
+                // String stringList = strArr.join("");
                 // TODO: Send "Duuuuuude" to atsign
               }),
           ElevatedButton(
