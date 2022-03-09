@@ -15,6 +15,7 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   String? dude;
+  List<String?> listData = [];
   @override
   void initState() {
     super.initState();
@@ -30,7 +31,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     atClient = atClientManager.atClient;
     atClientManager.atClient.setPreferences(preference);
     currentAtsign = atClient.getCurrentAtSign();
-
+    print("atsign is:" + currentAtsign.toString());
     var metaData = Metadata()
       ..isPublic = true
       ..isEncrypted = true
@@ -39,16 +40,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
     var key = AtKey()
       ..key = 'dude'
       ..sharedBy = null
-      ..sharedWith = currentAtsign
+      ..sharedWith = '@wildgreen'
       ..metadata = metaData;
 
     var data = await atClient.get(key);
+
+    listData = await atClient.getKeys(
+      regex: 'at_skeleton_app',
+    );
+
     setState(() {
       dude = data.value;
     });
     atClientManager.syncService.sync();
     print("message is:" + dude.toString());
-    print("atsign is:" + currentAtsign.toString());
+
+    print('list of keys are:' + listData.toString());
   }
 
   @override
