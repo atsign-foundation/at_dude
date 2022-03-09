@@ -38,7 +38,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     currentAtsign = atClient.getCurrentAtSign();
 
     var metaData = Metadata()
-      ..isPublic = true
       ..isEncrypted = true
       ..namespaceAware = true;
 

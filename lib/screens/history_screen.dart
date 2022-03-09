@@ -46,8 +46,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     var data = await atClient.get(key);
 
     listData = await atClient.getKeys(
-      regex: 'at_skeleton_app',
-    );
+        regex: 'at_skeleton_app', sharedWith: '@wildgreen');
 
     setState(() {
       dude = data.value;
