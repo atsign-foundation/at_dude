@@ -4,6 +4,7 @@ import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/screens/send_dude_screen.dart';
+import 'package:at_dude/services/dude_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 
+import 'dude_theme.dart';
 import 'home_screen.dart';
 
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
@@ -26,6 +28,7 @@ Future<void> main() async {
   runApp(
     MaterialApp(
       home: const MyApp(),
+      theme: DudeTheme.light(),
       routes: {
         SendDudeScreen.routeName: (context) => const SendDudeScreen(),
         HistoryScreen.routeName: (context) => const HistoryScreen(),
@@ -58,7 +61,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // * load the AtClientPreference in the background
   Future<AtClientPreference> futurePreference = loadAtClientPreference();
-
+  DudeService dudeService = DudeService.getInstance();
   @override
   void initState() {
     super.initState();
@@ -75,6 +78,10 @@ class _MyAppState extends State<MyApp> {
         rootEnvironment: AtEnv.rootEnvironment,
         appAPIKey: AtEnv.appApiKey,
         onboard: (value, atsign) {
+          dudeService
+            ..atClientService = value[atsign]
+            ..atClient = dudeService.atClientService!.atClientManager.atClient;
+
           _logger.finer('Successfully onboarded $atsign');
         },
         onError: (error) {
