@@ -46,15 +46,13 @@ class DudeService {
   }
 
   Future<List<DudeModel>> getDudes() async {
-    // var metaData = Metadata()
-    //   ..isEncrypted = true
-    //   ..namespaceAware = true;
-
-// [key1.namespace@atsign,key2.namespace@atsign,key2.namespace@atsign]
+    String? currentAtSign = atClient!.getCurrentAtSign();
     List<AtKey> keysList = await atClient!.getAtKeys(
       regex: 'at_skeleton_app',
-      sharedBy: atClient!.getCurrentAtSign(),
+      sharedBy: currentAtSign,
+      sharedWith: currentAtSign,
     );
+    print(keysList.toString());
     // atClientManager.syncService.sync();
     List<DudeModel> dudes = [];
     for (var key in keysList) {
