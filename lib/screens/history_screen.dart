@@ -1,5 +1,8 @@
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
+import 'package:at_dude/models/dude_model.dart';
+import 'package:at_dude/services/dude_service.dart';
+import 'package:at_dude/widgets/dude_bubble.dart';
 import 'package:at_dude/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -14,58 +17,31 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  String? dude;
-  List<String?> listData = [];
+  List<DudeModel>? dudes;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _handleDudeHistory());
-  }
-
-  void _handleDudeHistory() async {
-    var atClientManager = AtClientManager.getInstance();
-    Future<AtClientPreference> futurePreference = loadAtClientPreference();
-    var preference = await futurePreference;
-    String? currentAtsign;
-    late AtClient atClient;
-    atClient = atClientManager.atClient;
-    atClientManager.atClient.setPreferences(preference);
-    currentAtsign = atClient.getCurrentAtSign();
-    print("atsign is:" + currentAtsign.toString());
-    var metaData = Metadata()
-      ..isPublic = true
-      ..isEncrypted = true
-      ..namespaceAware = true;
-
-    var key = AtKey()
-      ..key = 'dude'
-      ..sharedBy = null
-      ..sharedWith = '@wildgreen'
-      ..metadata = metaData;
-
-    var data = await atClient.get(key);
-
-    listData = await atClient.getKeys(
-        regex: 'at_skeleton_app', sharedWith: '@wildgreen');
-
-    setState(() {
-      dude = data.value;
-    });
-    atClientManager.syncService.sync();
-    print("message is:" + dude.toString());
-
-    print('list of keys are:' + listData.toString());
+    WidgetsBinding.instance!.addPostFrameCallback(
+        (_) async => await DudeService.getInstance().getDudes().then((value) {
+              setState(() {
+                dudes = value;
+              });
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('History')),
-      bottomNavigationBar: DudeBottomNavigationBar(selectedIndex: 1),
+      appBar: AppBar(title: const Text('History')),
+      bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 1),
       body: Builder(builder: (context) {
-        return Center(
-          child: Text(dude ?? 'No dude available'),
-        );
+        return dudes == null
+            ? const Center(child: Text('No dudes available'))
+            : ListView.builder(
+                itemCount: dudes!.length,
+                itemBuilder: (context, index) {
+                  return DudeBubble(dude: dudes![index]);
+                });
       }),
     );
   }
