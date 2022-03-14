@@ -37,8 +37,8 @@ class DudeModel {
             dude: json['dude'] as String,
             sender: json['sender'] as String,
             receiver: json['receiver'] as String,
-            timeSent: json['timeSent'] as DateTime,
-            duration: json['duration'] as Duration);
+            timeSent: DateTime.parse((json['timeSent'])) as DateTime,
+            duration: Duration(milliseconds: json['duration']) as Duration);
 
   // @override
   // String toString() {
