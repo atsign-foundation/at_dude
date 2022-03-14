@@ -62,7 +62,6 @@ class DudeService {
 
       dudes.add(DudeModel.fromJson(jsonDecode(_keyValue.value)));
     }
-
     return dudes;
   }
 }
