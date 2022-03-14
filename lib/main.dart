@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_dude/screens/screens.dart';
-import 'package:at_dude/screens/send_dude_screen.dart';
 import 'package:at_dude/services/dude_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
@@ -13,12 +12,11 @@ import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 
 import 'dude_theme.dart';
-import 'home_screen.dart';
 
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
 Future<void> main() async {
-  // * AtEnv is an abtraction of the flutter_dotenv package used to
+  // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
   try {
     await AtEnv.load();
@@ -100,7 +98,7 @@ class _MyAppState extends State<MyApp> {
       ),
       body: Center(
         child: ElevatedButton(
-          child: Text("Onboard"),
+          child: const Text("Onboard"),
           onPressed: () => _handleOnboard(context),
         ),
       ),

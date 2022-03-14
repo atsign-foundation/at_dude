@@ -1,12 +1,8 @@
-import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_commons/at_commons.dart';
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_dude/services/dude_service.dart';
 import 'package:at_dude/widgets/dude_bubble.dart';
 import 'package:at_dude/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-
-import '../main.dart';
 
 class HistoryScreen extends StatefulWidget {
   static String routeName = 'history';

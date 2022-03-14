@@ -7,7 +7,6 @@ import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/services/services.dart';
 import 'package:flutter/material.dart';
 
-import '../dude_theme.dart';
 import '../widgets/widgets.dart';
 
 class SendDudeScreen extends StatefulWidget {
@@ -53,7 +52,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
             child: Center(
               child: Text(
                 dude.dude,
-                style: DudeTheme.lightTextTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
             ),
           ),

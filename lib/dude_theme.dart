@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 // 00b7ff
 // ocean horizon: 005477
-// tidepoolblue: 0a569a
+// tide pool blue: 0a569a
 
 const caribbeanShallows = Color(0XFF57cbe7);
 

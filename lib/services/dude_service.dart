@@ -5,13 +5,11 @@ import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_dude/models/dude_model.dart';
 
-import '../main.dart';
-
 // DudeService d = DudeService.getInstance();
 // d.atClient;
 
 class DudeService {
-  static DudeService _singleton = DudeService._internal();
+  static final DudeService _singleton = DudeService._internal();
   DudeService._internal();
   factory DudeService.getInstance() {
     return _singleton;
@@ -36,13 +34,11 @@ class DudeService {
 
     dude.saveTimeSent();
 
-    bool _putData = await atClient!.put(
+    await atClient!.put(
       key,
       json.encode(dude.toJson()),
     );
     atClientManager.syncService.sync();
-    print('Key dude sent is: ' + dude.dude);
-    print('Key updated $_putData');
   }
 
   Future<List<DudeModel>> getDudes() async {
@@ -52,8 +48,7 @@ class DudeService {
       sharedBy: currentAtSign,
       sharedWith: currentAtSign,
     );
-    print(keysList.toString());
-    // atClientManager.syncService.sync();
+
     List<DudeModel> dudes = [];
     for (var key in keysList) {
       AtValue _keyValue = await atClient!.get(key);
