@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:uuid/uuid.dart';
+
 class DudeModel {
   late String id;
-  late String dude;
+  String dude = '';
   late String sender;
   late String receiver;
   late DateTime timeSent;
@@ -24,8 +26,8 @@ class DudeModel {
       'dude': dude,
       'sender': sender,
       'receiver': receiver,
-      'timeSent': timeSent,
-      'duration': duration,
+      'timeSent': timeSent.toIso8601String(),
+      'duration': duration.inMilliseconds,
     };
   }
 
@@ -38,15 +40,20 @@ class DudeModel {
             timeSent: json['timeSent'] as DateTime,
             duration: json['duration'] as Duration);
 
-  @override
-  String toString() {
-    return 'DudeModel(id: $id, dude: $dude, sender: $sender, receiver: $receiver, timeSent: $timeSent, duration: $duration)';
-  }
+  // @override
+  // String toString() {
+  //   return 'DudeModel(id: $id, dude: $dude, sender: $sender, receiver: $receiver, timeSent: $timeSent, duration: $duration)';
+  // }
 
-  void saveId() => id = DateTime.now().microsecondsSinceEpoch.toString();
-  void saveDude(String value) => dude = 'dude-' + value;
+  void saveId() => id = const Uuid().v4();
+  void saveDude(String value) => dude = value;
   void saveSender(String value) => sender = value;
   void saveReceiver(String value) => receiver = value;
-  void saveTimeSent(DateTime value) => timeSent = value;
-  void saveDuration(Duration value) => duration = value;
+  void saveTimeSent() => timeSent = DateTime.now();
+
+  ///Record the duration of a dude.
+  /// Record the length of a dude use want to send.
+  void saveDuration(DateTime startTime) {
+    duration = DateTime.now().difference(startTime);
+  }
 }
