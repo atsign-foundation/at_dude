@@ -1,0 +1,12 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    invalid_assignment: warning
+    missing_return: error
+    annotate_overrides: error
+    dead_code: warning
+    todo: ignore
+    unawaited_futures: error
+    await_only_futures: error
+    unnecessary_await_in_return: info
