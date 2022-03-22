@@ -1,11 +1,11 @@
 import 'package:at_app_flutter/at_app_flutter.dart';
 
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
-import 'package:at_contacts_flutter/widgets/custom_circle_avatar.dart';
 
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/services/services.dart';
+import 'package:at_dude/widgets/atsign_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -37,11 +37,18 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   }
 
   Future<void> _handleSendDudeToContact(
-          DudeModel dude, String contactAtsign) async =>
+      DudeModel dude, String contactAtsign) async {
+    if (dude.dude.isEmpty) {
+      SnackBars.notificationSnackBar(
+          content: 'No duuude to send', context: context);
+    } else {
       DudeService.getInstance().putDude(dude, contactAtsign).then(
             (value) =>
                 Navigator.of(context).popAndPushNamed(HistoryScreen.routeName),
           );
+    }
+  }
+
   int rawTime = 0;
   @override
   Widget build(BuildContext context) {
@@ -53,6 +60,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Send Dude'),
+        actions: const [AtsignAvatar()],
       ),
       bottomNavigationBar: const DudeBottomNavigationBar(
         selectedIndex: 0,

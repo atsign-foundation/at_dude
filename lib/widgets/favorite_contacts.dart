@@ -22,6 +22,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
       selectedContacts = await DudeService.getInstance().getContactList();
+      await DudeService.getInstance().getCurrentAtsignProfileImage();
       setState(() {});
     });
     super.initState();

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
@@ -106,7 +107,11 @@ class DudeService {
     return contactService.fetchContacts();
   }
 
-  // void getsomething() {
-  //   contactService.getContactDetails(atClient!.getCurrentAtSign(), null).then((value) => value);
-  // }
+  Future<Uint8List?> getCurrentAtsignProfileImage() async {
+    return contactService
+        .getContactDetails(atClient!.getCurrentAtSign(), null)
+        .then((value) {
+      return value['image'];
+    });
+  }
 }
