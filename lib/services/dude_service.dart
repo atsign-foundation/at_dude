@@ -20,6 +20,8 @@ class DudeService {
   AtClient? atClient;
   AtClientService? atClientService;
   var atClientManager = AtClientManager.getInstance();
+  static var contactService = ContactService();
+
   Future<void> putDude(DudeModel dude, String contactAtsign) async {
     dude.saveSender(atClient!.getCurrentAtSign()!);
     dude.saveReceiver(contactAtsign);
@@ -100,7 +102,11 @@ class DudeService {
     });
   }
 
-  List<AtContact> getContactList() {
-    return ContactService().contactList;
+  Future<List<AtContact>?> getContactList() {
+    return contactService.fetchContacts();
   }
+
+  // void getsomething() {
+  //   contactService.getContactDetails(atClient!.getCurrentAtSign(), null).then((value) => value);
+  // }
 }
