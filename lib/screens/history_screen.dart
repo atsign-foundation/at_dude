@@ -1,6 +1,5 @@
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_dude/services/dude_service.dart';
-import 'package:at_dude/widgets/dude_bubble.dart';
 import 'package:at_dude/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +17,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback(
-        (_) async => await DudeService.getInstance().getDudes().then((value) {
+        (_) async => DudeService.getInstance().getDudes().then((value) {
               setState(() {
                 dudes = value;
               });

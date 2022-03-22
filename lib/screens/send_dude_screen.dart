@@ -5,7 +5,10 @@ import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/services/services.dart';
+import 'package:at_dude/widgets/favorite_contacts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../widgets/widgets.dart';
 
@@ -21,17 +24,26 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   bool _buttonPressed = false;
   DudeModel dude = DudeModel.newDude();
   late DateTime startTime;
+  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
   @override
   void initState() {
     super.initState();
   }
 
+  @override
+  void dispose() async {
+    super.dispose();
+    await _stopWatchTimer.dispose();
+  }
+
   Future<void> _handleSendDudeToContact(
           DudeModel dude, String contactAtsign) async =>
-      DudeService.getInstance().putDude(dude, contactAtsign).then((value) =>
-          Navigator.of(context).popAndPushNamed(HistoryScreen.routeName));
-
+      DudeService.getInstance().putDude(dude, contactAtsign).then(
+            (value) =>
+                Navigator.of(context).popAndPushNamed(HistoryScreen.routeName),
+          );
+  int rawTime = 0;
   @override
   Widget build(BuildContext context) {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
@@ -48,62 +60,111 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Center(
-              child: Text(
-                dude.dude,
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
+          Flexible(
+            flex: 5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DudeTimer(rawTime: rawTime),
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Text(
+                      dude.dude,
+                      style: Theme.of(context).textTheme.headline1,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          GestureDetector(
-              child: ElevatedButton(
-                onPressed: () {
-                  startTime = DateTime.now();
-                  dude.saveId;
-                  setState(() {
-                    dude.saveDude(strArr.join("").toString());
-                  });
-                  dude.saveDuration(startTime);
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => ContactsScreen(
-                      onSendIconPressed: (String atsign) =>
-                          _handleSendDudeToContact(dude, atsign),
+          Flexible(
+            flex: 5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  child: ElevatedButton(
+                    // style: ButtonStyle().copyWith(
+                    //     minimumSize:
+                    //         MaterialStateProperty.all<Size>(Size(width:, height:))),
+                    // style:
+                    //     ElevatedButton.styleFrom(padding: EdgeInsets.all(8.0)),
+                    onPressed: () {
+                      startTime = DateTime.now();
+                      _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                      dude.saveId;
+                      setState(() {
+                        rawTime = _stopWatchTimer.rawTime.value;
+                        dude.saveDude(strArr.join("").toString());
+                      });
+                      _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+
+                      dude.saveDuration(startTime);
+                    },
+                    child: const Text(
+                      'Duuude',
+                      style: TextStyle(color: Colors.white, fontSize: 25),
                     ),
-                  ));
-                },
-                child: const Text(
-                  'Send Dude',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              ),
-              onLongPressStart: (_) async {
-                startTime = DateTime.now();
-                dude.saveId();
-
-                _buttonPressed = true;
-                do {
-                  strArr.insert(1, "u");
-                  setState(() {
-                    dude.saveDude(strArr.join("").toString());
-                  });
-                  await Future.delayed(const Duration(milliseconds: 250));
-                } while (_buttonPressed);
-              },
-              onLongPressEnd: (_) {
-                setState(() {
-                  _buttonPressed = false;
-                });
-
-                dude.saveDuration(startTime);
-
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => ContactsScreen(
-                    onSendIconPressed: (String atsign) =>
-                        _handleSendDudeToContact(dude, atsign),
                   ),
-                ));
-              }),
+                  onLongPressStart: (_) async {
+                    startTime = DateTime.now();
+                    if (_stopWatchTimer.rawTime.value > 1) {
+                      _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+                    }
+                    _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+
+                    _buttonPressed = true;
+                    do {
+                      strArr.insert(1, "u");
+                      setState(() {
+                        rawTime = _stopWatchTimer.rawTime.value;
+                        dude.saveDude(strArr.join("").toString());
+                      });
+                      await Future.delayed(const Duration(milliseconds: 500));
+                    } while (_buttonPressed);
+                  },
+                  onLongPressEnd: (_) {
+                    setState(() {
+                      _buttonPressed = false;
+                    });
+
+                    _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+
+                    dude.saveDuration(startTime);
+                    dude.saveId();
+                  },
+                ),
+                RotatedBox(
+                  quarterTurns: 1,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.navigation_outlined,
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => ContactsScreen(
+                            onSendIconPressed: (String atsign) =>
+                                _handleSendDudeToContact(dude, atsign),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 165,
+            child: FavoriteContacts(
+              dude: dude,
+            ),
+          ),
         ],
       ),
     );

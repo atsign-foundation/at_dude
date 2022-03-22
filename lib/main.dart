@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
 import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/services/dude_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 
@@ -18,6 +20,8 @@ final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 Future<void> main() async {
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
+  AtSignLogger.root_level = 'FINER';
+
   try {
     await AtEnv.load();
   } catch (e) {
@@ -60,6 +64,7 @@ class _MyAppState extends State<MyApp> {
   // * load the AtClientPreference in the background
   Future<AtClientPreference> futurePreference = loadAtClientPreference();
   DudeService dudeService = DudeService.getInstance();
+
   @override
   void initState() {
     super.initState();
@@ -75,12 +80,14 @@ class _MyAppState extends State<MyApp> {
         domain: AtEnv.rootDomain,
         rootEnvironment: AtEnv.rootEnvironment,
         appAPIKey: AtEnv.appApiKey,
-        onboard: (value, atsign) {
+        onboard: (value, atsign) async {
           dudeService
             ..atClientService = value[atsign]
             ..atClient = dudeService.atClientService!.atClientManager.atClient;
 
           _logger.finer('Successfully onboarded $atsign');
+          await DudeService.getInstance().monitorNotifications();
+          initializeContactsService(rootDomain: AtEnv.rootDomain);
         },
         onError: (error) {
           _logger.severe('Onboarding throws $error error');
@@ -92,9 +99,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('At Dude'),
+        title: const Text('@Dude'),
       ),
       body: Center(
         child: ElevatedButton(
