@@ -42,7 +42,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       SnackBars.notificationSnackBar(
           content: 'No duuude to send', context: context);
     } else {
-      DudeService.getInstance().putDude(dude, contactAtsign).then(
+      await DudeService.getInstance().putDude(dude, contactAtsign).then(
             (value) =>
                 Navigator.of(context).popAndPushNamed(HistoryScreen.routeName),
           );
@@ -77,12 +77,14 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                 DudeTimer(rawTime: rawTime),
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Text(
                       dude.dude,
                       style: Theme.of(context).textTheme.headline1,
                       textAlign: TextAlign.center,
-                      overflow: TextOverflow.clip,
+                      maxLines: 4,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -90,7 +92,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
             ),
           ),
           Flexible(
-            flex: 5,
+            flex: 3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -145,6 +147,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                     dude.saveDuration(startTime);
                     dude.saveId();
                   },
+                ),
+                const SizedBox(
+                  width: 25,
                 ),
                 RotatedBox(
                   quarterTurns: 1,

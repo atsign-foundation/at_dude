@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:at_dude/dude_theme.dart';
+import 'package:at_dude/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../services/services.dart';
@@ -14,10 +15,17 @@ class AtsignAvatar extends StatefulWidget {
 
 class _AtsignAvatarState extends State<AtsignAvatar> {
   Uint8List? image;
+  String? profileName;
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
-      image = await DudeService.getInstance().getCurrentAtsignProfileImage();
+      await DudeService.getInstance()
+          .getCurrentAtsignContactDetails()
+          .then((value) {
+        image = value['image'];
+        profileName = value['name'];
+      });
+      profileName ??= DudeService.getInstance().atClient!.getCurrentAtSign();
       setState(() {});
     });
     super.initState();
@@ -34,7 +42,10 @@ class _AtsignAvatarState extends State<AtsignAvatar> {
               )
             : ClipOval(child: Image.memory(image!)),
       ),
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(ProfileScreen.routeName, arguments: profileName);
+      },
     );
   }
 }

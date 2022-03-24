@@ -1,5 +1,3 @@
-import 'package:at_contacts_flutter/screens/contacts_screen.dart';
-import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:at_contact/at_contact.dart';
@@ -32,10 +30,11 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   Widget build(BuildContext context) {
     Future<void> _handleSendDudeToContact(
             DudeModel dude, String contactAtsign) async =>
-        DudeService.getInstance().putDude(dude, contactAtsign).then(
-              (value) => Navigator.of(context)
-                  .popAndPushNamed(HistoryScreen.routeName),
-            );
+        DudeService.getInstance().putDude(dude, contactAtsign).whenComplete(
+          () {
+            Navigator.of(context).popAndPushNamed(HistoryScreen.routeName);
+          },
+        );
 
     return Column(
       mainAxisSize: MainAxisSize.min,

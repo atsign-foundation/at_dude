@@ -19,6 +19,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback(
         (_) async => DudeService.getInstance().getDudes().then((value) {
+              value.sort((a, b) => b.timeSent.compareTo(a.timeSent));
+
               dudes = value;
               setState(() {});
             }));
@@ -36,8 +38,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         if (dudes == null) {
           return const Center(child: Text('No dudes available'));
         } else {
-          dudes = dudes!.reversed.toList();
           return ListView.builder(
+              reverse: true,
+              shrinkWrap: true,
               itemCount: dudes!.length,
               itemBuilder: (context, index) {
                 return DudeBubble(dude: dudes![index]);
