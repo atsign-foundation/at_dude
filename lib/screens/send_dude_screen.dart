@@ -5,9 +5,8 @@ import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/services/services.dart';
-import 'package:at_dude/widgets/favorite_contacts.dart';
+import 'package:at_dude/widgets/atsign_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../widgets/widgets.dart';
@@ -38,11 +37,18 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   }
 
   Future<void> _handleSendDudeToContact(
-          DudeModel dude, String contactAtsign) async =>
-      DudeService.getInstance().putDude(dude, contactAtsign).then(
+      DudeModel dude, String contactAtsign) async {
+    if (dude.dude.isEmpty) {
+      SnackBars.notificationSnackBar(
+          content: 'No duuude to send', context: context);
+    } else {
+      await DudeService.getInstance().putDude(dude, contactAtsign).then(
             (value) =>
                 Navigator.of(context).popAndPushNamed(HistoryScreen.routeName),
           );
+    }
+  }
+
   int rawTime = 0;
   @override
   Widget build(BuildContext context) {
@@ -52,7 +58,10 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     List<String> strArr = ['D', 'u', 'd', 'e'];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Send Dude')),
+      appBar: AppBar(
+        title: const Text('Send Dude'),
+        actions: const [AtsignAvatar()],
+      ),
       bottomNavigationBar: const DudeBottomNavigationBar(
         selectedIndex: 0,
       ),
@@ -68,12 +77,14 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                 DudeTimer(rawTime: rawTime),
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Text(
                       dude.dude,
                       style: Theme.of(context).textTheme.headline1,
                       textAlign: TextAlign.center,
-                      overflow: TextOverflow.clip,
+                      maxLines: 4,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -81,7 +92,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
             ),
           ),
           Flexible(
-            flex: 5,
+            flex: 3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -136,6 +147,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                     dude.saveDuration(startTime);
                     dude.saveId();
                   },
+                ),
+                const SizedBox(
+                  width: 25,
                 ),
                 RotatedBox(
                   quarterTurns: 1,

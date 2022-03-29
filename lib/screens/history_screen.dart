@@ -1,5 +1,6 @@
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_dude/services/dude_service.dart';
+import 'package:at_dude/widgets/atsign_avatar.dart';
 import 'package:at_dude/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -18,25 +19,33 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback(
         (_) async => DudeService.getInstance().getDudes().then((value) {
-              setState(() {
-                dudes = value;
-              });
+              value.sort((a, b) => b.timeSent.compareTo(a.timeSent));
+
+              dudes = value;
+              setState(() {});
             }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('History')),
+      appBar: AppBar(
+        title: const Text('History'),
+        actions: const [AtsignAvatar()],
+      ),
       bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 1),
       body: Builder(builder: (context) {
-        return dudes == null
-            ? const Center(child: Text('No dudes available'))
-            : ListView.builder(
-                itemCount: dudes!.length,
-                itemBuilder: (context, index) {
-                  return DudeBubble(dude: dudes![index]);
-                });
+        if (dudes == null) {
+          return const Center(child: Text('No dudes available'));
+        } else {
+          return ListView.builder(
+              reverse: true,
+              shrinkWrap: true,
+              itemCount: dudes!.length,
+              itemBuilder: (context, index) {
+                return DudeBubble(dude: dudes![index]);
+              });
+        }
       }),
     );
   }

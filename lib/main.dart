@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
+import 'package:at_dude/screens/profile_screen.dart';
 import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/services/dude_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
@@ -34,6 +35,7 @@ Future<void> main() async {
       routes: {
         SendDudeScreen.routeName: (context) => const SendDudeScreen(),
         HistoryScreen.routeName: (context) => const HistoryScreen(),
+        ProfileScreen.routeName: (context) => const ProfileScreen(),
       },
     ),
   );

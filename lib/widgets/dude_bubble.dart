@@ -46,14 +46,32 @@ class DudeBubble extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.play_arrow_outlined)),
-                  Text(
-                    dude.dude,
-                    style: TextStyle(
-                      color: isMe ? Colors.white : Colors.black54,
-                      fontSize: 15.0,
+                  Flexible(
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.play_arrow_outlined)),
+                  ),
+                  Flexible(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          dude.dude,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: isMe ? Colors.white : Colors.black54,
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        Text(
+                          'To:' + dude.receiver,
+                          style: TextStyle(
+                            color: isMe ? Colors.white : Colors.black54,
+                            fontSize: 10.0,
+                          ),
+                        )
+                      ],
                     ),
                   )
                 ],

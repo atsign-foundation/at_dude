@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_contact/at_contact.dart';
+import 'package:at_dude/models/profile_model.dart';
 import 'package:flutter/material.dart';
 // DudeService d = DudeService.getInstance();
 // d.atClient;
@@ -20,13 +22,16 @@ class DudeService {
   AtClient? atClient;
   AtClientService? atClientService;
   var atClientManager = AtClientManager.getInstance();
+  static var contactService = ContactService();
+
   Future<void> putDude(DudeModel dude, String contactAtsign) async {
     dude.saveSender(atClient!.getCurrentAtSign()!);
     dude.saveReceiver(contactAtsign);
     dude.saveId();
     var metaData = Metadata()
       ..isEncrypted = true
-      ..namespaceAware = true;
+      ..namespaceAware = true
+      ..isPublic = false;
 
     var key = AtKey()
       ..key = dude.id
@@ -41,7 +46,50 @@ class DudeService {
       key,
       json.encode(dude.toJson()),
     );
+
+    var profileMetaData = Metadata()
+      ..isEncrypted = true
+      ..namespaceAware = true
+      ..isPublic;
+
+    var profileKey = AtKey()
+      ..key = 'dude_profile_' + dude.sender.replaceFirst('@', '')
+      ..sharedBy = dude.sender
+      ..metadata = profileMetaData;
+
+    try {
+      AtValue profileAtValue = await atClient!.get(profileKey);
+      ProfileModel profileModel =
+          ProfileModel.fromJson(jsonDecode(profileAtValue.value));
+      profileModel.saveId(dude.sender);
+      profileModel.dudesSent += 1;
+      profileModel.dudeHours += dude.duration;
+      if (dude.duration > profileModel.longestDude) {
+        profileModel.saveLongestDude(dude.duration);
+      }
+      await atClient!.put(
+        profileKey,
+        json.encode(
+          profileModel.toJson(),
+        ),
+      );
+    } catch (e) {
+      // Exception should be thrown the first time a profile is created for an atsign
+      await atClient!.put(
+        profileKey,
+        json.encode(
+          ProfileModel(
+                  id: dude.sender,
+                  dudesSent: 1,
+                  dudeHours: dude.duration,
+                  longestDude: dude.duration)
+              .toJson(),
+        ),
+      );
+    }
+
     atClientManager.syncService.sync();
+    print('sync successful');
   }
 
   Future<List<DudeModel>> getDudes() async {
@@ -56,14 +104,21 @@ class DudeService {
     //   print('Sync failed with exception $e');
     // }
     String? currentAtSign = atClient!.getCurrentAtSign();
+    // @blizzard30:some_uuid.at_skeleton_app@assault30
+    // @blizzard30:signing_privatekey@blizzard30
     List<AtKey> keysList = await atClient!.getAtKeys(
       regex: 'at_skeleton_app',
       sharedBy: currentAtSign,
       sharedWith: currentAtSign,
     );
+    print('Keys List is: ' + keysList.toString());
 
     List<DudeModel> dudes = [];
     for (AtKey key in keysList) {
+      print('shared with AtKey value is: ' + key.sharedWith.toString());
+      print('AtKey value is: ' + key.key.toString());
+      print('AtKey isPublic value is: ' + key.metadata!.isPublic.toString());
+
       try {
         if (key.sharedBy != null && key.sharedWith != null) {
           AtValue _keyValue = await atClient!.get(key);
@@ -100,7 +155,38 @@ class DudeService {
     });
   }
 
-  List<AtContact> getContactList() {
-    return ContactService().contactList;
+  Future<List<AtContact>?> getContactList() {
+    return contactService.fetchContacts();
+  }
+
+  Future<Uint8List?> getCurrentAtsignProfileImage() async {
+    return contactService
+        .getContactDetails(atClient!.getCurrentAtSign(), null)
+        .then((value) {
+      return value['image'];
+    });
+  }
+
+  Future<dynamic> getCurrentAtsignContactDetails() async {
+    return contactService
+        .getContactDetails(atClient!.getCurrentAtSign(), null)
+        .then((value) {
+      return value;
+    });
+  }
+
+  Future<ProfileModel> getProfile() async {
+    return await atClient!
+        .getAtKeys(
+          regex: 'dude_profile_',
+          sharedBy: atClient!.getCurrentAtSign(),
+        )
+        .then(
+          (value) => atClient!.get(value[0]).then(
+                (value) => ProfileModel.fromJson(
+                  jsonDecode(value.value),
+                ),
+              ),
+        );
   }
 }
