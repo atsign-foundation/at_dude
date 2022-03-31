@@ -1,15 +1,17 @@
 import 'package:at_dude/services/dude_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import 'package:at_dude/models/dude_model.dart';
 
 class DudeBubble extends StatelessWidget {
-  const DudeBubble({
+  DudeBubble({
     Key? key,
     required this.dude,
   }) : super(key: key);
 
   final DudeModel dude;
+  final AudioCache audioPlayer = AudioCache();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,9 @@ class DudeBubble extends StatelessWidget {
                 children: [
                   Flexible(
                     child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await audioPlayer.play('audios/dude.wav');
+                        },
                         icon: const Icon(Icons.play_arrow_outlined)),
                   ),
                   Flexible(

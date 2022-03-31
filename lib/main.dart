@@ -107,13 +107,24 @@ class _MyAppState extends State<MyApp> {
     ]);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('@Dude'),
+        centerTitle: true,
+        title: const Text('@dude'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text("Onboard"),
-          onPressed: () => _handleOnboard(context),
+      body: GestureDetector(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                iconSize: 200,
+                icon: Image.asset('assets/images/dude_logo.png'),
+                onPressed: null,
+              ),
+              const Text('Onboarding'),
+            ],
+          ),
         ),
+        onTap: () => _handleOnboard(context),
       ),
     );
   }

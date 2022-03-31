@@ -111,14 +111,9 @@ class DudeService {
       sharedBy: currentAtSign,
       sharedWith: currentAtSign,
     );
-    print('Keys List is: ' + keysList.toString());
 
     List<DudeModel> dudes = [];
     for (AtKey key in keysList) {
-      print('shared with AtKey value is: ' + key.sharedWith.toString());
-      print('AtKey value is: ' + key.key.toString());
-      print('AtKey isPublic value is: ' + key.metadata!.isPublic.toString());
-
       try {
         if (key.sharedBy != null && key.sharedWith != null) {
           AtValue _keyValue = await atClient!.get(key);
