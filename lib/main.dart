@@ -8,6 +8,8 @@ import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/services/dude_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
+
+import 'package:at_onboarding_flutter/widgets/custom_reset_button.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,6 +91,7 @@ class _MyAppState extends State<MyApp> {
 
           _logger.finer('Successfully onboarded $atsign');
           await DudeService.getInstance().monitorNotifications();
+
           initializeContactsService(rootDomain: AtEnv.rootDomain);
         },
         onError: (error) {
@@ -121,6 +124,13 @@ class _MyAppState extends State<MyApp> {
                 onPressed: null,
               ),
               const Text('Onboarding'),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CustomResetButton(
+                  buttonText: 'Reset @sign',
+                  width: 110,
+                ),
+              ),
             ],
           ),
         ),

@@ -50,7 +50,7 @@ class DudeService {
     var profileMetaData = Metadata()
       ..isEncrypted = true
       ..namespaceAware = true
-      ..isPublic;
+      ..isPublic = false;
 
     var profileKey = AtKey()
       ..key = 'dude_profile_' + dude.sender.replaceFirst('@', '')
@@ -108,7 +108,7 @@ class DudeService {
     // @blizzard30:signing_privatekey@blizzard30
     List<AtKey> keysList = await atClient!.getAtKeys(
       regex: 'at_skeleton_app',
-      sharedBy: currentAtSign,
+      // sharedBy: currentAtSign,
       sharedWith: currentAtSign,
     );
 
