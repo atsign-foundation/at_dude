@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:at_client/src/listener/sync_progress_listener.dart';
+
+import 'package:flutter_test/flutter_test.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
 import 'package:at_dude/screens/profile_screen.dart';
 import 'package:at_dude/screens/screens.dart';
@@ -91,7 +94,10 @@ class _MyAppState extends State<MyApp> {
 
           _logger.finer('Successfully onboarded $atsign');
           await DudeService.getInstance().monitorNotifications();
-
+          DudeService.getInstance()
+              .atClientManager
+              .syncService
+              .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
         },
         onError: (error) {
@@ -138,4 +144,9 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+class MySyncProgressListener extends SyncProgressListener {
+  @override
+  void onSyncProgressEvent(SyncProgress syncProgress) {}
 }

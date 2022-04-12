@@ -35,7 +35,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
       bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 1),
       body: Builder(builder: (context) {
-        if (dudes == null) {
+        if (dudes == null || dudes!.isEmpty) {
           return const Center(child: Text('No dudes available'));
         } else {
           return ListView.builder(

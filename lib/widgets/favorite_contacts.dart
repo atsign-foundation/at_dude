@@ -45,7 +45,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           style: Theme.of(context).textTheme.headline2,
         ),
         Flexible(
-            child: selectedContacts!.isEmpty
+            child: selectedContacts == null || selectedContacts!.isEmpty
                 ? const Text('No Contacts Available')
                 : ListView.builder(
                     itemCount: selectedContacts!.length,

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
@@ -9,8 +8,6 @@ import 'package:at_dude/models/dude_model.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_dude/models/profile_model.dart';
 import 'package:flutter/material.dart';
-// DudeService d = DudeService.getInstance();
-// d.atClient;
 
 class DudeService {
   static final DudeService _singleton = DudeService._internal();
@@ -87,66 +84,43 @@ class DudeService {
         ),
       );
     }
-
     atClientManager.syncService.sync();
-    print('sync successful');
   }
 
   Future<List<DudeModel>> getDudes() async {
-    // try {
-    //   atClientManager.syncService.setOnDone(() {
-    //     print('Sync done in getDudes()');
-    //   });
-    //   atClientManager.syncService.sync(onDone: () {
-    //     print('Sync done in getDudes()');
-    //   });
-    // } on Exception catch (e) {
-    //   print('Sync failed with exception $e');
-    // }
     String? currentAtSign = atClient!.getCurrentAtSign();
     // @blizzard30:some_uuid.at_skeleton_app@assault30
     // @blizzard30:signing_privatekey@blizzard30
-    List<AtKey> keysList = await atClient!.getAtKeys(
-      regex: 'at_skeleton_app',
-      // sharedBy: currentAtSign,
-      sharedWith: currentAtSign,
-    );
+    List<String> sendersAtsignList = await getSenderAtsigns();
+    List<AtKey> receivedKeysList = [];
+    for (var atsign in sendersAtsignList) {
+      var key = await atClient!.getAtKeys(
+        regex: 'at_skeleton_app',
+        sharedBy: atsign,
+      );
+      receivedKeysList.addAll(key);
+    }
 
     List<DudeModel> dudes = [];
-    for (AtKey key in keysList) {
+    for (AtKey key in receivedKeysList) {
       try {
-        if (key.sharedBy != null && key.sharedWith != null) {
+        if (key.sharedBy != null) {
           AtValue _keyValue = await atClient!.get(key);
+
           dudes.add(DudeModel.fromJson(jsonDecode(_keyValue.value)));
         }
       } on Exception catch (e) {
         ScaffoldMessenger(child: SnackBar(content: Text(e.toString())));
       }
     }
-    // String? response = await atClientManager.atClient
-    //     .getLocalSecondary()!
-    //     .executeVerb(ScanVerbBuilder()
-    //       ..auth = true
-    //       ..regex = 'shared_key');
-    // print('RESPONSE FROM SCAN VERB HANDLER : $response');
     return dudes;
   }
-
-  // void getResponse() async {
-  //   String? response = await atClientManager.atClient
-  //       .getLocalSecondary()!
-  //       .executeVerb(ScanVerbBuilder()
-  //         ..auth = true
-  //         ..regex = 'shared_key');
-  //   print(response);
-  // }
 
   Future<void> monitorNotifications() async {
     atClientManager.notificationService
         .subscribe(regex: 'at_skeleton_app')
         .listen((AtNotification notification) {
-      // print('Notification key: ' + notification.key);
-      // print('Notification value: ${notification.value}');
+      putSenderAtsign(notification.from);
     });
   }
 
@@ -183,5 +157,42 @@ class DudeService {
                 ),
               ),
         );
+  }
+
+  Future<void> putSenderAtsign(String senderAtsign) async {
+    // atClientManager.syncService.addProgressListener(MySyncProgressListener());
+    var metaData = Metadata()
+      ..isEncrypted = true
+      ..namespaceAware = true
+      ..isPublic = false;
+
+    var key = AtKey()
+      ..key = 'dude_sender_atsigns_' + senderAtsign.replaceFirst('@', '')
+      ..metadata = metaData
+      ..namespace = '';
+
+    await atClient!.put(
+      key,
+      senderAtsign,
+    );
+  }
+
+  Future<List<String>> getSenderAtsigns() async {
+    // @blizzard30:some_uuid.at_skeleton_app@assault30
+    // @blizzard30:signing_privatekey@blizzard30
+
+    List<AtKey> keysList = await atClient!.getAtKeys(
+        regex: 'dude_sender_atsigns_', sharedBy: atClient!.getCurrentAtSign());
+
+    List<String> senderAtsigns = [];
+    for (AtKey key in keysList) {
+      try {
+        AtValue _keyValue = await atClient!.get(key);
+        senderAtsigns.add(_keyValue.value);
+      } on Exception catch (e) {
+        ScaffoldMessenger(child: SnackBar(content: Text(e.toString())));
+      }
+    }
+    return senderAtsigns;
   }
 }
