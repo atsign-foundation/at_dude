@@ -36,16 +36,27 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     await _stopWatchTimer.dispose();
   }
 
-  Future<void> _handleSendDudeToContact(
-      DudeModel dude, String contactAtsign) async {
+  Future<void> _handleSendDudeToContact({
+    required DudeModel dude,
+    required String contactAtsign,
+    required BuildContext context,
+  }) async {
     if (dude.dude.isEmpty) {
       SnackBars.notificationSnackBar(
           content: 'No duuude to send', context: context);
     } else {
       await DudeService.getInstance().putDude(dude, contactAtsign).then(
-            (value) =>
-                Navigator.of(context).popAndPushNamed(HistoryScreen.routeName),
-          );
+        (value) {
+          if (value) {
+            SnackBars.notificationSnackBar(
+                content: 'Dude Successfully Sent', context: context);
+          } else {
+            SnackBars.errorSnackBar(
+                content: 'Something went wrong, please try again',
+                context: context);
+          }
+        },
+      );
     }
   }
 
@@ -163,7 +174,10 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                         MaterialPageRoute(
                           builder: (BuildContext context) => ContactsScreen(
                             onSendIconPressed: (String atsign) =>
-                                _handleSendDudeToContact(dude, atsign),
+                                _handleSendDudeToContact(
+                                    dude: dude,
+                                    contactAtsign: atsign,
+                                    context: context),
                           ),
                         ),
                       );
@@ -174,7 +188,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
             ),
           ),
           SizedBox(
-            height: 165,
+            height: 180,
             child: FavoriteContacts(
               dude: dude,
             ),

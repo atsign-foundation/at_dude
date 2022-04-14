@@ -25,7 +25,8 @@ class DudeService {
   var atClientManager = AtClientManager.getInstance();
   static var contactService = ContactService();
 
-  Future<void> putDude(DudeModel dude, String contactAtsign) async {
+  Future<bool> putDude(DudeModel dude, String contactAtsign) async {
+    bool isCompleted = false;
     dude.saveSender(atClient!.getCurrentAtSign()!);
     dude.saveReceiver(contactAtsign);
     dude.saveId();
@@ -76,27 +77,33 @@ class DudeService {
       if (dude.duration > profileModel.longestDude) {
         profileModel.saveLongestDude(dude.duration);
       }
-      await atClient!.put(
-        profileKey,
-        json.encode(
-          profileModel.toJson(),
-        ),
-      );
+      await atClient!
+          .put(
+            profileKey,
+            json.encode(
+              profileModel.toJson(),
+            ),
+          )
+          .whenComplete(() => isCompleted = true)
+          .onError((error, stackTrace) => isCompleted = false);
     } catch (e) {
       // Exception should be thrown the first time a profile is created for an atsign
-      await atClient!.put(
-        profileKey,
-        json.encode(
-          ProfileModel(
-                  id: dude.sender,
-                  dudesSent: 1,
-                  dudeHours: dude.duration,
-                  longestDude: dude.duration)
-              .toJson(),
-        ),
-      );
+      await atClient!
+          .put(
+            profileKey,
+            json.encode(
+              ProfileModel(
+                      id: dude.sender,
+                      dudesSent: 1,
+                      dudeHours: dude.duration,
+                      longestDude: dude.duration)
+                  .toJson(),
+            ),
+          )
+          .whenComplete(() => isCompleted = true)
+          .onError((error, stackTrace) => isCompleted = false);
     }
-    atClientManager.syncService.sync();
+    return isCompleted;
   }
 
   Future<List<DudeModel>> getDudes() async {
