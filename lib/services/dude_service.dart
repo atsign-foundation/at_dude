@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_dude/models/profile_model.dart';
+import 'package:at_utils/at_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:at_client/src/service/notification_service.dart';
 
 class DudeService {
   static final DudeService _singleton = DudeService._internal();
@@ -15,6 +18,7 @@ class DudeService {
   factory DudeService.getInstance() {
     return _singleton;
   }
+  final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
   AtClient? atClient;
   AtClientService? atClientService;
@@ -28,6 +32,7 @@ class DudeService {
     var metaData = Metadata()
       ..isEncrypted = true
       ..namespaceAware = true
+      ..ttr = -1
       ..isPublic = false;
 
     var key = AtKey()
@@ -39,9 +44,16 @@ class DudeService {
 
     dude.saveTimeSent();
 
-    await atClient!.put(
-      key,
-      json.encode(dude.toJson()),
+    // await atClient!.put(
+    //   key,
+    //   json.encode(dude.toJson()),
+    // );
+
+    await atClientManager.notificationService.notify(
+      NotificationParams.forUpdate(
+        key,
+        value: json.encode(dude.toJson()),
+      ),
     );
 
     var profileMetaData = Metadata()
@@ -95,16 +107,16 @@ class DudeService {
     List<AtKey> receivedKeysList = [];
     for (var atsign in sendersAtsignList) {
       var key = await atClient!.getAtKeys(
-        regex: 'at_skeleton_app',
-        sharedBy: atsign,
+        regex: '^cached:.*@.+\$',
       );
+
       receivedKeysList.addAll(key);
     }
 
     List<DudeModel> dudes = [];
     for (AtKey key in receivedKeysList) {
       try {
-        if (key.sharedBy != null) {
+        if (key.sharedBy != null && key.key!.length == 36) {
           AtValue _keyValue = await atClient!.get(key);
 
           dudes.add(DudeModel.fromJson(jsonDecode(_keyValue.value)));
@@ -194,5 +206,20 @@ class DudeService {
       }
     }
     return senderAtsigns;
+  }
+
+  Future<bool> deleteDude(DudeModel dude) async {
+    try {
+      List<AtKey> dudeAtKey = await atClient!.getAtKeys(regex: dude.id);
+      bool isDeleted = await atClient!.delete(dudeAtKey[0]);
+
+      return isDeleted;
+    } on AtClientException catch (atClientExcep) {
+      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      return false;
+    } catch (e) {
+      _logger.severe('❌ Exception : ${e.toString()}');
+      return false;
+    }
   }
 }

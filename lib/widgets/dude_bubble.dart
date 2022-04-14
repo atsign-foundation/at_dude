@@ -52,6 +52,8 @@ class DudeBubble extends StatelessWidget {
                     child: IconButton(
                         onPressed: () async {
                           await audioPlayer.play('audios/dude.wav');
+                          var result =
+                              await DudeService.getInstance().deleteDude(dude);
                         },
                         icon: const Icon(Icons.play_arrow_outlined)),
                   ),
