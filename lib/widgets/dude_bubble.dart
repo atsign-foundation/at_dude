@@ -3,6 +3,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import 'package:at_dude/models/dude_model.dart';
+import 'package:provider/provider.dart';
+
+import '../controller/controller.dart';
 
 class DudeBubble extends StatelessWidget {
   DudeBubble({
@@ -52,8 +55,8 @@ class DudeBubble extends StatelessWidget {
                     child: IconButton(
                         onPressed: () async {
                           await audioPlayer.play('audios/dude.wav');
-                          var result =
-                              await DudeService.getInstance().deleteDude(dude);
+                          Provider.of<DudeController>(context, listen: false)
+                              .deleteDude(dude);
                         },
                         icon: const Icon(Icons.play_arrow_outlined)),
                   ),

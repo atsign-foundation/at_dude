@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
 import 'package:at_dude/screens/profile_screen.dart';
 import 'package:at_dude/screens/screens.dart';
-import 'package:at_dude/services/dude_service.dart';
+import 'package:at_dude/services/services.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
 
@@ -20,10 +20,14 @@ import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 
 import 'dude_theme.dart';
+import 'package:at_dude/controller/controller.dart';
+import 'package:provider/provider.dart';
 
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  LocalNotificationService().initNotification();
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
   AtSignLogger.root_level = 'FINER';
@@ -34,14 +38,17 @@ Future<void> main() async {
     _logger.finer('Environment failed to load from .env: ', e);
   }
   runApp(
-    MaterialApp(
-      home: const MyApp(),
-      theme: DudeTheme.light(),
-      routes: {
-        SendDudeScreen.routeName: (context) => const SendDudeScreen(),
-        HistoryScreen.routeName: (context) => const HistoryScreen(),
-        ProfileScreen.routeName: (context) => const ProfileScreen(),
-      },
+    ChangeNotifierProvider(
+      create: (context) => DudeController(),
+      child: MaterialApp(
+        home: const MyApp(),
+        theme: DudeTheme.light(),
+        routes: {
+          SendDudeScreen.routeName: (context) => const SendDudeScreen(),
+          HistoryScreen.routeName: (context) => const HistoryScreen(),
+          ProfileScreen.routeName: (context) => const ProfileScreen(),
+        },
+      ),
     ),
   );
 }
@@ -99,6 +106,8 @@ class _MyAppState extends State<MyApp> {
               .syncService
               .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
+          DudeService.getInstance().getCurrentContext(context);
+          Provider.of<DudeController>(context, listen: false).getDudes();
         },
         onError: (error) {
           _logger.severe('Onboarding throws $error error');

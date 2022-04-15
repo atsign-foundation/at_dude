@@ -5,12 +5,16 @@ import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
+import 'package:at_dude/controller/dude_controller.dart';
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_dude/models/profile_model.dart';
 import 'package:at_utils/at_utils.dart';
+import 'package:audioplayers/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:at_client/src/service/notification_service.dart';
+import 'package:provider/provider.dart';
+import 'local_notification_service.dart';
 
 class DudeService {
   static final DudeService _singleton = DudeService._internal();
@@ -19,6 +23,8 @@ class DudeService {
     return _singleton;
   }
   final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
+
+  late BuildContext _context;
 
   AtClient? atClient;
   AtClientService? atClientService;
@@ -140,6 +146,13 @@ class DudeService {
         .subscribe(regex: 'at_skeleton_app')
         .listen((AtNotification notification) {
       putSenderAtsign(notification.from);
+      String? currentAtsign =
+          DudeService.getInstance().atClient!.getCurrentAtSign();
+
+      if (currentAtsign == notification.to) {
+        LocalNotificationService().showNotifications(notification.id.length,
+            'Dude', '${notification.from} sent you a dude', 1);
+      }
     });
   }
 
@@ -228,5 +241,9 @@ class DudeService {
       _logger.severe('❌ Exception : ${e.toString()}');
       return false;
     }
+  }
+
+  void getCurrentContext(BuildContext context) {
+    _context = context;
   }
 }
