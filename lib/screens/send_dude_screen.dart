@@ -1,12 +1,14 @@
 import 'package:at_app_flutter/at_app_flutter.dart';
 
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
+import 'package:at_dude/controller/dude_controller.dart';
 
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_dude/screens/screens.dart';
 import 'package:at_dude/services/services.dart';
 import 'package:at_dude/widgets/atsign_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../widgets/widgets.dart';
@@ -29,6 +31,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    Provider.of<DudeController>(context).getDudes();
   }
 
   @override
