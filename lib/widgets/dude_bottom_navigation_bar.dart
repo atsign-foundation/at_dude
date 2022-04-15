@@ -1,5 +1,9 @@
+import 'package:at_dude/dude_theme.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../controller/dude_controller.dart';
 import '../screens/screens.dart';
 
 class DudeBottomNavigationBar extends StatefulWidget {
@@ -23,16 +27,25 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    int dudeCount = Provider.of<DudeController>(context).dudes.length;
     return BottomNavigationBar(
         currentIndex: widget.selectedIndex,
         onTap: _handleOnTap,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
             icon: Icon(Icons.send_outlined),
             label: 'Send Dude',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
+            icon: Badge(
+                badgeColor: Theme.of(context).bottomAppBarColor,
+                badgeContent: dudeCount > 0
+                    ? Text(dudeCount.toString(),
+                        style: const TextStyle(
+                          color: kAlternativeColor,
+                        ))
+                    : null,
+                child: const Icon(Icons.history_outlined)),
             label: 'History',
           ),
         ]);

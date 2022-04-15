@@ -11,6 +11,7 @@ dependencies:
   at_contacts_flutter: ^4.0.1
   at_utils: ^3.0.0
   audioplayers: ^0.20.1
+  badges: ^2.0.2
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2
