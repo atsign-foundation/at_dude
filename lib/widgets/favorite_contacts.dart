@@ -9,7 +9,10 @@ import 'widgets.dart';
 
 class FavoriteContacts extends StatefulWidget {
   final DudeModel dude;
-  const FavoriteContacts({required this.dude, Key? key}) : super(key: key);
+  final Function updateIsLoading;
+  const FavoriteContacts(
+      {required this.dude, required this.updateIsLoading, Key? key})
+      : super(key: key);
 
   @override
   State<FavoriteContacts> createState() => _FavoriteContactsState();
@@ -17,6 +20,7 @@ class FavoriteContacts extends StatefulWidget {
 
 class _FavoriteContactsState extends State<FavoriteContacts> {
   List<AtContact?>? selectedContacts = [];
+
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
@@ -30,19 +34,23 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   @override
   Widget build(BuildContext context) {
     Future<void> _handleSendDudeToContact(
-            {required DudeModel dude,
-            required String contactAtsign,
-            required BuildContext context}) async =>
-        DudeService.getInstance().putDude(dude, contactAtsign).then((value) {
-          if (value) {
-            SnackBars.notificationSnackBar(
-                content: 'Dude successfully sent', context: context);
-          } else {
-            SnackBars.errorSnackBar(
-                content: 'Something went wrong, please try again',
-                context: context);
-          }
-        });
+        {required DudeModel dude,
+        required String contactAtsign,
+        required BuildContext context}) async {
+      widget.updateIsLoading(true);
+      DudeService.getInstance().putDude(dude, contactAtsign).then((value) {
+        if (value) {
+          widget.updateIsLoading(false);
+          SnackBars.notificationSnackBar(
+              content: 'Dude successfully sent', context: context);
+        } else {
+          widget.updateIsLoading(false);
+          SnackBars.errorSnackBar(
+              content: 'Something went wrong, please try again',
+              context: context);
+        }
+      });
+    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
