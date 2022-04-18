@@ -22,14 +22,16 @@ class LocalNotificationService {
 
   Future<void> initNotification() async {
     tz.initializeTimeZones();
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@drawable/ic_stat_speaker_phone');
 
     const IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      // onDidReceiveLocalNotification: () {}
     );
 
     const InitializationSettings initializationSettings =
@@ -43,23 +45,25 @@ class LocalNotificationService {
   Future<void> showNotifications(
       int id, String title, String body, int seconds) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        id,
-        title,
-        body,
-        tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds)),
-        const NotificationDetails(
-            android: AndroidNotificationDetails('main_channel', 'Main Channel',
-                channelDescription: 'Main channel  notifications',
-                importance: Importance.max,
-                icon: '@drawable/ic_stat_speaker_phone'),
-            iOS: IOSNotificationDetails(
-              sound: 'default.wav',
-              presentAlert: true,
-              presentBadge: true,
-              presentSound: true,
-            )),
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true);
+      id,
+      title,
+      body,
+      tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds)),
+      const NotificationDetails(
+        android: AndroidNotificationDetails('main_channel', 'Main Channel',
+            channelDescription: 'Main channel  notifications',
+            importance: Importance.max,
+            icon: '@drawable/ic_stat_speaker_phone'),
+        iOS: IOSNotificationDetails(
+          sound: 'default.wav',
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
+      androidAllowWhileIdle: true,
+    );
   }
 }

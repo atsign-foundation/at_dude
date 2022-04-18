@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
+import 'package:workmanager/workmanager.dart';
 
 import 'dude_theme.dart';
 import 'package:at_dude/controller/controller.dart';
@@ -28,6 +29,7 @@ final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LocalNotificationService().initNotification();
+
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
   AtSignLogger.root_level = 'FINER';
@@ -106,7 +108,7 @@ class _MyAppState extends State<MyApp> {
               .syncService
               .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
-          DudeService.getInstance().getCurrentContext(context);
+
           Provider.of<DudeController>(context, listen: false).getDudes();
         },
         onError: (error) {

@@ -14,6 +14,7 @@ import 'package:audioplayers/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:at_client/src/service/notification_service.dart';
 import 'package:provider/provider.dart';
+import 'package:workmanager/workmanager.dart';
 import 'local_notification_service.dart';
 
 class DudeService {
@@ -50,11 +51,6 @@ class DudeService {
       ..namespace = '';
 
     dude.saveTimeSent();
-
-    // await atClient!.put(
-    //   key,
-    //   json.encode(dude.toJson()),
-    // );
 
     await atClientManager.notificationService.notify(
       NotificationParams.forUpdate(
@@ -145,13 +141,20 @@ class DudeService {
     atClientManager.notificationService
         .subscribe(regex: 'at_skeleton_app')
         .listen((AtNotification notification) {
-      putSenderAtsign(notification.from);
+      print('noti id is : ' + notification.value!);
       String? currentAtsign =
           DudeService.getInstance().atClient!.getCurrentAtSign();
 
       if (currentAtsign == notification.to) {
+        putSenderAtsign(
+            senderAtsign: notification.from, receiverAtsign: notification.to);
         LocalNotificationService().showNotifications(notification.id.length,
             'Dude', '${notification.from} sent you a dude', 1);
+        // Workmanager().initialize(() {
+        //   LocalNotificationService().showNotifications(notification.id.length,
+        //       'Dude', '${notification.from} sent you a dude', 1);
+        // }, isInDebugMode: true);
+        // Workmanager().registerOneOffTask('1', 'send notification');
       }
     });
   }
@@ -191,7 +194,8 @@ class DudeService {
         );
   }
 
-  Future<void> putSenderAtsign(String senderAtsign) async {
+  Future<void> putSenderAtsign(
+      {required String senderAtsign, required String receiverAtsign}) async {
     // atClientManager.syncService.addProgressListener(MySyncProgressListener());
     var metaData = Metadata()
       ..isEncrypted = true
@@ -201,28 +205,39 @@ class DudeService {
     var key = AtKey()
       ..key = 'dude_sender_atsigns_' + senderAtsign.replaceFirst('@', '')
       ..metadata = metaData
+      ..sharedBy = senderAtsign
+      ..sharedWith = receiverAtsign
       ..namespace = '';
-
-    await atClient!.put(
-      key,
-      senderAtsign,
-    );
+    try {
+      await atClientManager.notificationService.notify(
+        NotificationParams.forUpdate(
+          key,
+          value: senderAtsign,
+        ),
+      );
+    } on AtClientException catch (atClientExcep) {
+      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+    } catch (e) {
+      _logger.severe('❌ Exception : ${e.toString()}');
+    }
   }
 
   Future<List<String>> getSenderAtsigns() async {
     // @blizzard30:some_uuid.at_skeleton_app@assault30
     // @blizzard30:signing_privatekey@blizzard30
 
-    List<AtKey> keysList = await atClient!.getAtKeys(
-        regex: 'dude_sender_atsigns_', sharedBy: atClient!.getCurrentAtSign());
+    List<AtKey> keysList =
+        await atClient!.getAtKeys(regex: 'dude_sender_atsigns_');
 
     List<String> senderAtsigns = [];
     for (AtKey key in keysList) {
       try {
         AtValue _keyValue = await atClient!.get(key);
         senderAtsigns.add(_keyValue.value);
-      } on Exception catch (e) {
-        ScaffoldMessenger(child: SnackBar(content: Text(e.toString())));
+      } on AtClientException catch (atClientExcep) {
+        _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      } catch (e) {
+        _logger.severe('❌ Exception : ${e.toString()}');
       }
     }
     return senderAtsigns;
@@ -241,9 +256,5 @@ class DudeService {
       _logger.severe('❌ Exception : ${e.toString()}');
       return false;
     }
-  }
-
-  void getCurrentContext(BuildContext context) {
-    _context = context;
   }
 }

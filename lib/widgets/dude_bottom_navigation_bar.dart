@@ -38,6 +38,7 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
           ),
           BottomNavigationBarItem(
             icon: Badge(
+                elevation: dudeCount > 0 ? 2 : 0,
                 badgeColor: Theme.of(context).bottomAppBarColor,
                 badgeContent: dudeCount > 0
                     ? Text(dudeCount.toString(),

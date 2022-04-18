@@ -1,6 +1,5 @@
 import 'package:at_dude/controller/dude_controller.dart';
 import 'package:at_dude/models/dude_model.dart';
-import 'package:at_dude/services/dude_service.dart';
 import 'package:at_dude/widgets/atsign_avatar.dart';
 import 'package:at_dude/widgets/widgets.dart';
 import 'package:flutter/material.dart';
