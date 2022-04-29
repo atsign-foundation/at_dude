@@ -16,20 +16,8 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryScreenState extends State<HistoryScreen> {
   List<DudeModel>? dudes;
   @override
-  void initState() {
-    super.initState();
-    // WidgetsBinding.instance!.addPostFrameCallback(
-    //     (_) async => DudeService.getInstance().getDudes().then((value) {
-    //           value.sort((a, b) => b.timeSent.compareTo(a.timeSent));
-
-    //           dudes = value;
-    //           setState(() {});
-    //         }));
-  }
-
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     Provider.of<DudeController>(context).getDudes();
   }

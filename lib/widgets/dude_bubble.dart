@@ -54,7 +54,12 @@ class DudeBubble extends StatelessWidget {
                   Flexible(
                     child: IconButton(
                         onPressed: () async {
-                          await audioPlayer.play('audios/dude.wav');
+                          if (dude.duration.inSeconds < 1) {
+                            await audioPlayer.play('audios/dude.wav');
+                          } else {
+                            await audioPlayer.play('audios/dude.mp3');
+                          }
+
                           Provider.of<DudeController>(context, listen: false)
                               .deleteDude(dude);
                         },

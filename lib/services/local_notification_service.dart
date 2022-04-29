@@ -3,6 +3,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
+/// A singleton that controls all notifications for this app.
+///
+///
 class LocalNotificationService {
   static final LocalNotificationService _notificationService =
       LocalNotificationService._internal();
@@ -20,6 +23,7 @@ class LocalNotificationService {
 
   LocalNotificationService._internal();
 
+  /// Initializes all the settings required to use notifications on android and IOS.
   Future<void> initNotification() async {
     tz.initializeTimeZones();
 
@@ -42,6 +46,9 @@ class LocalNotificationService {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
+  /// Shows notification when dude is sent to the current atsign.
+  ///
+  /// Notification currently only works in app on android.
   Future<void> showNotifications(
       int id, String title, String body, int seconds) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(

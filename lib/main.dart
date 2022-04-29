@@ -88,6 +88,7 @@ class _MyAppState extends State<MyApp> {
         .addPostFrameCallback((_) => _handleOnboard(context));
   }
 
+  /// Signs user into the @platform.
   void _handleOnboard(BuildContext context) async {
     if (mounted) {
       Onboarding(
@@ -130,28 +131,55 @@ class _MyAppState extends State<MyApp> {
         centerTitle: true,
         title: const Text('@dude'),
       ),
-      body: GestureDetector(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                iconSize: 200,
-                icon: Image.asset('assets/images/dude_logo.png'),
-                onPressed: null,
-              ),
-              const Text('Onboarding'),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: CustomResetButton(
-                  buttonText: 'Reset @sign',
-                  width: 110,
-                ),
-              ),
-            ],
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            iconSize: 200,
+            icon: Image.asset('assets/images/dude_logo.png'),
+            onPressed: null,
           ),
-        ),
-        onTap: () => _handleOnboard(context),
+          ElevatedButton(
+            onPressed: () {
+              _handleOnboard(context);
+            },
+            child: const Text('Start Duding'),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Expanded(
+                    child: Divider(
+                      color: Colors.black,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Text(
+                      'Or',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: Colors.black,
+                    ),
+                  ),
+                ]),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: CustomResetButton(
+              buttonText: 'Reset @sign',
+              width: 110,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -29,11 +29,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   bool isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
@@ -46,12 +41,14 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     await _stopWatchTimer.dispose();
   }
 
+  /// Update the isLoading property to it's appropriate state.
   void updateIsLoading(bool value) {
     setState(() {
       isLoading = value;
     });
   }
 
+  /// Sends dude to the receiver of the dude
   Future<void> _handleSendDudeToContact({
     required DudeModel dude,
     required String contactAtsign,
@@ -126,11 +123,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                 children: [
                   GestureDetector(
                     child: ElevatedButton(
-                      // style: ButtonStyle().copyWith(
-                      //     minimumSize:
-                      //         MaterialStateProperty.all<Size>(Size(width:, height:))),
-                      // style:
-                      //     ElevatedButton.styleFrom(padding: EdgeInsets.all(8.0)),
                       onPressed: () {
                         startTime = DateTime.now();
                         _stopWatchTimer.onExecute.add(StopWatchExecute.start);

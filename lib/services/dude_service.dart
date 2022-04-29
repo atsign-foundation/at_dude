@@ -17,9 +17,11 @@ import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 import 'local_notification_service.dart';
 
+/// A singleton that makes all the network calls to the @platform.
 class DudeService {
   static final DudeService _singleton = DudeService._internal();
   DudeService._internal();
+
   factory DudeService.getInstance() {
     return _singleton;
   }
@@ -32,6 +34,7 @@ class DudeService {
   var atClientManager = AtClientManager.getInstance();
   static var contactService = ContactService();
 
+  /// Saves Dude to the receiver's remote secondary and stats to the sender's local secondary.
   Future<bool> putDude(DudeModel dude, String contactAtsign) async {
     bool isCompleted = false;
     dude.saveSender(atClient!.getCurrentAtSign()!);
@@ -43,12 +46,12 @@ class DudeService {
       ..ttr = -1
       ..isPublic = false;
 
-    var key = AtKey()
-      ..key = dude.id
-      ..sharedBy = dude.sender
-      ..sharedWith = dude.receiver
-      ..metadata = metaData
-      ..namespace = '';
+    var key = AtKey.public('key').build();
+    // ..key = dude.id
+    // ..sharedBy = dude.sender
+    // ..sharedWith = dude.receiver
+    // ..metadata = metaData
+    // ..namespace = '';
 
     dude.saveTimeSent();
 
@@ -108,19 +111,22 @@ class DudeService {
     return isCompleted;
   }
 
+  /// Receives all dudes sent to the current atsign.
   Future<List<DudeModel>> getDudes() async {
-    String? currentAtSign = atClient!.getCurrentAtSign();
+    // String? currentAtSign = atClient!.getCurrentAtSign();
     // @blizzard30:some_uuid.at_skeleton_app@assault30
     // @blizzard30:signing_privatekey@blizzard30
-    List<String> sendersAtsignList = await getSenderAtsigns();
+    // List<String> sendersAtsignList = await getSenderAtsigns();
+    // for (var atsign in sendersAtsignList) {
+    //   atsign = atsign.replaceAll('@', '');
+    // }
     List<AtKey> receivedKeysList = [];
-    for (var atsign in sendersAtsignList) {
-      var key = await atClient!.getAtKeys(
-        regex: '^cached:.*@.+\$',
-      );
+    var key = await atClient!.getAtKeys(
+      regex: '^cached:.*@.+\$',
+      // sharedBy: atsign,
+    );
 
-      receivedKeysList.addAll(key);
-    }
+    receivedKeysList.addAll(key);
 
     List<DudeModel> dudes = [];
     for (AtKey key in receivedKeysList) {
@@ -137,11 +143,11 @@ class DudeService {
     return dudes;
   }
 
+  /// Subscribes to the stream of data being sent to the current atsign.
   Future<void> monitorNotifications() async {
     atClientManager.notificationService
         .subscribe(regex: 'at_skeleton_app')
         .listen((AtNotification notification) {
-      print('noti id is : ' + notification.value!);
       String? currentAtsign =
           DudeService.getInstance().atClient!.getCurrentAtSign();
 
@@ -159,10 +165,12 @@ class DudeService {
     });
   }
 
+  /// Fetch the current atsign contacts.
   Future<List<AtContact>?> getContactList() {
     return contactService.fetchContacts();
   }
 
+  /// Fetch the current atsign profile image
   Future<Uint8List?> getCurrentAtsignProfileImage() async {
     return contactService
         .getContactDetails(atClient!.getCurrentAtSign(), null)
@@ -171,6 +179,7 @@ class DudeService {
     });
   }
 
+  /// Fetch details for the current atsign
   Future<dynamic> getCurrentAtsignContactDetails() async {
     return contactService
         .getContactDetails(atClient!.getCurrentAtSign(), null)
@@ -179,6 +188,7 @@ class DudeService {
     });
   }
 
+  /// Get the profile stats for the current atsign
   Future<ProfileModel> getProfile() async {
     return await atClient!
         .getAtKeys(
@@ -194,9 +204,9 @@ class DudeService {
         );
   }
 
+  /// Save senders atsign to the current atsign local secondary.
   Future<void> putSenderAtsign(
       {required String senderAtsign, required String receiverAtsign}) async {
-    // atClientManager.syncService.addProgressListener(MySyncProgressListener());
     var metaData = Metadata()
       ..isEncrypted = true
       ..namespaceAware = true
@@ -222,6 +232,7 @@ class DudeService {
     }
   }
 
+  /// Get sender atsign saved in the current atsign remote secondary.
   Future<List<String>> getSenderAtsigns() async {
     // @blizzard30:some_uuid.at_skeleton_app@assault30
     // @blizzard30:signing_privatekey@blizzard30
@@ -243,6 +254,7 @@ class DudeService {
     return senderAtsigns;
   }
 
+  /// Delete dude sent to the current atsign.
   Future<bool> deleteDude(DudeModel dude) async {
     try {
       List<AtKey> dudeAtKey = await atClient!.getAtKeys(regex: dude.id);

@@ -1,7 +1,9 @@
 import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
 import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
+import 'package:at_dude/controller/dude_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:at_contact/at_contact.dart';
+import 'package:provider/provider.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 import '../services/services.dart';
@@ -19,12 +21,10 @@ class FavoriteContacts extends StatefulWidget {
 }
 
 class _FavoriteContactsState extends State<FavoriteContacts> {
-  List<AtContact?>? selectedContacts = [];
-
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
-      selectedContacts = await DudeService.getInstance().getContactList();
+      Provider.of<DudeController>(context).getContacts();
       await DudeService.getInstance().getCurrentAtsignProfileImage();
       setState(() {});
     });
@@ -32,7 +32,15 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    Provider.of<DudeController>(context).getContacts();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    /// Sends dude to selected contact
     Future<void> _handleSendDudeToContact(
         {required DudeModel dude,
         required String contactAtsign,
@@ -52,57 +60,62 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
       });
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              'Favorite Dudes',
-              style: Theme.of(context).textTheme.headline2,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Favorite Dudes',
+                style: Theme.of(context).textTheme.headline2,
+              ),
+              IconButton(
+                  onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => const AddContactDialog(),
+                      ),
+                  icon: const Icon(Icons.add))
+            ],
+          ),
+          Consumer<DudeController>(
+            builder: (context, dudeController, child) => Flexible(
+              child: dudeController.contacts.isEmpty
+                  ? const Text('No Contacts Available')
+                  : ListView.builder(
+                      itemCount: dudeController.contacts.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        if (dudeController.contacts.isEmpty) {
+                          return const Text('No Contacts Available');
+                        } else {
+                          return GestureDetector(
+                            onTap: () {
+                              if (widget.dude.dude.isEmpty) {
+                                SnackBars.notificationSnackBar(
+                                    content: 'No duuude to send',
+                                    context: context);
+                              } else {
+                                _handleSendDudeToContact(
+                                    dude: widget.dude,
+                                    contactAtsign:
+                                        dudeController.contacts[index].atSign!,
+                                    context: context);
+                              }
+                            },
+                            child: CircularContacts(
+                              contact: dudeController.contacts[index],
+                              onCrossPressed: () {},
+                            ),
+                          );
+                        }
+                      }),
             ),
-            IconButton(
-                onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => const AddContactDialog(),
-                    ),
-                icon: const Icon(Icons.add))
-          ],
-        ),
-        Flexible(
-            child: selectedContacts == null || selectedContacts!.isEmpty
-                ? const Text('No Contacts Available')
-                : ListView.builder(
-                    itemCount: selectedContacts!.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      if (selectedContacts!.isEmpty ||
-                          selectedContacts == null) {
-                        return const Text('No Contacts Available');
-                      } else {
-                        return GestureDetector(
-                          onTap: () {
-                            if (widget.dude.dude.isEmpty) {
-                              SnackBars.notificationSnackBar(
-                                  content: 'No duuude to send',
-                                  context: context);
-                            } else {
-                              _handleSendDudeToContact(
-                                  dude: widget.dude,
-                                  contactAtsign:
-                                      selectedContacts![index]!.atSign!,
-                                  context: context);
-                            }
-                          },
-                          child: CircularContacts(
-                            contact: selectedContacts![index],
-                            onCrossPressed: () {},
-                          ),
-                        );
-                      }
-                    })),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }
