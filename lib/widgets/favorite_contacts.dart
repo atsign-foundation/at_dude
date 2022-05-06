@@ -23,19 +23,22 @@ class FavoriteContacts extends StatefulWidget {
 class _FavoriteContactsState extends State<FavoriteContacts> {
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
-      Provider.of<DudeController>(context).getContacts();
+    Future.delayed(Duration.zero, () async {
+      await context.read<DudeController>().getContacts();
       await DudeService.getInstance().getCurrentAtsignProfileImage();
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
+
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
+    context.read<DudeController>().getContacts();
     super.didChangeDependencies();
-    Provider.of<DudeController>(context).getContacts();
   }
 
   @override

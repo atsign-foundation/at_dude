@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:at_dude/screens/history_screen.dart';
+import 'package:at_dude/services/navigation_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:timezone/timezone.dart' as tz;
@@ -27,12 +32,16 @@ class LocalNotificationService {
   Future<void> initNotification() async {
     tz.initializeTimeZones();
 
+    if (Platform.isIOS) {
+      _requestIOSPermission();
+    }
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@drawable/ic_stat_speaker_phone');
 
     const IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
-      requestAlertPermission: true,
+      requestAlertPermission: false,
       requestBadgePermission: true,
       requestSoundPermission: true,
       // onDidReceiveLocalNotification: () {}
@@ -43,7 +52,23 @@ class LocalNotificationService {
             android: initializationSettingsAndroid,
             iOS: initializationSettingsIOS);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: (payload) =>
+          Navigator.of(NavigationService.navKey.currentContext!)
+              .popAndPushNamed(HistoryScreen.routeName),
+    );
+  }
+
+  _requestIOSPermission() {
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()!
+        .requestPermissions(
+          alert: false,
+          badge: true,
+          sound: true,
+        );
   }
 
   /// Shows notification when dude is sent to the current atsign.
@@ -60,6 +85,7 @@ class LocalNotificationService {
         android: AndroidNotificationDetails('main_channel', 'Main Channel',
             channelDescription: 'Main channel  notifications',
             importance: Importance.max,
+            priority: Priority.high,
             icon: '@drawable/ic_stat_speaker_phone'),
         iOS: IOSNotificationDetails(
           sound: 'default.wav',

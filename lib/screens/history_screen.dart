@@ -18,8 +18,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   @override
   void didChangeDependencies() {
+    context.watch<DudeController>().getDudes();
     super.didChangeDependencies();
-    Provider.of<DudeController>(context).getDudes();
   }
 
   @override

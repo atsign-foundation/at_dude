@@ -9,6 +9,7 @@ import 'package:at_dude/controller/dude_controller.dart';
 import 'package:at_dude/models/dude_model.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_dude/models/profile_model.dart';
+import 'package:at_dude/services/navigation_service.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:audioplayers/notifications.dart';
 import 'package:flutter/material.dart';
@@ -46,12 +47,12 @@ class DudeService {
       ..ttr = -1
       ..isPublic = false;
 
-    var key = AtKey.public('key').build();
-    // ..key = dude.id
-    // ..sharedBy = dude.sender
-    // ..sharedWith = dude.receiver
-    // ..metadata = metaData
-    // ..namespace = '';
+    var key = AtKey()
+      ..key = dude.id
+      ..sharedBy = dude.sender
+      ..sharedWith = dude.receiver
+      ..metadata = metaData
+      ..namespace = '';
 
     dude.saveTimeSent();
 
@@ -152,15 +153,12 @@ class DudeService {
           DudeService.getInstance().atClient!.getCurrentAtSign();
 
       if (currentAtsign == notification.to) {
-        putSenderAtsign(
-            senderAtsign: notification.from, receiverAtsign: notification.to);
         LocalNotificationService().showNotifications(notification.id.length,
             'Dude', '${notification.from} sent you a dude', 1);
-        // Workmanager().initialize(() {
-        //   LocalNotificationService().showNotifications(notification.id.length,
-        //       'Dude', '${notification.from} sent you a dude', 1);
-        // }, isInDebugMode: true);
-        // Workmanager().registerOneOffTask('1', 'send notification');
+        Future.delayed(Duration(seconds: 5));
+        NavigationService.navKey.currentContext!
+            .watch<DudeController>()
+            .getDudes();
       }
     });
   }

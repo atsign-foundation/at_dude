@@ -27,7 +27,6 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    int dudeCount = Provider.of<DudeController>(context).dudes.length;
     return BottomNavigationBar(
         currentIndex: widget.selectedIndex,
         onTap: _handleOnTap,
@@ -37,16 +36,19 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
             label: 'Send Dude',
           ),
           BottomNavigationBarItem(
-            icon: Badge(
-                elevation: dudeCount > 0 ? 2 : 0,
-                badgeColor: Theme.of(context).bottomAppBarColor,
-                badgeContent: dudeCount > 0
-                    ? Text(dudeCount.toString(),
-                        style: const TextStyle(
-                          color: kAlternativeColor,
-                        ))
-                    : null,
-                child: const Icon(Icons.history_outlined)),
+            icon: Consumer<DudeController>(
+              builder: ((context, dudeController, child) => Badge(
+                    elevation: dudeController.dudeCount > 0 ? 2 : 0,
+                    badgeColor: Theme.of(context).bottomAppBarColor,
+                    badgeContent: dudeController.dudeCount > 0
+                        ? Text(dudeController.dudeCount.toString(),
+                            style: const TextStyle(
+                              color: kAlternativeColor,
+                            ))
+                        : null,
+                    child: const Icon(Icons.history_outlined),
+                  )),
+            ),
             label: 'History',
           ),
         ]);

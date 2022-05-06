@@ -13,7 +13,7 @@ class DudeController with ChangeNotifier {
   }
 
   /// Get dudes sent to the current astign.
-  void getDudes() async {
+  Future<void> getDudes() async {
     _dudes = await DudeService.getInstance().getDudes();
     notifyListeners();
   }
@@ -24,9 +24,12 @@ class DudeController with ChangeNotifier {
     return [..._contacts];
   }
 
+  get dudeCount => dudes.length;
+
   /// Get contacts for the current atsign.
-  void getContacts() async {
+  Future<void> getContacts() async {
     _contacts = await DudeService.getInstance().getContactList() ?? [];
+    notifyListeners();
   }
 
   /// Deletes dudes sent to the current atsign.

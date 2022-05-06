@@ -50,6 +50,7 @@ Future<void> main() async {
           HistoryScreen.routeName: (context) => const HistoryScreen(),
           ProfileScreen.routeName: (context) => const ProfileScreen(),
         },
+        navigatorKey: NavigationService.navKey,
       ),
     ),
   );

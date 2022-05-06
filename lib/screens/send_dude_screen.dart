@@ -29,10 +29,15 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   bool isLoading = false;
 
   @override
+  void initState() {
+    initializeContactsService(rootDomain: AtEnv.rootDomain);
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
+    // context.watch<DudeController>().getDudes();
     super.didChangeDependencies();
-    Provider.of<DudeController>(context).getDudes();
   }
 
   @override
@@ -76,7 +81,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   int rawTime = 0;
   @override
   Widget build(BuildContext context) {
-    initializeContactsService(rootDomain: AtEnv.rootDomain);
     SizeConfig().init(context);
 
     List<String> strArr = ['D', 'u', 'd', 'e'];
