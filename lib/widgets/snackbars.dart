@@ -1,5 +1,6 @@
-import 'package:at_dude/dude_theme.dart';
 import 'package:flutter/material.dart';
+
+import '../dude_theme.dart';
 
 class SnackBars extends StatelessWidget {
   const SnackBars({Key? key}) : super(key: key);

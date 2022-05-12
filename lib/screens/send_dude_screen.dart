@@ -1,16 +1,14 @@
-import 'package:at_app_flutter/at_app_flutter.dart';
-
-import 'package:at_contacts_flutter/at_contacts_flutter.dart';
-import 'package:at_dude/controller/dude_controller.dart';
-
-import 'package:at_dude/models/dude_model.dart';
-import 'package:at_dude/screens/screens.dart';
-import 'package:at_dude/services/services.dart';
-import 'package:at_dude/widgets/atsign_avatar.dart';
+import '../controller/controller.dart';
 import 'package:flutter/material.dart';
+
+import 'package:at_app_flutter/at_app_flutter.dart';
+import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
+import '../models/dude_model.dart';
+import '../services/services.dart';
+import '../widgets/atsign_avatar.dart';
 import '../widgets/widgets.dart';
 
 class SendDudeScreen extends StatefulWidget {
@@ -182,18 +180,23 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                         Icons.navigation_outlined,
                         size: 40,
                       ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => ContactsScreen(
-                              onSendIconPressed: (String atsign) =>
-                                  _handleSendDudeToContact(
-                                      dude: dude,
-                                      contactAtsign: atsign,
-                                      context: context),
-                            ),
-                          ),
-                        );
+                      onPressed: () async {
+                        await Navigator.of(context)
+                            .push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ContactsScreen(
+                                  onSendIconPressed: (String atsign) =>
+                                      _handleSendDudeToContact(
+                                          dude: dude,
+                                          contactAtsign: atsign,
+                                          context: context),
+                                ),
+                              ),
+                            )
+                            .whenComplete(() async => await context
+                                .read<DudeController>()
+                                .getContacts());
                       },
                     ),
                   ),

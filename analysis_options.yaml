@@ -10,3 +10,7 @@ analyzer:
     unawaited_futures: error
     await_only_futures: error
     unnecessary_await_in_return: info
+
+linter:
+  rules:
+    prefer_relative_imports: true

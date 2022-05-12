@@ -1,9 +1,10 @@
-import 'package:at_dude/dude_theme.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+
+import 'package:badges/badges.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/dude_controller.dart';
+import '../dude_theme.dart';
 import '../screens/screens.dart';
 
 class DudeBottomNavigationBar extends StatefulWidget {
