@@ -18,7 +18,6 @@ import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
 import '../models/profile_model.dart';
 import 'local_notification_service.dart';
-import 'navigation_service.dart';
 
 /// A singleton that makes all the network calls to the @platform.
 class DudeService {
@@ -145,20 +144,20 @@ class DudeService {
   }
 
   /// Subscribes to the stream of data being sent to the current atsign.
-  Future<void> monitorNotifications() async {
+  void monitorNotifications(BuildContext context) {
     atClientManager.notificationService
         .subscribe(regex: 'at_skeleton_app')
-        .listen((AtNotification notification) {
+        .listen((AtNotification notification) async {
       String? currentAtsign =
           DudeService.getInstance().atClient!.getCurrentAtSign();
 
       if (currentAtsign == notification.to) {
-        LocalNotificationService().showNotifications(notification.id.length,
-            'Dude', '${notification.from} sent you a dude', 1);
-        Future.delayed(const Duration(seconds: 5));
-        NavigationService.navKey.currentContext!
-            .watch<DudeController>()
-            .getDudes();
+        await context.read<DudeController>().getDudes();
+        await LocalNotificationService().showNotifications(
+            notification.id.length,
+            'Dude',
+            '${notification.from} sent you a dude',
+            1);
       }
     });
   }

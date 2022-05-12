@@ -29,7 +29,7 @@ final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  LocalNotificationService().initNotification();
+  await LocalNotificationService().initNotification();
 
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
@@ -105,14 +105,14 @@ class _MyAppState extends State<MyApp> {
             ..atClient = dudeService.atClientService!.atClientManager.atClient;
 
           _logger.finer('Successfully onboarded $atsign');
-          await DudeService.getInstance().monitorNotifications();
+          DudeService.getInstance().monitorNotifications(context);
           DudeService.getInstance()
               .atClientManager
               .syncService
               .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
 
-          Provider.of<DudeController>(context, listen: false).getDudes();
+          await Provider.of<DudeController>(context, listen: false).getDudes();
         },
         onError: (error) {
           _logger.severe('Onboarding throws $error error');

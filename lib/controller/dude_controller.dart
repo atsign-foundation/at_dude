@@ -11,7 +11,7 @@ class DudeController with ChangeNotifier {
 
   List<DudeModel> get dudes {
     _dudes.sort((a, b) => b.timeSent.compareTo(a.timeSent));
-    return [..._dudes];
+    return _dudes;
   }
 
   /// Get dudes sent to the current astign.

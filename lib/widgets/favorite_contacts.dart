@@ -34,21 +34,13 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    Future.microtask(
-        () async => await context.read<DudeController>().getContacts());
-    super.didChangeDependencies();
-  }
-
   /// Sends dude to selected contact
   Future<void> _handleSendDudeToContact(
       {required DudeModel dude,
       required String contactAtsign,
       required BuildContext context}) async {
     widget.updateIsLoading(true);
-    DudeService.getInstance().putDude(dude, contactAtsign).then((value) {
+    await DudeService.getInstance().putDude(dude, contactAtsign).then((value) {
       if (value) {
         widget.updateIsLoading(false);
         SnackBars.notificationSnackBar(
@@ -77,7 +69,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                 style: Theme.of(context).textTheme.headline2,
               ),
               IconButton(
-                  onPressed: () async => showDialog(
+                  onPressed: () async => await showDialog(
                         context: context,
                         builder: (context) => const AddContactDialog(),
                       ).then((_) async =>
