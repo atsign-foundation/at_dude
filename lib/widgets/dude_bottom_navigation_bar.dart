@@ -27,6 +27,14 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   }
 
   @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      await context.read<DudeController>().getDudes();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: widget.selectedIndex,

@@ -26,7 +26,7 @@ class DudeController with ChangeNotifier {
     return [..._contacts];
   }
 
-  get dudeCount => dudes.length;
+  int get dudeCount => dudes.length;
 
   /// Get contacts for the current atsign.
   Future<void> getContacts() async {
