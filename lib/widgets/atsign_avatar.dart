@@ -1,9 +1,10 @@
+// 🎯 Dart imports:
 import 'dart:typed_data';
 
-import 'package:at_dude/dude_theme.dart';
-import 'package:at_dude/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../dude_theme.dart';
+import '../screens/profile_screen.dart';
 import '../services/services.dart';
 
 class AtsignAvatar extends StatefulWidget {
@@ -18,7 +19,7 @@ class _AtsignAvatarState extends State<AtsignAvatar> {
   String? profileName;
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await DudeService.getInstance()
           .getCurrentAtsignContactDetails()
           .then((value) {

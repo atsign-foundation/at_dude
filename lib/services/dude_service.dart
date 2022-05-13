@@ -1,21 +1,22 @@
+// 🎯 Dart imports:
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+
 import 'package:at_app_flutter/at_app_flutter.dart';
+import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
-import 'package:at_contacts_flutter/services/contact_service.dart';
-import 'package:at_dude/controller/dude_controller.dart';
-import 'package:at_dude/models/dude_model.dart';
 import 'package:at_contact/at_contact.dart';
-import 'package:at_dude/models/profile_model.dart';
-import 'package:at_dude/services/navigation_service.dart';
+import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_utils/at_utils.dart';
-import 'package:audioplayers/notifications.dart';
-import 'package:flutter/material.dart';
-import 'package:at_client/src/service/notification_service.dart';
 import 'package:provider/provider.dart';
-import 'package:workmanager/workmanager.dart';
+
+import '../controller/dude_controller.dart';
+import '../models/dude_model.dart';
+import '../models/profile_model.dart';
 import 'local_notification_service.dart';
 
 /// A singleton that makes all the network calls to the @platform.
@@ -27,8 +28,6 @@ class DudeService {
     return _singleton;
   }
   final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
-
-  late BuildContext _context;
 
   AtClient? atClient;
   AtClientService? atClientService;
@@ -145,20 +144,20 @@ class DudeService {
   }
 
   /// Subscribes to the stream of data being sent to the current atsign.
-  Future<void> monitorNotifications() async {
+  void monitorNotifications(BuildContext context) {
     atClientManager.notificationService
         .subscribe(regex: 'at_skeleton_app')
-        .listen((AtNotification notification) {
+        .listen((AtNotification notification) async {
       String? currentAtsign =
           DudeService.getInstance().atClient!.getCurrentAtSign();
 
       if (currentAtsign == notification.to) {
-        LocalNotificationService().showNotifications(notification.id.length,
-            'Dude', '${notification.from} sent you a dude', 1);
-        Future.delayed(Duration(seconds: 5));
-        NavigationService.navKey.currentContext!
-            .watch<DudeController>()
-            .getDudes();
+        await context.read<DudeController>().getDudes();
+        await LocalNotificationService().showNotifications(
+            notification.id.length,
+            'Dude',
+            '${notification.from} sent you a dude',
+            1);
       }
     });
   }

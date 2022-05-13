@@ -1,34 +1,35 @@
+// 🎯 Dart imports:
 import 'dart:async';
 
-import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
-import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_client/src/listener/sync_progress_listener.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import 'package:flutter_test/flutter_test.dart';
+import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
+import 'package:at_client/src/listener/sync_progress_listener.dart';
+import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
-import 'package:at_dude/screens/profile_screen.dart';
-import 'package:at_dude/screens/screens.dart';
-import 'package:at_dude/services/services.dart';
+import 'package:at_onboarding_flutter/widgets/custom_reset_button.dart';
+import 'package:at_utils/at_logger.dart' show AtSignLogger;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+
+import 'controller/controller.dart';
+import 'dude_theme.dart';
+import 'screens/profile_screen.dart';
+import 'screens/screens.dart';
+import 'services/services.dart';
+
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
 
-import 'package:at_onboarding_flutter/widgets/custom_reset_button.dart';
-import 'package:at_utils/at_logger.dart' show AtSignLogger;
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
-import 'package:workmanager/workmanager.dart';
-
-import 'dude_theme.dart';
-import 'package:at_dude/controller/controller.dart';
-import 'package:provider/provider.dart';
 
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  LocalNotificationService().initNotification();
+  await LocalNotificationService().initNotification();
 
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
@@ -85,7 +86,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!
+    WidgetsBinding.instance
         .addPostFrameCallback((_) => _handleOnboard(context));
   }
 
@@ -104,14 +105,14 @@ class _MyAppState extends State<MyApp> {
             ..atClient = dudeService.atClientService!.atClientManager.atClient;
 
           _logger.finer('Successfully onboarded $atsign');
-          await DudeService.getInstance().monitorNotifications();
+          DudeService.getInstance().monitorNotifications(context);
           DudeService.getInstance()
               .atClientManager
               .syncService
               .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
 
-          Provider.of<DudeController>(context, listen: false).getDudes();
+          await Provider.of<DudeController>(context, listen: false).getDudes();
         },
         onError: (error) {
           _logger.severe('Onboarding throws $error error');

@@ -1,8 +1,8 @@
-import 'package:at_dude/models/profile_model.dart';
-import 'package:at_dude/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../models/profile_model.dart';
 import '../services/services.dart';
+import '../widgets/widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String routeName = 'profile';
@@ -16,7 +16,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ProfileModel profileModel = ProfileModel.newDude();
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       profileModel = await DudeService.getInstance().getProfile();
       // profileName ??= DudeService.getInstance().atClient!.getCurrentAtSign();
       setState(() {});

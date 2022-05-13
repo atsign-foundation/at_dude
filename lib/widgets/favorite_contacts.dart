@@ -1,11 +1,11 @@
+import 'package:flutter/material.dart';
+
 import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
 import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
-import 'package:at_dude/controller/dude_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:at_contact/at_contact.dart';
 import 'package:provider/provider.dart';
+
+import '../controller/dude_controller.dart';
 import '../models/models.dart';
-import '../screens/screens.dart';
 import '../services/services.dart';
 import 'widgets.dart';
 
@@ -34,35 +34,28 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    context.read<DudeController>().getContacts();
-    super.didChangeDependencies();
+  /// Sends dude to selected contact
+  Future<void> _handleSendDudeToContact(
+      {required DudeModel dude,
+      required String contactAtsign,
+      required BuildContext context}) async {
+    widget.updateIsLoading(true);
+    await DudeService.getInstance().putDude(dude, contactAtsign).then((value) {
+      if (value) {
+        widget.updateIsLoading(false);
+        SnackBars.notificationSnackBar(
+            content: 'Dude successfully sent', context: context);
+      } else {
+        widget.updateIsLoading(false);
+        SnackBars.errorSnackBar(
+            content: 'Something went wrong, please try again',
+            context: context);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    /// Sends dude to selected contact
-    Future<void> _handleSendDudeToContact(
-        {required DudeModel dude,
-        required String contactAtsign,
-        required BuildContext context}) async {
-      widget.updateIsLoading(true);
-      DudeService.getInstance().putDude(dude, contactAtsign).then((value) {
-        if (value) {
-          widget.updateIsLoading(false);
-          SnackBars.notificationSnackBar(
-              content: 'Dude successfully sent', context: context);
-        } else {
-          widget.updateIsLoading(false);
-          SnackBars.errorSnackBar(
-              content: 'Something went wrong, please try again',
-              context: context);
-        }
-      });
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Column(
@@ -76,10 +69,11 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                 style: Theme.of(context).textTheme.headline2,
               ),
               IconButton(
-                  onPressed: () => showDialog(
+                  onPressed: () async => await showDialog(
                         context: context,
                         builder: (context) => const AddContactDialog(),
-                      ),
+                      ).then((_) async =>
+                          await context.read<DudeController>().getContacts()),
                   icon: const Icon(Icons.add))
             ],
           ),

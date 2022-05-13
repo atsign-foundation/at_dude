@@ -1,7 +1,9 @@
-import 'package:at_dude/models/dude_model.dart';
-import 'package:at_dude/services/dude_service.dart';
 import 'package:flutter/material.dart';
+
 import 'package:at_contact/at_contact.dart';
+
+import '../models/dude_model.dart';
+import '../services/dude_service.dart';
 
 /// A Dude class that controls the UI update when the [DudeService] methods are called.
 class DudeController with ChangeNotifier {
@@ -9,7 +11,7 @@ class DudeController with ChangeNotifier {
 
   List<DudeModel> get dudes {
     _dudes.sort((a, b) => b.timeSent.compareTo(a.timeSent));
-    return [..._dudes];
+    return _dudes;
   }
 
   /// Get dudes sent to the current astign.

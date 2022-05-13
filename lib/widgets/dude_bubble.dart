@@ -1,11 +1,11 @@
-import 'package:at_dude/services/dude_service.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-import 'package:at_dude/models/dude_model.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
+import '../models/dude_model.dart';
+import '../services/dude_service.dart';
 
 class DudeBubble extends StatelessWidget {
   DudeBubble({
