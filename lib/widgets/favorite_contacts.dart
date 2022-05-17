@@ -40,7 +40,9 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
       required String contactAtsign,
       required BuildContext context}) async {
     widget.updateIsLoading(true);
-    await DudeService.getInstance().putDude(dude, contactAtsign).then((value) {
+    await DudeService.getInstance()
+        .putDude(dude, contactAtsign, context)
+        .then((value) {
       if (value) {
         widget.updateIsLoading(false);
         SnackBars.notificationSnackBar(

@@ -17,12 +17,6 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   List<DudeModel>? dudes;
-  @override
-  @override
-  void didChangeDependencies() {
-    context.watch<DudeController>().getDudes();
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {

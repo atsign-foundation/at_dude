@@ -17,7 +17,9 @@ import 'package:provider/provider.dart';
 import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
 import '../models/profile_model.dart';
+import '../widgets/widgets.dart';
 import 'local_notification_service.dart';
+import 'navigation_service.dart';
 
 /// A singleton that makes all the network calls to the @platform.
 class DudeService {
@@ -35,7 +37,8 @@ class DudeService {
   static var contactService = ContactService();
 
   /// Saves Dude to the receiver's remote secondary and stats to the sender's local secondary.
-  Future<bool> putDude(DudeModel dude, String contactAtsign) async {
+  Future<bool> putDude(
+      DudeModel dude, String contactAtsign, BuildContext context) async {
     bool isCompleted = false;
     dude.saveSender(atClient!.getCurrentAtSign()!);
     dude.saveReceiver(contactAtsign);
@@ -56,11 +59,13 @@ class DudeService {
     dude.saveTimeSent();
 
     await atClientManager.notificationService.notify(
-      NotificationParams.forUpdate(
-        key,
-        value: json.encode(dude.toJson()),
-      ),
-    );
+        NotificationParams.forUpdate(
+          key,
+          value: json.encode(dude.toJson()),
+        ), onSuccess: (notification) async {
+      print('---------------------notification competed-------------------');
+      await context.read<DudeController>().getDudes();
+    });
 
     var profileMetaData = Metadata()
       ..isEncrypted = true
@@ -147,19 +152,21 @@ class DudeService {
   void monitorNotifications(BuildContext context) {
     atClientManager.notificationService
         .subscribe(regex: 'at_skeleton_app')
-        .listen((AtNotification notification) async {
-      String? currentAtsign =
-          DudeService.getInstance().atClient!.getCurrentAtSign();
+        .listen(
+      (AtNotification notification) async {
+        String? currentAtsign =
+            DudeService.getInstance().atClient!.getCurrentAtSign();
 
-      if (currentAtsign == notification.to) {
-        await context.read<DudeController>().getDudes();
-        await LocalNotificationService().showNotifications(
-            notification.id.length,
-            'Dude',
-            '${notification.from} sent you a dude',
-            1);
-      }
-    });
+        if (currentAtsign == notification.to) {
+          await context.read<DudeController>().getDudes();
+          await LocalNotificationService().showNotifications(
+              notification.id.length,
+              'Dude',
+              '${notification.from} sent you a dude',
+              1);
+        }
+      },
+    );
   }
 
   /// Fetch the current atsign contacts.

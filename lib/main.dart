@@ -25,6 +25,8 @@ import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 
+import 'widgets/widgets.dart';
+
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
 Future<void> main() async {
@@ -111,8 +113,6 @@ class _MyAppState extends State<MyApp> {
               .syncService
               .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
-
-          await Provider.of<DudeController>(context, listen: false).getDudes();
         },
         onError: (error) {
           _logger.severe('Onboarding throws $error error');
@@ -189,5 +189,10 @@ class _MyAppState extends State<MyApp> {
 
 class MySyncProgressListener extends SyncProgressListener {
   @override
-  void onSyncProgressEvent(SyncProgress syncProgress) {}
+  void onSyncProgressEvent(SyncProgress syncProgress) async {
+    if (syncProgress.syncStatus == SyncStatus.success) {
+      BuildContext context = NavigationService.navKey.currentContext!;
+      await context.read<DudeController>().getDudes();
+    }
+  }
 }

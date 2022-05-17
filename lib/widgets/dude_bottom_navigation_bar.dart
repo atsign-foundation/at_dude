@@ -27,14 +27,6 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   }
 
   @override
-  void initState() {
-    Future.delayed(Duration.zero, () async {
-      await context.read<DudeController>().getDudes();
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: widget.selectedIndex,
@@ -45,29 +37,25 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
           label: 'Send Dude',
         ),
         BottomNavigationBarItem(
-          icon: ChangeNotifierProvider<DudeController>.value(
-              value: context.watch<DudeController>(),
-              builder: (context, _) {
-                return Consumer<DudeController>(
-                  builder: ((context, dudeController, child) {
-                    return Badge(
-                      elevation: dudeController.dudeCount > 0 ? 2 : 0,
-                      badgeColor: Theme.of(context).bottomAppBarColor,
-                      badgeContent: dudeController.dudeCount > 0
-                          ? Text(
-                              dudeController.dudeCount.toString(),
-                              style: const TextStyle(
-                                color: kAlternativeColor,
-                              ),
-                            )
-                          : null,
-                      child: const Icon(
-                        Icons.history_outlined,
-                      ),
-                    );
-                  }),
-                );
-              }),
+          icon: Consumer<DudeController>(
+            builder: ((context, dudeController, child) {
+              return Badge(
+                elevation: dudeController.dudeCount > 0 ? 2 : 0,
+                badgeColor: Theme.of(context).bottomAppBarColor,
+                badgeContent: dudeController.dudeCount > 0
+                    ? Text(
+                        dudeController.dudeCount.toString(),
+                        style: const TextStyle(
+                          color: kAlternativeColor,
+                        ),
+                      )
+                    : null,
+                child: const Icon(
+                  Icons.history_outlined,
+                ),
+              );
+            }),
+          ),
           label: 'History',
         ),
       ],

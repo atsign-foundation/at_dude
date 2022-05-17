@@ -34,7 +34,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
   @override
   void didChangeDependencies() {
-    // context.watch<DudeController>().getDudes();
     super.didChangeDependencies();
   }
 
@@ -61,7 +60,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       SnackBars.notificationSnackBar(
           content: 'No duuude to send', context: context);
     } else {
-      await DudeService.getInstance().putDude(dude, contactAtsign).then(
+      await DudeService.getInstance()
+          .putDude(dude, contactAtsign, context)
+          .then(
         (value) {
           if (value) {
             SnackBars.notificationSnackBar(
