@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:at_onboarding_flutter/widgets/custom_reset_button.dart';
 import '../models/profile_model.dart';
 import '../services/services.dart';
 import '../widgets/widgets.dart';
@@ -69,6 +69,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       stat:
                           '${profileModel.longestDude.inMinutes} Minute longest dude'),
                 ],
+              ),
+            ),
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 60.0),
+                child: CustomResetButton(
+                  buttonText: 'Reset @sign',
+                  width: 210,
+                ),
               ),
             )
           ],
