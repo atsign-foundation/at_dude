@@ -35,6 +35,11 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: widget.selectedIndex,
