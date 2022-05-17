@@ -12,7 +12,8 @@ import '../widgets/atsign_avatar.dart';
 import '../widgets/widgets.dart';
 
 class SendDudeScreen extends StatefulWidget {
-  const SendDudeScreen({Key? key}) : super(key: key);
+  const SendDudeScreen({this.canPop = false, Key? key}) : super(key: key);
+  final bool canPop;
   static String routeName = 'sendDudeScreen';
 
   @override
@@ -30,11 +31,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   void initState() {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 
   @override
@@ -88,6 +84,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       appBar: AppBar(
         title: const Text('Send Dude'),
         actions: const [AtsignAvatar()],
+        automaticallyImplyLeading: widget.canPop,
       ),
       bottomNavigationBar: const DudeBottomNavigationBar(
         selectedIndex: 0,

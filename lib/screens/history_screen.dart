@@ -9,7 +9,8 @@ import '../widgets/widgets.dart';
 
 class HistoryScreen extends StatefulWidget {
   static String routeName = 'history';
-  const HistoryScreen({Key? key}) : super(key: key);
+  final bool canPop;
+  const HistoryScreen({this.canPop = false, Key? key}) : super(key: key);
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
@@ -24,6 +25,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: AppBar(
         title: const Text('History'),
         actions: const [AtsignAvatar()],
+        automaticallyImplyLeading: widget.canPop,
       ),
       bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 1),
       body: Consumer<DudeController>(
