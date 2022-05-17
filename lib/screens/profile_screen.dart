@@ -32,7 +32,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: const Icon(Icons.campaign_outlined),
         title: Text(profileName),
       ),
       body: Padding(
