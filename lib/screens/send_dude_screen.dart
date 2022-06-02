@@ -56,6 +56,8 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       SnackBars.notificationSnackBar(
           content: 'No duuude to send', context: context);
     } else {
+      SnackBars.notificationSnackBar(
+          content: 'Sending Dude... please wait.', context: context);
       await DudeService.getInstance()
           .putDude(dude, contactAtsign, context)
           .then(
@@ -63,6 +65,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
           if (value) {
             SnackBars.notificationSnackBar(
                 content: 'Dude Successfully Sent', context: context);
+            Navigator.of(context).pop();
           } else {
             SnackBars.errorSnackBar(
                 content: 'Something went wrong, please try again',
