@@ -12,14 +12,9 @@ import 'package:at_commons/at_commons.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_utils/at_utils.dart';
-import 'package:provider/provider.dart';
-
-import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
 import '../models/profile_model.dart';
-import '../widgets/widgets.dart';
 import 'local_notification_service.dart';
-import 'navigation_service.dart';
 
 /// A singleton that makes all the network calls to the @platform.
 class DudeService {
@@ -62,10 +57,8 @@ class DudeService {
         NotificationParams.forUpdate(
           key,
           value: json.encode(dude.toJson()),
-        ), onSuccess: (notification) async {
-      print('---------------------notification competed-------------------');
-      await context.read<DudeController>().getDudes();
-    });
+        ),
+        onSuccess: (notification) async {});
 
     var profileMetaData = Metadata()
       ..isEncrypted = true
@@ -158,7 +151,6 @@ class DudeService {
             DudeService.getInstance().atClient!.getCurrentAtSign();
 
         if (currentAtsign == notification.to) {
-          await context.read<DudeController>().getDudes();
           await LocalNotificationService().showNotifications(
               notification.id.length,
               'Dude',
