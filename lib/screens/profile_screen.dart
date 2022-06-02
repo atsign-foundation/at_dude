@@ -62,11 +62,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   ProfileStat(stat: '${profileModel.dudesSent} Dudes sent'),
                   ProfileStat(
-                      stat:
-                          '${profileModel.dudeHours.inMinutes} Minutes duding'),
+                      stat: profileModel.dudeHours > const Duration(minutes: 1)
+                          ? '${profileModel.dudeHours.inMinutes} Minutes duding'
+                          : '${profileModel.dudeHours.inSeconds} Seconds duding'),
                   ProfileStat(
-                      stat:
-                          '${profileModel.longestDude.inMinutes} Minute longest dude'),
+                      stat: profileModel.dudeHours > const Duration(minutes: 1)
+                          ? '${profileModel.longestDude.inMinutes} Minute longest dude'
+                          : '${profileModel.longestDude.inSeconds} Seconds longest dude'),
                 ],
               ),
             ),
