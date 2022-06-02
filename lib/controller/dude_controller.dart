@@ -4,6 +4,8 @@ import 'package:at_contact/at_contact.dart';
 
 import '../models/dude_model.dart';
 import '../services/dude_service.dart';
+import '../services/navigation_service.dart';
+import '../widgets/widgets.dart';
 
 /// A Dude class that controls the UI update when the [DudeService] methods are called.
 class DudeController with ChangeNotifier {
@@ -39,6 +41,16 @@ class DudeController with ChangeNotifier {
   void deleteDude(DudeModel dude) async {
     bool result = await DudeService.getInstance().deleteDude(dude);
     result ? _dudes = await DudeService.getInstance().getDudes() : null;
+    notifyListeners();
+  }
+
+  Future<void> deleteContact(String atSign) async {
+    bool result = await DudeService.getInstance().deleteContact(atSign);
+    result
+        ? await getContacts()
+        : SnackBars.errorSnackBar(
+            content: 'Contact not deleted',
+            context: NavigationService.navKey.currentContext!);
     notifyListeners();
   }
 }

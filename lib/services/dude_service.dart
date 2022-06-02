@@ -265,4 +265,19 @@ class DudeService {
       return false;
     }
   }
+
+  /// Delete contact from contact list.
+  Future<bool> deleteContact(String atSign) async {
+    try {
+      bool isDeleted = await contactService.deleteAtSign(atSign: atSign);
+
+      return isDeleted;
+    } on AtClientException catch (atClientExcep) {
+      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      return false;
+    } catch (e) {
+      _logger.severe('❌ Exception : ${e.toString()}');
+      return false;
+    }
+  }
 }

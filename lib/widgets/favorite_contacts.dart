@@ -106,7 +106,10 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                             },
                             child: CircularContacts(
                               contact: dudeController.contacts[index],
-                              onCrossPressed: () {},
+                              onCrossPressed: () async {
+                                await dudeController.deleteContact(
+                                    dudeController.contacts[index].atSign!);
+                              },
                             ),
                           );
                         }
