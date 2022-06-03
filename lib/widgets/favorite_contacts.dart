@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
+// import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
 import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
 import 'package:provider/provider.dart';
 
-import '../controller/dude_controller.dart';
+import '../controller/controller.dart';
+
 import '../models/models.dart';
 import '../services/services.dart';
+import 'add_contact.dart';
 import 'widgets.dart';
 
 class FavoriteContacts extends StatefulWidget {
@@ -24,7 +26,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      await context.read<DudeController>().getContacts();
+      await context.read<ContactsController>().getContacts();
       await DudeService.getInstance().getCurrentAtsignProfileImage();
       if (mounted) {
         setState(() {});
@@ -74,20 +76,19 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                   onPressed: () async => await showDialog(
                         context: context,
                         builder: (context) => const AddContactDialog(),
-                      ).then((_) async =>
-                          await context.read<DudeController>().getContacts()),
+                      ),
                   icon: const Icon(Icons.add))
             ],
           ),
-          Consumer<DudeController>(
-            builder: (context, dudeController, child) => Flexible(
-              child: dudeController.contacts.isEmpty
+          Consumer<ContactsController>(
+            builder: (context, contactsController, child) => Flexible(
+              child: contactsController.contacts.isEmpty
                   ? const Text('No Contacts Available')
                   : ListView.builder(
-                      itemCount: dudeController.contacts.length,
+                      itemCount: contactsController.contacts.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        if (dudeController.contacts.isEmpty) {
+                        if (contactsController.contacts.isEmpty) {
                           return const Text('No Contacts Available');
                         } else {
                           return GestureDetector(
@@ -99,16 +100,16 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                               } else {
                                 _handleSendDudeToContact(
                                     dude: widget.dude,
-                                    contactAtsign:
-                                        dudeController.contacts[index].atSign!,
+                                    contactAtsign: contactsController
+                                        .contacts[index].atSign!,
                                     context: context);
                               }
                             },
                             child: CircularContacts(
-                              contact: dudeController.contacts[index],
+                              contact: contactsController.contacts[index],
                               onCrossPressed: () async {
-                                await dudeController.deleteContact(
-                                    dudeController.contacts[index].atSign!);
+                                await contactsController.deleteContact(
+                                    contactsController.contacts[index].atSign!);
                               },
                             ),
                           );

@@ -43,8 +43,11 @@ Future<void> main() async {
     _logger.finer('Environment failed to load from .env: ', e);
   }
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => DudeController(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: DudeController()),
+        ChangeNotifierProvider.value(value: ContactsController())
+      ],
       child: MaterialApp(
         home: const MyApp(),
         theme: DudeTheme.light(),

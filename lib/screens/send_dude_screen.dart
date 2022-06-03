@@ -213,16 +213,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
             ),
           ],
         ),
-        isLoading
-            ? Container(
-                color: Colors.transparent.withOpacity(0.2),
-                width: double.infinity,
-                height: double.infinity,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : const SizedBox()
+        isLoading ? const LoadingIndicator() : const SizedBox()
       ]),
     );
   }
