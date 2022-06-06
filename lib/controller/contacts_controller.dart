@@ -14,6 +14,11 @@ class ContactsController with ChangeNotifier {
     return [..._contacts];
   }
 
+  List<AtContact> _favoriteContacts = [];
+  List<AtContact> get favoriteContacts {
+    return _favoriteContacts;
+  }
+
   /// Get contacts for the current atsign.
   Future<void> getContacts() async {
     _contacts = await ContactsService.getInstance().getContactList() ?? [];
@@ -30,10 +35,28 @@ class ContactsController with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Get favoritecontacts for the current atsign.
+  void getFavoriteContacts() {
+    _favoriteContacts =
+        _contacts.where((contact) => contact.favourite == true).toList();
+    notifyListeners();
+  }
+
   Future<void> addContacts(String atSign) async {
     bool result = await ContactsService.getInstance().addContact(atSign);
     result
         ? await getContacts()
+        : SnackBars.errorSnackBar(
+            content: 'Error adding atsign, atsign may no exist',
+            context: NavigationService.navKey.currentContext!);
+    notifyListeners();
+  }
+
+  Future<void> addToFavorites(AtContact contact) async {
+    bool result =
+        await ContactsService.getInstance().addToFavoriteContact(contact);
+    result
+        ? getFavoriteContacts()
         : SnackBars.errorSnackBar(
             content: 'Error adding atsign, atsign may no exist',
             context: NavigationService.navKey.currentContext!);

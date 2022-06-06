@@ -55,6 +55,21 @@ class ContactsService {
   }
 
   /// Delete contact from contact list.
+  Future<bool> addContact(String atSign) async {
+    try {
+      bool isAdded = await atContactService.addAtSign(atSign: atSign);
+
+      return isAdded;
+    } on AtClientException catch (atClientExcep) {
+      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      return false;
+    } catch (e) {
+      _logger.severe('❌ Exception : ${e.toString()}');
+      return false;
+    }
+  }
+
+  /// Delete contact from contact list.
   Future<bool> deleteContact(String atSign) async {
     try {
       bool isDeleted = await atContactService.deleteAtSign(atSign: atSign);
@@ -69,12 +84,12 @@ class ContactsService {
     }
   }
 
-  /// add contact to contact list.
-  Future<bool> addContact(String atSign) async {
+  /// Add/remove contact as favorite.
+  Future<bool> addToFavoriteContact(AtContact contact) async {
     try {
-      bool isAdded = await atContactService.addAtSign(atSign: atSign);
+      bool isDeleted = await atContactService.markFavContact(contact);
 
-      return isAdded;
+      return isDeleted;
     } on AtClientException catch (atClientExcep) {
       _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
       return false;

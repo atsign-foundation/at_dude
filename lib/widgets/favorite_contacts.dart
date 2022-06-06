@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
-import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
+// import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
@@ -73,11 +73,14 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                 style: Theme.of(context).textTheme.headline2,
               ),
               IconButton(
-                  onPressed: () async => await showDialog(
-                        context: context,
-                        builder: (context) => const AddContactDialog(),
+                  onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const FavoriteContactsScreen(),
+                            fullscreenDialog: true),
                       ),
-                  icon: const Icon(Icons.add))
+                  icon: const Icon(Icons.favorite))
             ],
           ),
           Consumer<ContactsController>(
@@ -106,6 +109,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                               }
                             },
                             child: CircularContacts(
+                              isCrossIcon: true,
                               contact: contactsController.contacts[index],
                               onCrossPressed: () async {
                                 await contactsController.deleteContact(
