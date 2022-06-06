@@ -10,6 +10,7 @@ import '../models/dude_model.dart';
 import '../services/services.dart';
 import '../widgets/atsign_avatar.dart';
 import '../widgets/widgets.dart';
+import 'screens.dart';
 
 class SendDudeScreen extends StatefulWidget {
   const SendDudeScreen({this.canPop = false, Key? key}) : super(key: key);
@@ -175,10 +176,10 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                     width: 25,
                   ),
                   RotatedBox(
-                    quarterTurns: 1,
+                    quarterTurns: 0,
                     child: IconButton(
                       icon: const Icon(
-                        Icons.navigation_outlined,
+                        Icons.contacts_outlined,
                         size: 40,
                       ),
                       onPressed: () async {
@@ -186,7 +187,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                             .push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    ContactsScreen(
+                                    DudeContactsScreen(
                                   onSendIconPressed: (String atsign) =>
                                       _handleSendDudeToContact(
                                           dude: dude,

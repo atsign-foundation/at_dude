@@ -85,7 +85,7 @@ class ContactsService {
   }
 
   /// Add/remove contact as favorite.
-  Future<bool> addToFavoriteContact(AtContact contact) async {
+  Future<bool> markUnmarkFavoriteContact(AtContact contact) async {
     try {
       bool isDeleted = await atContactService.markFavContact(contact);
 

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../controller/controller.dart';
 
 import '../models/models.dart';
+import '../screens/screens.dart';
 import '../services/services.dart';
 import 'add_contact.dart';
 import 'widgets.dart';
@@ -26,7 +27,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      await context.read<ContactsController>().getContacts();
+      await context.read<ContactsController>().getFavoriteContacts();
       await DudeService.getInstance().getCurrentAtsignProfileImage();
       if (mounted) {
         setState(() {});
@@ -77,7 +78,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                         context,
                         MaterialPageRoute<void>(
                             builder: (BuildContext context) =>
-                                const FavoriteContactsScreen(),
+                                const DudeContactsScreen(),
                             fullscreenDialog: true),
                       ),
                   icon: const Icon(Icons.favorite))
@@ -85,13 +86,13 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           ),
           Consumer<ContactsController>(
             builder: (context, contactsController, child) => Flexible(
-              child: contactsController.contacts.isEmpty
+              child: contactsController.favoriteContacts.isEmpty
                   ? const Text('No Contacts Available')
                   : ListView.builder(
-                      itemCount: contactsController.contacts.length,
+                      itemCount: contactsController.favoriteContacts.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        if (contactsController.contacts.isEmpty) {
+                        if (contactsController.favoriteContacts.isEmpty) {
                           return const Text('No Contacts Available');
                         } else {
                           return GestureDetector(
@@ -104,16 +105,18 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                 _handleSendDudeToContact(
                                     dude: widget.dude,
                                     contactAtsign: contactsController
-                                        .contacts[index].atSign!,
+                                        .favoriteContacts[index].atSign!,
                                     context: context);
                               }
                             },
                             child: CircularContacts(
                               isCrossIcon: true,
-                              contact: contactsController.contacts[index],
+                              contact:
+                                  contactsController.favoriteContacts[index],
                               onCrossPressed: () async {
                                 await contactsController.deleteContact(
-                                    contactsController.contacts[index].atSign!);
+                                    contactsController
+                                        .favoriteContacts[index].atSign!);
                               },
                             ),
                           );

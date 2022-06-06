@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
-import 'widgets.dart';
+import '../widgets/widgets.dart';
 
 import 'package:at_contact/at_contact.dart';
 
@@ -19,12 +20,11 @@ import 'package:at_contacts_flutter/widgets/custom_list_tile.dart';
 import 'package:at_contacts_flutter/widgets/custom_search_field.dart';
 import 'package:at_contacts_flutter/widgets/error_screen.dart';
 import 'package:at_contacts_flutter/widgets/horizontal_list_view.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../services/contact_service.dart';
 
 /// The screen which is exposed from the library for displaying, adding, selecting and deleting Contacts.
-class FavoriteContactsScreen extends StatefulWidget {
+class DudeContactsScreen extends StatefulWidget {
   /// takes in @param [context] to get the app context
   final BuildContext? context;
 
@@ -36,7 +36,7 @@ class FavoriteContactsScreen extends StatefulWidget {
   final bool asSingleSelectionScreen;
   final Function? saveGroup, onSendIconPressed;
 
-  const FavoriteContactsScreen(
+  const DudeContactsScreen(
       {Key? key,
       this.selectedList,
       @Deprecated('context is no longer required and will be removed in upcoming version')
@@ -47,10 +47,10 @@ class FavoriteContactsScreen extends StatefulWidget {
       this.onSendIconPressed})
       : super(key: key);
   @override
-  _FavoriteContactsScreenState createState() => _FavoriteContactsScreenState();
+  _DudeContactsScreenState createState() => _DudeContactsScreenState();
 }
 
-class _FavoriteContactsScreenState extends State<FavoriteContactsScreen> {
+class _DudeContactsScreenState extends State<DudeContactsScreen> {
   /// search text entered in the search bar
   String searchText = '';
 
@@ -406,7 +406,8 @@ class _FavoriteContactsScreenState extends State<FavoriteContactsScreen> {
         ),
       ),
     );
-    await _contactService!.markFavContact(contact);
+    await context.read<ContactsController>().markUnmarkFavorites(contact);
+
     setState(() {
       markingFavoriteContact = false;
       Navigator.pop(context);

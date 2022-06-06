@@ -36,7 +36,8 @@ class ContactsController with ChangeNotifier {
   }
 
   /// Get favoritecontacts for the current atsign.
-  void getFavoriteContacts() {
+  Future<void> getFavoriteContacts() async {
+    await getContacts();
     _favoriteContacts =
         _contacts.where((contact) => contact.favourite == true).toList();
     notifyListeners();
@@ -52,9 +53,9 @@ class ContactsController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addToFavorites(AtContact contact) async {
+  Future<void> markUnmarkFavorites(AtContact contact) async {
     bool result =
-        await ContactsService.getInstance().addToFavoriteContact(contact);
+        await ContactsService.getInstance().markUnmarkFavoriteContact(contact);
     result
         ? getFavoriteContacts()
         : SnackBars.errorSnackBar(
