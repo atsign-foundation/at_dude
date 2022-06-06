@@ -133,7 +133,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
         onTrailingIconPressed: () {
           showDialog(
             context: context,
-            builder: (context) => const AddContactDialog(),
+            builder: (context) => const DudeAddContactDialog(),
           );
         },
         // ignore: unnecessary_null_comparison

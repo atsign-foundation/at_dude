@@ -9,7 +9,7 @@ import '../controller/controller.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 import '../services/services.dart';
-import 'add_contact.dart';
+import 'dude_add_contact_dialog.dart';
 import 'widgets.dart';
 
 class FavoriteContacts extends StatefulWidget {
@@ -114,9 +114,8 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                               contact:
                                   contactsController.favoriteContacts[index],
                               onCrossPressed: () async {
-                                await contactsController.deleteContact(
-                                    contactsController
-                                        .favoriteContacts[index].atSign!);
+                                await contactsController.markUnmarkFavorites(
+                                    contactsController.favoriteContacts[index]);
                               },
                             ),
                           );

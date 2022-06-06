@@ -78,9 +78,11 @@ class CircularContacts extends StatelessWidget {
           SizedBox(
             width: 80.toWidth,
             child: Text(
-              contact!.tags != null && contact!.tags!['name'] != null
-                  ? contact!.tags!['name']
-                  : contact!.atSign!.substring(1),
+              contact!.tags != null && contact!.tags!['nickname'] != null
+                  ? contact!.tags!['nickname']
+                  : contact!.tags != null && contact!.tags!['name'] != null
+                      ? contact!.tags!['name']
+                      : contact!.atSign!.substring(1),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(

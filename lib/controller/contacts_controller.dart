@@ -43,8 +43,9 @@ class ContactsController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addContacts(String atSign) async {
-    bool result = await ContactsService.getInstance().addContact(atSign);
+  Future<void> addContacts(String atSign, String? nickname) async {
+    bool result =
+        await ContactsService.getInstance().addContact(atSign, nickname);
     result
         ? await getContacts()
         : SnackBars.errorSnackBar(

@@ -4,26 +4,29 @@ import 'package:provider/provider.dart';
 import '../controller/controller.dart';
 import 'widgets.dart';
 
-class AddContactDialog extends StatefulWidget {
-  const AddContactDialog({Key? key}) : super(key: key);
+class DudeAddContactDialog extends StatefulWidget {
+  const DudeAddContactDialog({Key? key}) : super(key: key);
 
   @override
-  State<AddContactDialog> createState() => _AddContactDialogState();
+  State<DudeAddContactDialog> createState() => _DudeAddContactDialogState();
 }
 
-class _AddContactDialogState extends State<AddContactDialog> {
+class _DudeAddContactDialogState extends State<DudeAddContactDialog> {
   late TextEditingController atsignController;
+  late TextEditingController nicknameController;
   bool isLoading = false;
 
   @override
   void initState() {
     atsignController = TextEditingController();
+    nicknameController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     atsignController.dispose();
+    nicknameController.dispose();
     super.dispose();
   }
 
@@ -60,6 +63,21 @@ class _AddContactDialogState extends State<AddContactDialog> {
                     fontWeight: FontWeight.normal,
                   ),
                 ),
+                TextField(
+                  autofocus: true,
+                  controller: nicknameController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    prefixStyle: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    hintText: 'Enter nick name',
+                  ),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
               ],
             ),
           ),
@@ -72,9 +90,8 @@ class _AddContactDialogState extends State<AddContactDialog> {
             ElevatedButton(
               onPressed: () async {
                 updateIsLoading(true);
-                await context
-                    .read<ContactsController>()
-                    .addContacts(atsignController.value.text);
+                await context.read<ContactsController>().addContacts(
+                    atsignController.value.text, nicknameController.value.text);
                 updateIsLoading(false);
                 Navigator.of(context).pop();
               },

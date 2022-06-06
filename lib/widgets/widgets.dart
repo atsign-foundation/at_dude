@@ -7,3 +7,4 @@ export 'profile_app_bar.dart';
 export 'profile_stat.dart';
 export 'loading_indicator.dart';
 export 'circular_contacts.dart';
+export 'dude_add_contact_dialog.dart';

@@ -55,9 +55,10 @@ class ContactsService {
   }
 
   /// Delete contact from contact list.
-  Future<bool> addContact(String atSign) async {
+  Future<bool> addContact(String atSign, String? nickname) async {
     try {
-      bool isAdded = await atContactService.addAtSign(atSign: atSign);
+      bool isAdded =
+          await atContactService.addAtSign(atSign: atSign, nickName: nickname);
 
       return isAdded;
     } on AtClientException catch (atClientExcep) {
