@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const Center(
               child: Padding(
                 padding: EdgeInsets.only(bottom: 60.0),
-                child: CustomResetButton(
+                child: ResetAppButton(
                   buttonText: 'Reset @sign',
                   width: 210,
                 ),

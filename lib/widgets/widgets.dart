@@ -8,3 +8,4 @@ export 'profile_stat.dart';
 export 'loading_indicator.dart';
 export 'circular_contacts.dart';
 export 'dude_add_contact_dialog.dart';
+export 'reset_app_button.dart';
