@@ -13,6 +13,7 @@ import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
+import 'controller/authentication_controller.dart';
 import 'controller/controller.dart';
 import 'dude_theme.dart';
 import 'screens/profile_screen.dart';
@@ -46,7 +47,8 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: DudeController()),
-        ChangeNotifierProvider.value(value: ContactsController())
+        ChangeNotifierProvider.value(value: ContactsController()),
+        ChangeNotifierProvider.value(value: AuthenticationController()),
       ],
       child: MaterialApp(
         home: const MyApp(),
