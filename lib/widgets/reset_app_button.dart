@@ -11,13 +11,10 @@ import '../main.dart';
 
 class ResetAppButton extends StatefulWidget {
   final String? buttonText;
-  final double? width;
-  final double? height;
+
   const ResetAppButton({
     Key? key,
     this.buttonText,
-    this.height,
-    this.width,
   }) : super(key: key);
 
   @override
@@ -36,13 +33,8 @@ class _ResetAppButtonState extends State<ResetAppButton> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: _showResetDialog,
-      child: const Center(
-        child: Text(
-          'Reset App',
-          textAlign: TextAlign.center,
-
-          //style: CustomTextStyles.fontBold16light,
-        ),
+      child: const Text(
+        'Reset App',
       ),
     );
   }

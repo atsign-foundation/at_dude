@@ -75,10 +75,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 60.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   const ResetAppButton(
                     buttonText: 'Reset @sign',
-                    width: 210,
                   ),
                   ElevatedButton(
                     onPressed: () async {

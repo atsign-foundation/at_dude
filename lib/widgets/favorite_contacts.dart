@@ -109,6 +109,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                               }
                             },
                             child: CircularContacts(
+                              size: 50,
                               isCrossIcon: true,
                               contact:
                                   contactsController.favoriteContacts[index],

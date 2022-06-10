@@ -129,7 +129,7 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                 height: 40,
                                 width: 40,
                                 child: Icon(Icons.add_circle_outline_outlined,
-                                    color: Colors.orange, size: 25.toFont),
+                                    size: 25.toFont),
                               ),
                             )
                           ],

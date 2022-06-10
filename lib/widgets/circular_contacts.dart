@@ -15,9 +15,14 @@ class CircularContacts extends StatelessWidget {
   final Function? onCrossPressed;
   final bool isCrossIcon;
   final AtContact? contact;
+  final int size;
 
   const CircularContacts(
-      {Key? key, this.onCrossPressed, this.contact, this.isCrossIcon = false})
+      {Key? key,
+      this.onCrossPressed,
+      this.contact,
+      this.isCrossIcon = false,
+      this.size = 40})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,7 @@ class CircularContacts extends StatelessWidget {
     }
     return Container(
       padding:
-          EdgeInsets.symmetric(vertical: 9.toHeight, horizontal: 20.toWidth),
+          EdgeInsets.symmetric(vertical: 4.toHeight, horizontal: 20.toWidth),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -41,8 +46,8 @@ class CircularContacts extends StatelessWidget {
             alignment: AlignmentDirectional.topCenter,
             children: [
               SizedBox(
-                height: 40.toHeight,
-                width: 40.toHeight,
+                height: size.toHeight,
+                width: size.toHeight,
                 child: (image != null)
                     ? CustomCircleAvatar(
                         byteImage: image,
@@ -74,7 +79,7 @@ class CircularContacts extends StatelessWidget {
                   : const SizedBox(),
             ],
           ),
-          SizedBox(height: 10.toHeight),
+          SizedBox(height: 5.toHeight),
           SizedBox(
             width: 80.toWidth,
             child: Text(
@@ -91,7 +96,7 @@ class CircularContacts extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 10.toHeight),
+          SizedBox(height: 5.toHeight),
           SizedBox(
             width: 60.toWidth,
             child: Text(

@@ -26,6 +26,8 @@ import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 
+import 'widgets/widgets.dart';
+
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
 Future<void> main() async {
@@ -138,6 +140,7 @@ class _MyAppState extends State<MyApp> {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
             iconSize: 200,
@@ -177,12 +180,8 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ]),
           ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CustomResetButton(
-              buttonText: 'Reset @sign',
-              width: 110,
-            ),
+          const ResetAppButton(
+            buttonText: 'Reset @sign',
           ),
         ],
       ),
