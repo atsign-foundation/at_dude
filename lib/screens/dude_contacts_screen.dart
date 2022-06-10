@@ -6,15 +6,13 @@ import '../widgets/widgets.dart';
 
 import 'package:at_contact/at_contact.dart';
 
-import 'package:at_contact/at_contact.dart';
-
 import 'package:at_common_flutter/at_common_flutter.dart';
 
 import 'package:at_contacts_flutter/models/contact_base_model.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_contacts_flutter/utils/colors.dart';
 import 'package:at_contacts_flutter/utils/text_strings.dart';
-import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
+
 import 'package:at_contacts_flutter/widgets/bottom_sheet.dart';
 import 'package:at_contacts_flutter/widgets/custom_list_tile.dart';
 import 'package:at_contacts_flutter/widgets/custom_search_field.dart';

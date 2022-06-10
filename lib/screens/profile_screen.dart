@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:at_onboarding_flutter/widgets/custom_reset_button.dart';
 import '../models/profile_model.dart';
 import '../services/services.dart';
 import '../widgets/switch_atsign.dart';
@@ -85,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: () async {
                       await showModalBottomSheet(
                           context: NavigationService.navKey.currentContext!,
-                          builder: (context) => AtSignBottomSheet());
+                          builder: (context) => const AtSignBottomSheet());
                     },
                     child: const Text('Switch @Sign'),
                   )

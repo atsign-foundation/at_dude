@@ -1,18 +1,11 @@
-import 'dart:math';
-import 'dart:typed_data';
 import 'package:at_common_flutter/services/size_config.dart';
-// import 'package:at_contacts_group_flutter/utils/text_styles.dart';
-// import 'package:atsign_atmosphere_pro/screens/common_widgets/contact_initial.dart';
-// import 'package:atsign_atmosphere_pro/screens/common_widgets/custom_circle_avatar.dart';
-// import 'package:atsign_atmosphere_pro/services/backend_service.dart';
-// import 'package:atsign_atmosphere_pro/services/common_utility_functions.dart';
-// import 'package:atsign_atmosphere_pro/utils/text_strings.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:at_contact/at_contact.dart';
 
 import '../controller/controller.dart';
-import '../services/authentication_service.dart';
+
 import '../services/services.dart';
 import 'widgets.dart';
 
@@ -25,7 +18,6 @@ class AtSignBottomSheet extends StatefulWidget {
 
 class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
   bool isLoading = false;
-  var atClientPrefernce;
 
   @override
   void initState() {
@@ -37,10 +29,6 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // backendService
-    //     .getAtClientPreference()
-    //     .then((value) => atClientPrefernce = value);
-    Random r = Random();
     return Stack(
       children: [
         Positioned(
@@ -78,7 +66,6 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                               itemCount:
                                   authenticationController.atsignList.length,
                               itemBuilder: (context, index) {
-                                print('list builder');
                                 return FutureBuilder(
                                     future: authenticationController
                                         .getAtContact(authenticationController
@@ -86,7 +73,6 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                         .then((value) => value),
                                     builder: ((context, snapshot) {
                                       if (snapshot.hasData) {
-                                        print('data present');
                                         return GestureDetector(
                                           onTap: isLoading
                                               ? () {}
@@ -99,7 +85,6 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                                                   .atsignList[
                                                               index]);
 
-                                                  ;
                                                   // Navigator.pop(context);
                                                 },
                                           child: CircularContacts(
@@ -107,7 +92,6 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                                   snapshot.data as AtContact),
                                         );
                                       } else if (!snapshot.hasData) {
-                                        print('loading indicator');
                                         return SizedBox(
                                           child: const LoadingIndicator(),
                                           width:
@@ -117,7 +101,6 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                               .height,
                                         );
                                       } else {
-                                        print('error');
                                         SnackBars.errorSnackBar(
                                             content: 'Error', context: context);
                                         return const SizedBox();
