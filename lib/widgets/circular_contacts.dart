@@ -41,8 +41,8 @@ class CircularContacts extends StatelessWidget {
             alignment: AlignmentDirectional.topCenter,
             children: [
               SizedBox(
-                height: 50.toHeight,
-                width: 50.toHeight,
+                height: 40.toHeight,
+                width: 40.toHeight,
                 child: (image != null)
                     ? CustomCircleAvatar(
                         byteImage: image,

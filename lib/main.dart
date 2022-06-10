@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
+// ignore: implementation_imports
 import 'package:at_client/src/listener/sync_progress_listener.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
@@ -13,7 +14,6 @@ import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'controller/authentication_controller.dart';
 import 'controller/controller.dart';
 import 'dude_theme.dart';
 import 'screens/profile_screen.dart';
@@ -25,8 +25,6 @@ import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
 
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
-
-import 'widgets/widgets.dart';
 
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 

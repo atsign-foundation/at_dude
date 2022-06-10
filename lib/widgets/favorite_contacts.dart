@@ -9,7 +9,6 @@ import '../controller/controller.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 import '../services/services.dart';
-import 'dude_add_contact_dialog.dart';
 import 'widgets.dart';
 
 class FavoriteContacts extends StatefulWidget {
