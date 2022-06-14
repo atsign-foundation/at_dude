@@ -28,7 +28,7 @@ class DudeTheme {
       color: Colors.black,
     ),
     headline2: GoogleFonts.barlow(
-      fontSize: 21.0,
+      fontSize: 28.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
@@ -105,9 +105,11 @@ class DudeTheme {
           foregroundColor: Color(0xFFF8C630),
           backgroundColor: Colors.black,
         ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
           // backgroundColor: kPrimaryColor,
-          selectedItemColor: kAlternativeColor,
+          selectedItemColor: kPrimaryColor,
+          selectedLabelStyle: TextStyle().copyWith(fontSize: 20),
+          unselectedLabelStyle: TextStyle().copyWith(fontSize: 20),
         ),
         textTheme: lightTextTheme,
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -119,7 +121,7 @@ class DudeTheme {
             ),
           ),
         ),
-        iconTheme: const IconThemeData(color: kAlternativeColor));
+        iconTheme: const IconThemeData(color: kPrimaryColor));
   }
 
   // 4

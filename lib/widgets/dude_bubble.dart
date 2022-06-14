@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
@@ -18,82 +19,59 @@ class DudeBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isMe =
-        dude.sender == DudeService.getInstance().atClient!.getCurrentAtSign();
+    String timeCategory(Duration duration) {
+      if (duration < const Duration(seconds: 1)) {
+        return 'less than 1 second';
+      } else if (duration >= const Duration(seconds: 1) &&
+          duration < const Duration(seconds: 60)) {
+        return '${duration.inSeconds} seconds';
+      } else if (duration >= const Duration(minutes: 1) &&
+          duration < const Duration(minutes: 60)) {
+        return '${duration.inMinutes} minutes';
+      } else {
+        return '${duration.inHours} hours';
+      }
+    }
 
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            dude.sender,
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-          Material(
-            borderRadius: isMe
-                ? const BorderRadius.only(
-                    topLeft: Radius.circular(30.0),
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0))
-                : const BorderRadius.only(
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0),
-                    topRight: Radius.circular(30.0),
-                  ),
-            elevation: 5.0,
-            color: isMe ? Theme.of(context).colorScheme.primary : Colors.white,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+    return Card(
+      color: Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: IconButton(
+                  onPressed: () async {
+                    if (dude.duration.inSeconds < 1) {
+                      await audioPlayer.play('audios/dude.wav');
+                    } else {
+                      await audioPlayer.play('audios/dude.mp3');
+                    }
+
+                    Provider.of<DudeController>(context, listen: false)
+                        .deleteDude(dude);
+                  },
+                  icon: const Icon(Icons.play_arrow_outlined)),
+            ),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Flexible(
-                    child: IconButton(
-                        onPressed: () async {
-                          if (dude.duration.inSeconds < 1) {
-                            await audioPlayer.play('audios/dude.wav');
-                          } else {
-                            await audioPlayer.play('audios/dude.mp3');
-                          }
-
-                          Provider.of<DudeController>(context, listen: false)
-                              .deleteDude(dude);
-                        },
-                        icon: const Icon(Icons.play_arrow_outlined)),
-                  ),
-                  Flexible(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          dude.dude,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: isMe ? Colors.white : Colors.black54,
-                            fontSize: 15.0,
-                          ),
-                        ),
-                        Text(
-                          'To:' + dude.receiver,
-                          style: TextStyle(
-                            color: isMe ? Colors.white : Colors.black54,
-                            fontSize: 10.0,
-                          ),
-                        )
-                      ],
-                    ),
+                  Text(
+                    dude.sender.replaceFirst('@', '') +
+                        " took " +
+                        timeCategory(dude.duration) +
+                        " to say " +
+                        dude.dude,
                   )
                 ],
               ),
-            ),
-          ),
-        ],
+            )
+          ],
+        ),
       ),
-    );
+    ).asGlass();
   }
 }

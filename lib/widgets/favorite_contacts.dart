@@ -69,18 +69,18 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           Row(
             children: [
               Text(
-                'Favorite Dudes',
+                'Favorite',
                 style: Theme.of(context).textTheme.headline2,
               ),
-              IconButton(
-                  onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                const DudeContactsScreen(),
-                            fullscreenDialog: true),
-                      ),
-                  icon: const Icon(Icons.favorite))
+              // IconButton(
+              //     onPressed: () => Navigator.push(
+              //           context,
+              //           MaterialPageRoute<void>(
+              //               builder: (BuildContext context) =>
+              //                   const DudeContactsScreen(),
+              //               fullscreenDialog: true),
+              //         ),
+              //     icon: const Icon(Icons.favorite))
             ],
           ),
           Consumer<ContactsController>(

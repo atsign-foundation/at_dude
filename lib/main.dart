@@ -51,6 +51,7 @@ Future<void> main() async {
         ChangeNotifierProvider.value(value: AuthenticationController()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: const MyApp(),
         theme: DudeTheme.light(),
         routes: {
