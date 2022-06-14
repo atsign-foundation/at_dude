@@ -10,6 +10,7 @@ import '../models/dude_model.dart';
 import '../services/services.dart';
 import '../widgets/atsign_avatar.dart';
 import '../widgets/widgets.dart';
+import 'screens.dart';
 
 class SendDudeScreen extends StatefulWidget {
   const SendDudeScreen({this.canPop = false, Key? key}) : super(key: key);
@@ -56,6 +57,8 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       SnackBars.notificationSnackBar(
           content: 'No duuude to send', context: context);
     } else {
+      SnackBars.notificationSnackBar(
+          content: 'Sending Dude... please wait.', context: context);
       await DudeService.getInstance()
           .putDude(dude, contactAtsign, context)
           .then(
@@ -63,6 +66,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
           if (value) {
             SnackBars.notificationSnackBar(
                 content: 'Dude Successfully Sent', context: context);
+            Navigator.of(context).pop();
           } else {
             SnackBars.errorSnackBar(
                 content: 'Something went wrong, please try again',
@@ -82,14 +86,25 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Send Dude'),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        title: const Text(
+          'Send Dude',
+          style: TextStyle(color: Colors.black),
+        ),
         actions: const [AtsignAvatar()],
         automaticallyImplyLeading: widget.canPop,
       ),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       bottomNavigationBar: const DudeBottomNavigationBar(
         selectedIndex: 0,
       ),
       body: Stack(children: [
+        const AppBackground(
+          alignment: Alignment.centerLeft,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,6 +114,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(
+                    height: 200,
+                  ),
                   DudeTimer(rawTime: rawTime),
                   Center(
                     child: Container(
@@ -125,6 +143,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         startTime = DateTime.now();
+
                         _stopWatchTimer.onExecute.add(StopWatchExecute.start);
                         dude.saveId;
                         setState(() {
@@ -135,14 +154,14 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
                         dude.saveDuration(startTime);
                       },
-                      child: const Text(
-                        'Duuude',
-                        style: TextStyle(color: Colors.white, fontSize: 25),
+                      child: const Icon(
+                        Icons.fingerprint,
+                        size: 40,
                       ),
                     ),
                     onLongPressStart: (_) async {
                       startTime = DateTime.now();
-                      if (_stopWatchTimer.rawTime.value > 1) {
+                      if (_stopWatchTimer.rawTime.value > 0) {
                         _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
                       }
                       _stopWatchTimer.onExecute.add(StopWatchExecute.start);
@@ -171,32 +190,29 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                   const SizedBox(
                     width: 25,
                   ),
-                  RotatedBox(
-                    quarterTurns: 1,
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.navigation_outlined,
-                        size: 40,
-                      ),
-                      onPressed: () async {
-                        await Navigator.of(context)
-                            .push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ContactsScreen(
-                                  onSendIconPressed: (String atsign) =>
-                                      _handleSendDudeToContact(
-                                          dude: dude,
-                                          contactAtsign: atsign,
-                                          context: context),
-                                ),
-                              ),
-                            )
-                            .whenComplete(() async => await context
-                                .read<DudeController>()
-                                .getContacts());
-                      },
+                  ElevatedButton(
+                    child: const Icon(
+                      Icons.contacts_outlined,
+                      size: 40,
                     ),
+                    onPressed: () async {
+                      await Navigator.of(context)
+                          .push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  DudeContactsScreen(
+                                onSendIconPressed: (String atsign) =>
+                                    _handleSendDudeToContact(
+                                        dude: dude,
+                                        contactAtsign: atsign,
+                                        context: context),
+                              ),
+                            ),
+                          )
+                          .whenComplete(() async => await context
+                              .read<DudeController>()
+                              .getContacts());
+                    },
                   ),
                 ],
               ),
@@ -208,18 +224,12 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                 updateIsLoading: updateIsLoading,
               ),
             ),
+            const SizedBox(
+              height: kBottomNavigationBarHeight,
+            )
           ],
         ),
-        isLoading
-            ? Container(
-                color: Colors.transparent.withOpacity(0.2),
-                width: double.infinity,
-                height: double.infinity,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : const SizedBox()
+        isLoading ? const LoadingIndicator() : const SizedBox()
       ]),
     );
   }

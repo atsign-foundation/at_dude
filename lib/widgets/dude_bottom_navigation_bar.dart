@@ -29,6 +29,8 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      elevation: 0.0,
+      backgroundColor: const Color(0x00ffffff),
       currentIndex: widget.selectedIndex,
       onTap: _handleOnTap,
       items: <BottomNavigationBarItem>[
@@ -40,6 +42,7 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
           icon: Consumer<DudeController>(
             builder: ((context, dudeController, child) {
               return Badge(
+                // gradient: dudeController.dudeCount > 0 ? null : ColorGradi,
                 elevation: dudeController.dudeCount > 0 ? 2 : 0,
                 badgeColor: Theme.of(context).bottomAppBarColor,
                 badgeContent: dudeController.dudeCount > 0

@@ -23,23 +23,31 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
         title: const Text('History'),
         actions: const [AtsignAvatar()],
         automaticallyImplyLeading: widget.canPop,
       ),
       bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 1),
-      body: Consumer<DudeController>(
-        builder: ((context, dudeController, child) =>
-            dudeController.dudes.isEmpty
-                ? const Center(child: Text('No dudes available'))
-                : ListView.builder(
-                    reverse: true,
-                    shrinkWrap: true,
-                    itemCount: dudeController.dudes.length,
-                    itemBuilder: (context, index) {
-                      return DudeBubble(dude: dudeController.dudes[index]);
-                    })),
-      ),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      body: Stack(children: [
+        const AppBackground(alignment: Alignment.center),
+        Consumer<DudeController>(
+          builder: ((context, dudeController, child) =>
+              dudeController.dudes.isEmpty
+                  ? const Center(child: Text('No dudes available'))
+                  : ListView.builder(
+                      reverse: true,
+                      shrinkWrap: true,
+                      itemCount: dudeController.dudes.length,
+                      itemBuilder: (context, index) {
+                        return DudeBubble(dude: dudeController.dudes[index]);
+                      })),
+        ),
+      ]),
     );
   }
 }

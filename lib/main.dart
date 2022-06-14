@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
+// ignore: implementation_imports
 import 'package:at_client/src/listener/sync_progress_listener.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
@@ -43,9 +44,14 @@ Future<void> main() async {
     _logger.finer('Environment failed to load from .env: ', e);
   }
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => DudeController(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: DudeController()),
+        ChangeNotifierProvider.value(value: ContactsController()),
+        ChangeNotifierProvider.value(value: AuthenticationController()),
+      ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: const MyApp(),
         theme: DudeTheme.light(),
         routes: {
@@ -135,6 +141,7 @@ class _MyAppState extends State<MyApp> {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
             iconSize: 200,
@@ -174,12 +181,8 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ]),
           ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CustomResetButton(
-              buttonText: 'Reset @sign',
-              width: 110,
-            ),
+          const ResetAppButton(
+            buttonText: 'Reset @sign',
           ),
         ],
       ),

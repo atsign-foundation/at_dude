@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
-import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
+// import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
+// import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
 import 'package:provider/provider.dart';
 
-import '../controller/dude_controller.dart';
+import '../controller/controller.dart';
+
 import '../models/models.dart';
+import '../screens/screens.dart';
 import '../services/services.dart';
 import 'widgets.dart';
 
@@ -24,7 +26,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      await context.read<DudeController>().getContacts();
+      await context.read<ContactsController>().getFavoriteContacts();
       await DudeService.getInstance().getCurrentAtsignProfileImage();
       if (mounted) {
         setState(() {});
@@ -67,27 +69,29 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           Row(
             children: [
               Text(
-                'Favorite Dudes',
+                'Favorite',
                 style: Theme.of(context).textTheme.headline2,
               ),
-              IconButton(
-                  onPressed: () async => await showDialog(
-                        context: context,
-                        builder: (context) => const AddContactDialog(),
-                      ).then((_) async =>
-                          await context.read<DudeController>().getContacts()),
-                  icon: const Icon(Icons.add))
+              // IconButton(
+              //     onPressed: () => Navigator.push(
+              //           context,
+              //           MaterialPageRoute<void>(
+              //               builder: (BuildContext context) =>
+              //                   const DudeContactsScreen(),
+              //               fullscreenDialog: true),
+              //         ),
+              //     icon: const Icon(Icons.favorite))
             ],
           ),
-          Consumer<DudeController>(
-            builder: (context, dudeController, child) => Flexible(
-              child: dudeController.contacts.isEmpty
+          Consumer<ContactsController>(
+            builder: (context, contactsController, child) => Flexible(
+              child: contactsController.favoriteContacts.isEmpty
                   ? const Text('No Contacts Available')
                   : ListView.builder(
-                      itemCount: dudeController.contacts.length,
+                      itemCount: contactsController.favoriteContacts.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        if (dudeController.contacts.isEmpty) {
+                        if (contactsController.favoriteContacts.isEmpty) {
                           return const Text('No Contacts Available');
                         } else {
                           return GestureDetector(
@@ -99,14 +103,20 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                               } else {
                                 _handleSendDudeToContact(
                                     dude: widget.dude,
-                                    contactAtsign:
-                                        dudeController.contacts[index].atSign!,
+                                    contactAtsign: contactsController
+                                        .favoriteContacts[index].atSign!,
                                     context: context);
                               }
                             },
                             child: CircularContacts(
-                              contact: dudeController.contacts[index],
-                              onCrossPressed: () {},
+                              size: 50,
+                              isCrossIcon: true,
+                              contact:
+                                  contactsController.favoriteContacts[index],
+                              onCrossPressed: () async {
+                                await contactsController.markUnmarkFavorites(
+                                    contactsController.favoriteContacts[index]);
+                              },
                             ),
                           );
                         }

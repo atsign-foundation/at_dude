@@ -36,10 +36,11 @@ class _AtsignAvatarState extends State<AtsignAvatar> {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: CircleAvatar(
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Colors.transparent,
         child: image == null
             ? const Icon(
                 Icons.person_outline,
+                color: Colors.black,
               )
             : ClipOval(child: Image.memory(image!)),
       ),
