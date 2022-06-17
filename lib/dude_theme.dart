@@ -108,8 +108,8 @@ class DudeTheme {
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           // backgroundColor: kPrimaryColor,
           selectedItemColor: kPrimaryColor,
-          selectedLabelStyle: TextStyle().copyWith(fontSize: 20),
-          unselectedLabelStyle: TextStyle().copyWith(fontSize: 20),
+          selectedLabelStyle: const TextStyle().copyWith(fontSize: 20),
+          unselectedLabelStyle: const TextStyle().copyWith(fontSize: 20),
         ),
         textTheme: lightTextTheme,
         elevatedButtonTheme: ElevatedButtonThemeData(

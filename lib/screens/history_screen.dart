@@ -26,7 +26,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
-        title: const Text('History'),
+        title: const Text('History', style: TextStyle(color: Colors.black)),
         actions: const [AtsignAvatar()],
         automaticallyImplyLeading: widget.canPop,
       ),
@@ -38,7 +38,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         Consumer<DudeController>(
           builder: ((context, dudeController, child) =>
               dudeController.dudes.isEmpty
-                  ? const Center(child: Text('No dudes available'))
+                  ? const Center(
+                      child: Text('No dudes available',
+                          style: TextStyle(fontWeight: FontWeight.bold)))
                   : ListView.builder(
                       reverse: true,
                       shrinkWrap: true,

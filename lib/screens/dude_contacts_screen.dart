@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:is_first_run/is_first_run.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
 import '../widgets/widgets.dart';
@@ -66,6 +68,9 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
 
   /// boolean flag to indicate error condition
   bool errorOcurred = false;
+  GlobalKey keyAddContact = GlobalKey();
+  GlobalKey keyListTile = GlobalKey();
+  GlobalKey showcaseKey = GlobalKey();
 
   /// List of selected contacts
   List<AtContact?> selectedList = [];
@@ -80,6 +85,14 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
             errorOcurred = true;
           });
         }
+      }
+
+      if (true) {
+        ShowCaseWidget.of(context)!.startShowCase([
+          keyAddContact,
+          true ? keyListTile : GlobalKey(),
+          true ? showcaseKey : GlobalKey(),
+        ]);
       }
     });
 
@@ -139,10 +152,14 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                 widget.asSelectionScreen == false
             ? true
             : false,
-        trailingIcon: const Center(
-          child: Icon(
-            Icons.add,
-            color: ColorConstants.fontPrimary,
+        trailingIcon: Center(
+          child: Showcase(
+            key: keyAddContact,
+            description: "press this icon to add a contact",
+            child: const Icon(
+              Icons.add,
+              color: ColorConstants.fontPrimary,
+            ),
           ),
         ),
       ),
@@ -279,50 +296,56 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Slidable(
-              actionPane: const SlidableDrawerActionPane(),
-              actionExtentRatio: 0.25,
-              secondaryActions: <Widget>[
-                IconSlideAction(
-                  caption: TextStrings().block,
-                  color: ColorConstants.inputFieldColor,
-                  icon: Icons.block,
-                  onTap: () async {
-                    blockUnblockContact(contactsForAlphabet[index]!);
+            child: Showcase(
+              key: true ? keyListTile : GlobalKey(),
+              description: "Slide left for more options",
+              child: Slidable(
+                actionPane: const SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: TextStrings().block,
+                    color: ColorConstants.inputFieldColor,
+                    icon: Icons.block,
+                    onTap: () async {
+                      blockUnblockContact(contactsForAlphabet[index]!);
+                    },
+                  ),
+                  IconSlideAction(
+                    caption: 'Favorite',
+                    color: ColorConstants.inputFieldColor,
+                    icon: contactsForAlphabet[index]!.favourite!
+                        ? Icons.favorite
+                        : Icons.favorite_outline,
+                    onTap: () async {
+                      markUnmarkFavoriteContact(contactsForAlphabet[index]!);
+                      true ? Navigator.pop(context) : null;
+                    },
+                  ),
+                  IconSlideAction(
+                    caption: TextStrings().delete,
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () async {
+                      deleteContact(contactsForAlphabet[index]!);
+                    },
+                  ),
+                ],
+                child: ContactListTile(
+                  showcaseKey: showcaseKey,
+                  key: UniqueKey(),
+                  contactService: _contactService,
+                  asSelectionTile: widget.asSelectionScreen,
+                  asSingleSelectionTile: widget.asSingleSelectionScreen,
+                  contact: contactsForAlphabet[index],
+                  selectedList: (s) {
+                    selectedList = s!;
+                    if (widget.selectedList != null) {
+                      widget.selectedList!(selectedList);
+                    }
                   },
+                  onTrailingPressed: widget.onSendIconPressed,
                 ),
-                IconSlideAction(
-                  caption: 'Favorite',
-                  color: ColorConstants.inputFieldColor,
-                  icon: contactsForAlphabet[index]!.favourite!
-                      ? Icons.favorite
-                      : Icons.favorite_outline,
-                  onTap: () async {
-                    markUnmarkFavoriteContact(contactsForAlphabet[index]!);
-                  },
-                ),
-                IconSlideAction(
-                  caption: TextStrings().delete,
-                  color: Colors.red,
-                  icon: Icons.delete,
-                  onTap: () async {
-                    deleteContact(contactsForAlphabet[index]!);
-                  },
-                ),
-              ],
-              child: CustomListTile(
-                key: UniqueKey(),
-                contactService: _contactService,
-                asSelectionTile: widget.asSelectionScreen,
-                asSingleSelectionTile: widget.asSingleSelectionScreen,
-                contact: contactsForAlphabet[index],
-                selectedList: (s) {
-                  selectedList = s!;
-                  if (widget.selectedList != null) {
-                    widget.selectedList!(selectedList);
-                  }
-                },
-                onTrailingPressed: widget.onSendIconPressed,
               ),
             ),
           );

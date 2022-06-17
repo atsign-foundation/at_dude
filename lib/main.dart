@@ -13,6 +13,7 @@ import 'package:at_onboarding_flutter/widgets/custom_reset_button.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import 'controller/controller.dart';
 import 'dude_theme.dart';
@@ -45,23 +46,22 @@ Future<void> main() async {
   }
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: DudeController()),
-        ChangeNotifierProvider.value(value: ContactsController()),
-        ChangeNotifierProvider.value(value: AuthenticationController()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: const MyApp(),
-        theme: DudeTheme.light(),
-        routes: {
-          SendDudeScreen.routeName: (context) => const SendDudeScreen(),
-          HistoryScreen.routeName: (context) => const HistoryScreen(),
-          ProfileScreen.routeName: (context) => const ProfileScreen(),
-        },
-        navigatorKey: NavigationService.navKey,
-      ),
-    ),
+        providers: [
+          ChangeNotifierProvider.value(value: DudeController()),
+          ChangeNotifierProvider.value(value: ContactsController()),
+          ChangeNotifierProvider.value(value: AuthenticationController()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const MyApp(),
+          theme: DudeTheme.light(),
+          routes: {
+            SendDudeScreen.routeName: (context) => const SendDudeScreen(),
+            HistoryScreen.routeName: (context) => const HistoryScreen(),
+            ProfileScreen.routeName: (context) => const ProfileScreen(),
+          },
+          navigatorKey: NavigationService.navKey,
+        )),
   );
 }
 
@@ -123,7 +123,8 @@ class _MyAppState extends State<MyApp> {
         onError: (error) {
           _logger.severe('Onboarding throws $error error');
         },
-        nextScreen: const SendDudeScreen(),
+        nextScreen: ShowCaseWidget(
+            builder: Builder(builder: ((context) => const SendDudeScreen()))),
       );
     }
   }

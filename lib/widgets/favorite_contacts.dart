@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
 // import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
 
@@ -14,8 +15,12 @@ import 'widgets.dart';
 class FavoriteContacts extends StatefulWidget {
   final DudeModel dude;
   final Function updateIsLoading;
+  final GlobalKey favoriteContactKey;
   const FavoriteContacts(
-      {required this.dude, required this.updateIsLoading, Key? key})
+      {required this.dude,
+      required this.updateIsLoading,
+      required this.favoriteContactKey,
+      Key? key})
       : super(key: key);
 
   @override
@@ -98,7 +103,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                             onTap: () {
                               if (widget.dude.dude.isEmpty) {
                                 SnackBars.notificationSnackBar(
-                                    content: 'No duuude to send',
+                                    content: 'Create dude first',
                                     context: context);
                               } else {
                                 _handleSendDudeToContact(
@@ -108,15 +113,22 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                     context: context);
                               }
                             },
-                            child: CircularContacts(
-                              size: 50,
-                              isCrossIcon: true,
-                              contact:
-                                  contactsController.favoriteContacts[index],
-                              onCrossPressed: () async {
-                                await contactsController.markUnmarkFavorites(
-                                    contactsController.favoriteContacts[index]);
-                              },
+                            child: Showcase(
+                              key: true
+                                  ? widget.favoriteContactKey
+                                  : GlobalKey(),
+                              description: 'Press to send dude to this contact',
+                              child: CircularContacts(
+                                size: 50,
+                                isCrossIcon: true,
+                                contact:
+                                    contactsController.favoriteContacts[index],
+                                onCrossPressed: () async {
+                                  await contactsController.markUnmarkFavorites(
+                                      contactsController
+                                          .favoriteContacts[index]);
+                                },
+                              ),
                             ),
                           );
                         }

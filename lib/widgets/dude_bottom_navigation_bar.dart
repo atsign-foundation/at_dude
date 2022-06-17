@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:badges/badges.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
@@ -20,7 +21,10 @@ class DudeBottomNavigationBar extends StatefulWidget {
 class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   void _handleOnTap(int currentIndex) {
     if (currentIndex == 0) {
-      Navigator.of(context).popAndPushNamed(SendDudeScreen.routeName);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: ((context) => ShowCaseWidget(
+              builder:
+                  Builder(builder: (context) => const SendDudeScreen())))));
     } else {
       Navigator.of(context).popAndPushNamed(HistoryScreen.routeName);
     }
@@ -42,8 +46,8 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
           icon: Consumer<DudeController>(
             builder: ((context, dudeController, child) {
               return Badge(
-                // gradient: dudeController.dudeCount > 0 ? null : ColorGradi,
                 elevation: dudeController.dudeCount > 0 ? 2 : 0,
+                showBadge: dudeController.dudeCount > 0 ? true : false,
                 badgeColor: Theme.of(context).bottomAppBarColor,
                 badgeContent: dudeController.dudeCount > 0
                     ? Text(
