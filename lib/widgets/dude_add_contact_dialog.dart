@@ -93,6 +93,7 @@ class _DudeAddContactDialogState extends State<DudeAddContactDialog> {
                 await context.read<ContactsController>().addContacts(
                     atsignController.value.text, nicknameController.value.text);
                 updateIsLoading(false);
+
                 Navigator.of(context).pop();
               },
               child: const Text('Add to Contacts'),

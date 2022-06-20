@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
-// import 'package:at_contacts_flutter/widgets/add_contacts_dialog.dart';
-// import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
 
 import '../models/models.dart';
-import '../screens/screens.dart';
 import '../services/services.dart';
 import 'widgets.dart';
 
@@ -30,16 +27,34 @@ class FavoriteContacts extends StatefulWidget {
 class _FavoriteContactsState extends State<FavoriteContacts> {
   @override
   void initState() {
+    super.initState();
     Future.delayed(Duration.zero, () async {
       await context.read<ContactsController>().getFavoriteContacts();
       await DudeService.getInstance().getCurrentAtsignProfileImage();
+      sendDudeToFavoriteStatus =
+          await SharedPreferencesService.getSendDudeToFavoriteStatus();
       if (mounted) {
         setState(() {});
       }
     });
-
-    super.initState();
   }
+
+  @override
+  void didChangeDependencies() {
+    print('update called');
+    // Future.delayed(Duration.zero, () async {
+    //   await context.read<ContactsController>().getFavoriteContacts();
+    //   await DudeService.getInstance().getCurrentAtsignProfileImage();
+    //   sendDudeToFavoriteStatus =
+    //       await SharedPreferencesService.getSendDudeToFavoriteStatus();
+    //   if (mounted) {
+    //     setState(() {});
+    //   }
+    // });
+    super.didChangeDependencies();
+  }
+
+  bool sendDudeToFavoriteStatus = false;
 
   /// Sends dude to selected contact
   Future<void> _handleSendDudeToContact(
@@ -77,15 +92,6 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                 'Favorite',
                 style: Theme.of(context).textTheme.headline2,
               ),
-              // IconButton(
-              //     onPressed: () => Navigator.push(
-              //           context,
-              //           MaterialPageRoute<void>(
-              //               builder: (BuildContext context) =>
-              //                   const DudeContactsScreen(),
-              //               fullscreenDialog: true),
-              //         ),
-              //     icon: const Icon(Icons.favorite))
             ],
           ),
           Consumer<ContactsController>(
@@ -114,7 +120,11 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                               }
                             },
                             child: Showcase(
-                              key: true
+                              key: context
+                                          .read<ContactsController>()
+                                          .favoriteContacts
+                                          .length ==
+                                      1
                                   ? widget.favoriteContactKey
                                   : GlobalKey(),
                               description: 'Press to send dude to this contact',

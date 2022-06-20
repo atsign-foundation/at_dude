@@ -1,8 +1,5 @@
 // import 'package:flutter_spotlight/flutter_spotlight.dart';
 
-import 'package:is_first_run/is_first_run.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../controller/controller.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +11,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../models/dude_model.dart';
 import '../services/services.dart';
+
 import '../utils/utils.dart';
 import '../widgets/atsign_avatar.dart';
 import '../widgets/widgets.dart';
@@ -39,22 +37,32 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
   GlobalKey keyContactButton = GlobalKey();
   GlobalKey keyFavoriteContact = GlobalKey();
-  late final prefs;
+  List<GlobalKey<State<StatefulWidget>>> showcaseList = [];
 
   @override
   void initState() {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // prefs = await SharedPreferences.getInstance();
+      final contactScreenStatus =
+          await SharedPreferencesService.getContactScreenNavigationStatus();
+      final createDudeStatus =
+          await SharedPreferencesService.getCreateDudeStatus();
 
-      if (true) {
-        ShowCaseWidget.of(context)!.startShowCase([
-          keyContactButton,
-          keyFingerPrintButton,
-          true ? keyFavoriteContact : GlobalKey()
-        ]);
-      }
+      contactScreenStatus ? showcaseList.add(keyContactButton) : null;
+      if (createDudeStatus) showcaseList.add(keyFingerPrintButton);
+
+      showcaseList.isNotEmpty
+          ? ShowCaseWidget.of(context)!.startShowCase(showcaseList)
+          : null;
+
+      showcaseList.contains(keyFingerPrintButton)
+          ? await SharedPreferencesService.setCreateDudeStatus()
+          : null;
+
+      showcaseList.contains(keyContactButton)
+          ? await SharedPreferencesService.setContactScreenNavigationStatus()
+          : null;
     });
 
     super.initState();
@@ -64,6 +72,27 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   void dispose() {
     _stopWatchTimer.dispose().then((value) => null);
     super.dispose();
+  }
+
+  Future<void> showFavoriteContactTutorial() async {
+    if (context.read<ContactsController>().favoriteContacts.length == 1) {
+      showcaseList.clear();
+
+      final sendDudeFavoriteContactStatus =
+          await SharedPreferencesService.getSendDudeToFavoriteStatus();
+
+      sendDudeFavoriteContactStatus
+          ? showcaseList.add(keyFavoriteContact)
+          : null;
+
+      showcaseList.isNotEmpty
+          ? ShowCaseWidget.of(context)!.startShowCase(showcaseList)
+          : null;
+
+      showcaseList.contains(keyFavoriteContact)
+          ? await SharedPreferencesService.setSendDudeToFavoriteStatus()
+          : null;
+    }
   }
 
   /// Update the isLoading property to it's appropriate state.
@@ -173,7 +202,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                         top: 8, bottom: 8, right: 8, left: 44),
                     child: GestureDetector(
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           startTime = DateTime.now();
 
                           _stopWatchTimer.onExecute.add(StopWatchExecute.start);
@@ -240,6 +269,8 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                                           builder: Builder(
                                               builder: ((context) =>
                                                   DudeContactsScreen(
+                                                    showFavoriteContactTutorial:
+                                                        showFavoriteContactTutorial,
                                                     onSendIconPressed: (String
                                                             atsign) =>
                                                         _handleSendDudeToContact(
@@ -268,7 +299,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
             ),
             const SizedBox(
               height: kBottomNavigationBarHeight,
-            )
+            ),
           ],
         ),
         isLoading ? const LoadingIndicator() : const SizedBox()

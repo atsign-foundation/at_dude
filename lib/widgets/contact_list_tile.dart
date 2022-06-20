@@ -15,7 +15,10 @@ import 'package:at_contacts_flutter/widgets/custom_circle_avatar.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:at_common_flutter/services/size_config.dart';
+import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
+
+import '../controller/controller.dart';
 
 class ContactListTile extends StatefulWidget {
   final Function? onTap;
@@ -144,7 +147,9 @@ class _ContactListTileState extends State<ContactListTile> {
                 ),
                 child: contactImage),
             trailing: Showcase(
-              key: true ? widget.showcaseKey : GlobalKey(),
+              key: context.read<ContactsController>().contacts.length == 1
+                  ? widget.showcaseKey
+                  : GlobalKey(),
               description: 'Press this Icon to send a dude to this contact',
               child: IconButton(
                 onPressed: widget.asSelectionTile
