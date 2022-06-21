@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
+import '../utils/utils.dart';
 import '../widgets/atsign_avatar.dart';
 import '../widgets/widgets.dart';
 
@@ -26,7 +27,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
-        title: const Text('History', style: TextStyle(color: Colors.black)),
+        title: const Text(Texts.history, style: TextStyle(color: Colors.black)),
         actions: const [AtsignAvatar()],
         automaticallyImplyLeading: widget.canPop,
       ),

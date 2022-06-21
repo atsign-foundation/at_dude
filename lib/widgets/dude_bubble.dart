@@ -21,15 +21,15 @@ class DudeBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     String timeCategory(Duration duration) {
       if (duration < const Duration(seconds: 1)) {
-        return 'less than 1 second';
+        return 'less than 1 second ';
       } else if (duration >= const Duration(seconds: 1) &&
           duration < const Duration(seconds: 60)) {
-        return '${duration.inSeconds} seconds';
+        return '${duration.inSeconds} seconds ';
       } else if (duration >= const Duration(minutes: 1) &&
           duration < const Duration(minutes: 60)) {
-        return '${duration.inMinutes} minutes';
+        return '${duration.inMinutes} minute';
       } else {
-        return '${duration.inHours} hours';
+        return '${duration.inHours} hour ';
       }
     }
 
@@ -61,9 +61,8 @@ class DudeBubble extends StatelessWidget {
                 children: [
                   Text(
                     dude.sender.replaceFirst('@', '') +
-                        " took " +
+                        " sent you a " +
                         timeCategory(dude.duration) +
-                        " to say " +
                         dude.dude,
                   )
                 ],

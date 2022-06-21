@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
+import '../utils/utils.dart';
 
 class ContactListTile extends StatefulWidget {
   final Function? onTap;
@@ -150,7 +151,7 @@ class _ContactListTileState extends State<ContactListTile> {
               key: context.read<ContactsController>().contacts.length == 1
                   ? widget.showcaseKey
                   : GlobalKey(),
-              description: 'Press this Icon to send a dude to this contact',
+              description: Texts.sendDudeContactDesc,
               child: IconButton(
                 onPressed: widget.asSelectionTile
                     ? null

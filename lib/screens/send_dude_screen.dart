@@ -110,7 +110,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   }) async {
     if (dude.dude.isEmpty) {
       SnackBars.notificationSnackBar(
-          content: 'No duuude to send', context: context);
+          content: Texts.createDudeFirst, context: context);
     } else {
       SnackBars.notificationSnackBar(
           content: 'Sending Dude... please wait.', context: context);
@@ -120,11 +120,11 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
         (value) {
           if (value) {
             SnackBars.notificationSnackBar(
-                content: 'Dude Successfully Sent', context: context);
+                content: Texts.dudeSuccessfullySent, context: context);
             Navigator.of(context).pop();
           } else {
             SnackBars.errorSnackBar(
-                content: 'Something went wrong, please try again',
+                content: 'Something went wrong, please try again.',
                 context: context);
           }
         },
@@ -146,7 +146,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
         foregroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         title: const Text(
-          'Send Dude',
+          Texts.sendDude,
           style: TextStyle(color: Colors.black),
         ),
         actions: const [AtsignAvatar()],

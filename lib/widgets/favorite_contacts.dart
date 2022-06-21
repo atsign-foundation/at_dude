@@ -7,6 +7,7 @@ import '../controller/controller.dart';
 
 import '../models/models.dart';
 import '../services/services.dart';
+import '../utils/utils.dart';
 import 'widgets.dart';
 
 class FavoriteContacts extends StatefulWidget {
@@ -89,7 +90,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           Row(
             children: [
               Text(
-                'Favorite',
+                Texts.favoritesContactWidgetTitle,
                 style: Theme.of(context).textTheme.headline2,
               ),
             ],
@@ -97,7 +98,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           Consumer<ContactsController>(
             builder: (context, contactsController, child) => Flexible(
               child: contactsController.favoriteContacts.isEmpty
-                  ? const Text('No Contacts Available')
+                  ? const Text(Texts.noContactsAvailable)
                   : ListView.builder(
                       itemCount: contactsController.favoriteContacts.length,
                       scrollDirection: Axis.horizontal,
@@ -109,7 +110,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                             onTap: () {
                               if (widget.dude.dude.isEmpty) {
                                 SnackBars.notificationSnackBar(
-                                    content: 'Create dude first',
+                                    content: Texts.createDudeFirst,
                                     context: context);
                               } else {
                                 _handleSendDudeToContact(
@@ -127,7 +128,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                       1
                                   ? widget.favoriteContactKey
                                   : GlobalKey(),
-                              description: 'Press to send dude to this contact',
+                              description: Texts.sendDudeContactDesc,
                               child: CircularContacts(
                                 size: 50,
                                 isCrossIcon: true,

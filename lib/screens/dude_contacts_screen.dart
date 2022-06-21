@@ -5,6 +5,7 @@ import 'dart:async';
 
 import '../controller/controller.dart';
 import '../services/shared_preferences_service.dart';
+import '../utils/utils.dart';
 import '../widgets/widgets.dart';
 
 import 'package:at_contact/at_contact.dart';
@@ -190,7 +191,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
         trailingIcon: Center(
           child: Showcase(
             key: addContactKey,
-            description: "press this icon to add a contact",
+            description: Texts.addContactIconDesc,
             child: const Icon(
               Icons.add,
               color: ColorConstants.fontPrimary,
@@ -232,8 +233,8 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                         );
                       } else {
                         if ((snapshot.data == null || snapshot.data!.isEmpty)) {
-                          return Center(
-                            child: Text(TextStrings().noContacts),
+                          return const Center(
+                            child: Text(Texts.noContactsAvailable),
                           );
                         } else {
                           var _filteredList = <BaseContact?>[];
@@ -337,7 +338,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                 key: context.read<ContactsController>().contacts.length == 1
                     ? listTileKey
                     : GlobalKey(),
-                description: "Slide left for more options",
+                description: Texts.slidableDesc,
                 child: Slidable(
                   actionPane: const SlidableDrawerActionPane(),
                   actionExtentRatio: 0.25,
