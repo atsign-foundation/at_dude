@@ -121,7 +121,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
           if (value) {
             SnackBars.notificationSnackBar(
                 content: Texts.dudeSuccessfullySent, context: context);
-            Navigator.of(context).pop();
           } else {
             SnackBars.errorSnackBar(
                 content: 'Something went wrong, please try again.',
