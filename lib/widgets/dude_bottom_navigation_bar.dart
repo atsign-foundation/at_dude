@@ -21,12 +21,18 @@ class DudeBottomNavigationBar extends StatefulWidget {
 class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   void _handleOnTap(int currentIndex) {
     if (currentIndex == 0) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: ((context) => ShowCaseWidget(
-              builder:
-                  Builder(builder: (context) => const SendDudeScreen())))));
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: ((context) => ShowCaseWidget(
+                  builder:
+                      Builder(builder: (context) => const SendDudeScreen()),
+                )),
+          ),
+          (Route route) => false);
     } else {
-      Navigator.of(context).popAndPushNamed(HistoryScreen.routeName);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (((context) => const HistoryScreen()))),
+          ((route) => false));
     }
   }
 
