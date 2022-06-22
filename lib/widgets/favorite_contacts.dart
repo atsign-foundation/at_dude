@@ -32,8 +32,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
     Future.delayed(Duration.zero, () async {
       await context.read<ContactsController>().getFavoriteContacts();
       await DudeService.getInstance().getCurrentAtsignProfileImage();
-      sendDudeToFavoriteStatus =
-          await SharedPreferencesService.getSendDudeToFavoriteStatus();
+
       if (mounted) {
         setState(() {});
       }
@@ -54,8 +53,6 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
     // });
     super.didChangeDependencies();
   }
-
-  bool sendDudeToFavoriteStatus = false;
 
   /// Sends dude to selected contact
   Future<void> _handleSendDudeToContact(

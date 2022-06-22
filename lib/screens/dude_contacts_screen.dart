@@ -360,8 +360,13 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                       onTap: () async {
                         await markUnmarkFavoriteContact(
                             contactsForAlphabet[index]!);
+                        final bool sendDudeFavoriteContactStatus =
+                            await SharedPreferencesService
+                                .getSendDudeToFavoriteStatus();
+                        if (sendDudeFavoriteContactStatus) {
+                          Navigator.pop(context);
+                        }
                         await widget.showFavoriteContactTutorial();
-                        Navigator.pop(context);
                       },
                     ),
                     IconSlideAction(

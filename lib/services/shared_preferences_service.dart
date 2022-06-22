@@ -23,7 +23,7 @@ class SharedPreferencesService {
   static Future<bool> getCreateDudeStatus() async {
     final storage = await SharedPreferences.getInstance();
     var result = storage.getBool('create_dude_status');
-    log("create dude status: $result");
+    log("create dude status: ${result ?? true}");
     return result ?? true;
   }
 
@@ -31,7 +31,8 @@ class SharedPreferencesService {
   static Future<void> setContactScreenNavigationStatus() async {
     final storage = await SharedPreferences.getInstance();
 
-    await storage.setBool('navigate_to_contact_status', false);
+    final result = await storage.setBool('navigate_to_contact_status', false);
+    log('set contact button status: $result');
   }
 
   static Future<bool> getContactScreenNavigationStatus() async {
@@ -41,17 +42,22 @@ class SharedPreferencesService {
 
   static Future<void> setSendDudeToFavoriteStatus() async {
     final storage = await SharedPreferences.getInstance();
-    await storage.setBool('send_dude_to_favorite_status', false);
+    final bool result =
+        await storage.setBool('send_dude_to_favorite_status', false);
+    log("favorite status set : $result");
   }
 
   static Future<bool> getSendDudeToFavoriteStatus() async {
     final storage = await SharedPreferences.getInstance();
-    return storage.getBool('send_dude_to_favorite_status') ?? true;
+    final bool result = storage.getBool('send_dude_to_favorite_status') ?? true;
+    log("favorite status: $result");
+    return result;
   }
 
   static Future<void> setContactStatus() async {
     final storage = await SharedPreferences.getInstance();
-    await storage.setBool('add_contact_status', false);
+    final result = await storage.setBool('add_contact_status', false);
+    log('set add contact status: $result');
   }
 
   static Future<bool> getAddContactStatus() async {
@@ -61,7 +67,8 @@ class SharedPreferencesService {
 
   static Future<void> setListTileStatus() async {
     final storage = await SharedPreferences.getInstance();
-    await storage.setBool('list_tile_status', false);
+    final result = await storage.setBool('list_tile_status', false);
+    log('set list tile status: $result');
   }
 
   static Future<bool> getListTileStatus() async {

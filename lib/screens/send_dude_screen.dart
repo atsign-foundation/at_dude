@@ -44,25 +44,22 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final contactScreenStatus =
-          await SharedPreferencesService.getContactScreenNavigationStatus();
       final createDudeStatus =
           await SharedPreferencesService.getCreateDudeStatus();
-
-      contactScreenStatus ? showcaseList.add(keyContactButton) : null;
       if (createDudeStatus) showcaseList.add(keyFingerPrintButton);
 
-      showcaseList.isNotEmpty
-          ? ShowCaseWidget.of(context)!.startShowCase(showcaseList)
-          : null;
+      final contactScreenStatus =
+          await SharedPreferencesService.getContactScreenNavigationStatus();
+      if (contactScreenStatus) showcaseList.add(keyContactButton);
 
-      showcaseList.contains(keyFingerPrintButton)
-          ? await SharedPreferencesService.setCreateDudeStatus()
-          : null;
+      if (showcaseList.isNotEmpty)
+        ShowCaseWidget.of(context)!.startShowCase(showcaseList);
 
-      showcaseList.contains(keyContactButton)
-          ? await SharedPreferencesService.setContactScreenNavigationStatus()
-          : null;
+      if (showcaseList.contains(keyFingerPrintButton))
+        await SharedPreferencesService.setCreateDudeStatus();
+
+      if (showcaseList.contains(keyContactButton))
+        await SharedPreferencesService.setContactScreenNavigationStatus();
     });
 
     super.initState();
@@ -81,17 +78,15 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       final sendDudeFavoriteContactStatus =
           await SharedPreferencesService.getSendDudeToFavoriteStatus();
 
-      sendDudeFavoriteContactStatus
-          ? showcaseList.add(keyFavoriteContact)
-          : null;
+      if (sendDudeFavoriteContactStatus) showcaseList.add(keyFavoriteContact);
 
-      showcaseList.isNotEmpty
-          ? ShowCaseWidget.of(context)!.startShowCase(showcaseList)
-          : null;
+      if (showcaseList.isNotEmpty) {
+        ShowCaseWidget.of(context)!.startShowCase(showcaseList);
+      }
 
-      showcaseList.contains(keyFavoriteContact)
-          ? await SharedPreferencesService.setSendDudeToFavoriteStatus()
-          : null;
+      if (showcaseList.contains(keyFavoriteContact)) {
+        await SharedPreferencesService.setSendDudeToFavoriteStatus();
+      }
     }
   }
 

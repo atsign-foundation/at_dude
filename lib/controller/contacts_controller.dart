@@ -58,7 +58,7 @@ class ContactsController with ChangeNotifier {
     bool result =
         await ContactsService.getInstance().markUnmarkFavoriteContact(contact);
     result
-        ? getFavoriteContacts()
+        ? await getFavoriteContacts()
         : SnackBars.errorSnackBar(
             content: 'Error adding atsign, atsign may no exist',
             context: NavigationService.navKey.currentContext!);

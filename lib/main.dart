@@ -38,12 +38,13 @@ Future<void> main() async {
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
   AtSignLogger.root_level = 'FINER';
-
+  await AuthenticationService.getInstance().checkFirstRun();
   try {
     await AtEnv.load();
   } catch (e) {
     _logger.finer('Environment failed to load from .env: ', e);
   }
+
   runApp(
     MultiProvider(
         providers: [
