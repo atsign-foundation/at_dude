@@ -1,8 +1,4 @@
-<img src="https://atsign.dev/assets/img/@dev.png?sanitize=true">
-
-### Now for a little internet optimism
-
-Open with intent - we welcome contributions - we want pull requests and to hear about issues.
+<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
 
 ### What is at_dude?
 
@@ -17,6 +13,4 @@ read more [here](https://atsign.dev/docs/overview/contributing-open-source-proj/
 
 ## Maintainers
 
-Curtly C.
-<p>
-@CurtlyCritchlow
+Curtly C. ([@CurtlyCritchlow](https://github.com/curtlyCritchlow))
