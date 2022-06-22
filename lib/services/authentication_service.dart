@@ -11,6 +11,7 @@ import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/screens.dart';
 
@@ -35,6 +36,17 @@ class AuthenticationService {
   AtClientService? atClientService;
   var atClientManager = AtClientManager.getInstance();
   static var atContactService = ContactService();
+
+  /// This function will clear the keychain if the app installed newly again.
+  Future<void> checkFirstRun() async {
+    _logger.finer('Checking for keychain entries to clear');
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    if (_prefs.getBool('first_run') ?? true) {
+      _logger.finer('First run detected. Clearing keychain');
+      await KeyChainManager.getInstance().clearKeychainEntries();
+      await _prefs.setBool('first_run', false);
+    }
+  }
 
   Future<AtClientPreference> loadAtClientPreference() async {
     var dir = await getApplicationSupportDirectory();

@@ -10,3 +10,4 @@ export 'circular_contacts.dart';
 export 'dude_add_contact_dialog.dart';
 export 'reset_app_button.dart';
 export 'app_background.dart';
+export 'contact_list_tile.dart';

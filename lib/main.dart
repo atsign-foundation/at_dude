@@ -9,10 +9,11 @@ import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client/src/listener/sync_progress_listener.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
-import 'package:at_onboarding_flutter/widgets/custom_reset_button.dart';
+
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import 'controller/controller.dart';
 import 'dude_theme.dart';
@@ -37,31 +38,31 @@ Future<void> main() async {
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
   AtSignLogger.root_level = 'FINER';
-
+  await AuthenticationService.getInstance().checkFirstRun();
   try {
     await AtEnv.load();
   } catch (e) {
     _logger.finer('Environment failed to load from .env: ', e);
   }
+
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: DudeController()),
-        ChangeNotifierProvider.value(value: ContactsController()),
-        ChangeNotifierProvider.value(value: AuthenticationController()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: const MyApp(),
-        theme: DudeTheme.light(),
-        routes: {
-          SendDudeScreen.routeName: (context) => const SendDudeScreen(),
-          HistoryScreen.routeName: (context) => const HistoryScreen(),
-          ProfileScreen.routeName: (context) => const ProfileScreen(),
-        },
-        navigatorKey: NavigationService.navKey,
-      ),
-    ),
+        providers: [
+          ChangeNotifierProvider.value(value: DudeController()),
+          ChangeNotifierProvider.value(value: ContactsController()),
+          ChangeNotifierProvider.value(value: AuthenticationController()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const MyApp(),
+          theme: DudeTheme.light(),
+          routes: {
+            SendDudeScreen.routeName: (context) => const SendDudeScreen(),
+            HistoryScreen.routeName: (context) => const HistoryScreen(),
+            ProfileScreen.routeName: (context) => const ProfileScreen(),
+          },
+          navigatorKey: NavigationService.navKey,
+        )),
   );
 }
 
@@ -123,7 +124,8 @@ class _MyAppState extends State<MyApp> {
         onError: (error) {
           _logger.severe('Onboarding throws $error error');
         },
-        nextScreen: const SendDudeScreen(),
+        nextScreen: ShowCaseWidget(
+            builder: Builder(builder: ((context) => const SendDudeScreen()))),
       );
     }
   }

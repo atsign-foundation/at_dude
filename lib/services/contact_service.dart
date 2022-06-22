@@ -83,9 +83,9 @@ class ContactsService {
   /// Add/remove contact as favorite.
   Future<bool> markUnmarkFavoriteContact(AtContact contact) async {
     try {
-      bool isDeleted = await atContactService.markFavContact(contact);
+      bool isMarked = await atContactService.markFavContact(contact);
 
-      return isDeleted;
+      return isMarked;
     } on AtClientException catch (atClientExcep) {
       _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
       return false;

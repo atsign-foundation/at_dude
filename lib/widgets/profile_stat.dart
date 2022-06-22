@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ProfileStat extends StatelessWidget {
   final String stat;
+
   const ProfileStat({required this.stat, Key? key}) : super(key: key);
 
   @override

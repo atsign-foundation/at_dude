@@ -73,20 +73,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    ProfileStat(stat: '${profileModel.dudesSent} Dudes sent')
-                        .asGlass(),
                     ProfileStat(
-                            stat: profileModel.dudeHours >
-                                    const Duration(minutes: 1)
-                                ? '${profileModel.dudeHours.inMinutes} Minutes duding'
-                                : '${profileModel.dudeHours.inSeconds} Seconds duding')
-                        .asGlass(),
+                      stat: profileModel.dudesSent == 0
+                          ? '- Dudes Sent'
+                          : '${profileModel.dudesSent} Dudes sent',
+                    ).asGlass(),
                     ProfileStat(
-                            stat: profileModel.dudeHours >
-                                    const Duration(minutes: 1)
-                                ? '${profileModel.longestDude.inMinutes} Minute longest dude'
-                                : '${profileModel.longestDude.inSeconds} Seconds longest dude')
-                        .asGlass(),
+                      stat: profileModel.dudeHours.inMilliseconds == 0
+                          ? '- Seconds Duding'
+                          : profileModel.dudeHours >= const Duration(minutes: 1)
+                              ? '${profileModel.dudeHours.inMinutes} Minutes duding'
+                              : '${profileModel.dudeHours.inSeconds} Seconds duding',
+                    ).asGlass(),
+                    ProfileStat(
+                      stat: profileModel.longestDude.inMilliseconds == 0
+                          ? '- Seconds Longest dude'
+                          : profileModel.longestDude >=
+                                  const Duration(minutes: 1)
+                              ? '${profileModel.longestDude.inMinutes} Minute longest dude'
+                              : profileModel.longestDude >=
+                                      const Duration(seconds: 1)
+                                  ? '${profileModel.longestDude.inSeconds} Seconds longest dude'
+                                  : "longest dude less than 1 second",
+                    ).asGlass(),
                   ],
                 ),
               ),
