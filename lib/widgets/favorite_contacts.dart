@@ -41,16 +41,6 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
 
   @override
   void didChangeDependencies() {
-    print('update called');
-    // Future.delayed(Duration.zero, () async {
-    //   await context.read<ContactsController>().getFavoriteContacts();
-    //   await DudeService.getInstance().getCurrentAtsignProfileImage();
-    //   sendDudeToFavoriteStatus =
-    //       await SharedPreferencesService.getSendDudeToFavoriteStatus();
-    //   if (mounted) {
-    //     setState(() {});
-    //   }
-    // });
     super.didChangeDependencies();
   }
 

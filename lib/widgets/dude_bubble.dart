@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
 import '../models/dude_model.dart';
-import '../services/dude_service.dart';
 
 class DudeBubble extends StatelessWidget {
   DudeBubble({

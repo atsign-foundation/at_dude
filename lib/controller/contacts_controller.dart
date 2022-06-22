@@ -35,7 +35,7 @@ class ContactsController with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Get favoritecontacts for the current atsign.
+  /// Get favorite contacts for the current atsign.
   Future<void> getFavoriteContacts() async {
     await getContacts();
     _favoriteContacts =
@@ -54,6 +54,7 @@ class ContactsController with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Mark AtContact favourite property as true or false
   Future<void> markUnmarkFavorites(AtContact contact) async {
     bool result =
         await ContactsService.getInstance().markUnmarkFavoriteContact(contact);

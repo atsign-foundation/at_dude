@@ -9,7 +9,7 @@ import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 import 'package:at_client/src/listener/sync_progress_listener.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
-import 'package:at_onboarding_flutter/widgets/custom_reset_button.dart';
+
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';

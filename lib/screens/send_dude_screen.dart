@@ -52,14 +52,17 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
           await SharedPreferencesService.getContactScreenNavigationStatus();
       if (contactScreenStatus) showcaseList.add(keyContactButton);
 
-      if (showcaseList.isNotEmpty)
+      if (showcaseList.isNotEmpty) {
         ShowCaseWidget.of(context)!.startShowCase(showcaseList);
+      }
 
-      if (showcaseList.contains(keyFingerPrintButton))
+      if (showcaseList.contains(keyFingerPrintButton)) {
         await SharedPreferencesService.setCreateDudeStatus();
+      }
 
-      if (showcaseList.contains(keyContactButton))
+      if (showcaseList.contains(keyContactButton)) {
         await SharedPreferencesService.setContactScreenNavigationStatus();
+      }
     });
 
     super.initState();
