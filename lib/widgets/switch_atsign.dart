@@ -92,14 +92,7 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                                   snapshot.data as AtContact),
                                         );
                                       } else if (!snapshot.hasData) {
-                                        return SizedBox(
-                                          child: const LoadingIndicator(),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context)
-                                              .size
-                                              .height,
-                                        );
+                                        return const LoadingIndicator();
                                       } else {
                                         SnackBars.errorSnackBar(
                                             content: 'Error', context: context);
