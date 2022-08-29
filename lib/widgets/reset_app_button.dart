@@ -1,11 +1,9 @@
-import 'package:at_onboarding_flutter/services/at_error_dialog.dart';
-import 'package:at_onboarding_flutter/utils/app_constants.dart';
-import 'package:at_onboarding_flutter/utils/strings.dart';
 import 'package:at_onboarding_flutter/services/sdk_service.dart';
-import 'package:at_onboarding_flutter/utils/color_constants.dart';
+import 'package:at_onboarding_flutter/utils/at_onboarding_strings.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../utils/at_error_dialog.dart';
 
 /// Custom reset button widget is to reset an atsign from keychain list,
 
@@ -59,7 +57,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                 title: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: const <Widget>[
-                    Text(Strings.resetDescription,
+                    Text(AtOnboardingStrings.resetDescription,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -75,7 +73,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                 ),
                 content: atsignsList == null
                     ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                        const Text(Strings.noAtsignToReset,
+                        const Text(AtOnboardingStrings.noAtsignToReset,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.normal,
@@ -86,7 +84,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: const Text(AppConstants.closeButton,
+                              child: const Text(AtOnboardingStrings.closeButton,
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: Color.fromARGB(255, 240, 94, 62),
@@ -139,7 +137,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                               ),
                             const Divider(thickness: 0.8),
                             if (isSelectAtsign)
-                              const Text(Strings.resetErrorText,
+                              const Text(AtOnboardingStrings.resetErrorText,
                                   style: TextStyle(
                                     color: Colors.red,
                                     fontSize: 14,
@@ -148,9 +146,9 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                             const SizedBox(
                               height: 10,
                             ),
-                            Text(Strings.resetWarningText,
+                            const Text(AtOnboardingStrings.resetWarningText,
                                 style: TextStyle(
-                                    color: ColorConstants.primary,
+                                    // color: ColorConstants.primary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14)),
                             const SizedBox(
@@ -173,7 +171,8 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                     _resetDevice(tempAtsignMap.keys.toList());
                                   }
                                 },
-                                child: const Text(AppConstants.removeButton,
+                                child: const Text(
+                                    AtOnboardingStrings.removeButton,
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Color.fromARGB(255, 240, 94, 62),
@@ -185,7 +184,8 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Text(AppConstants.cancelButton,
+                                  child: const Text(
+                                      AtOnboardingStrings.cancelButton,
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.black,

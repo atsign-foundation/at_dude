@@ -14,7 +14,7 @@ class DudeBubble extends StatelessWidget {
   }) : super(key: key);
 
   final DudeModel dude;
-  final AudioCache audioPlayer = AudioCache();
+  final AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +44,9 @@ class DudeBubble extends StatelessWidget {
               child: IconButton(
                   onPressed: () async {
                     if (dude.duration.inSeconds < 1) {
-                      await audioPlayer.play('audios/dude.wav');
+                      await audioPlayer.play(AssetSource('audios/dude.wav'));
                     } else {
-                      await audioPlayer.play('audios/dude.mp3');
+                      await audioPlayer.play(AssetSource('audios/dude.mp3'));
                     }
 
                     Provider.of<DudeController>(context, listen: false)

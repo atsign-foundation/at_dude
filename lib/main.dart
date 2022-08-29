@@ -1,17 +1,18 @@
 // 🎯 Dart imports:
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 // ignore: implementation_imports
-import 'package:at_client/src/listener/sync_progress_listener.dart';
+
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
-
+import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path_provider/path_provider.dart'
+    show getApplicationSupportDirectory;
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -20,13 +21,7 @@ import 'dude_theme.dart';
 import 'screens/profile_screen.dart';
 import 'screens/screens.dart';
 import 'services/services.dart';
-
-import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
-    show Onboarding;
-
-import 'package:path_provider/path_provider.dart'
-    show getApplicationSupportDirectory;
-
+import 'utils/utils.dart';
 import 'widgets/widgets.dart';
 
 final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
@@ -102,31 +97,44 @@ class _MyAppState extends State<MyApp> {
   /// Signs user into the @platform.
   void _handleOnboard(BuildContext context) async {
     if (mounted) {
-      Onboarding(
+      final result = await AtOnboarding.onboard(
         context: context,
-        atClientPreference: await futurePreference,
-        domain: AtEnv.rootDomain,
-        rootEnvironment: AtEnv.rootEnvironment,
-        appAPIKey: AtEnv.appApiKey,
-        onboard: (value, atsign) async {
-          dudeService
-            ..atClientService = value[atsign]
-            ..atClient = dudeService.atClientService!.atClientManager.atClient;
-
-          _logger.finer('Successfully onboarded $atsign');
+        config: AtOnboardingConfig(
+          atClientPreference: await futurePreference,
+          domain: AtEnv.rootDomain,
+          rootEnvironment: AtEnv.rootEnvironment,
+          appAPIKey: AtEnv.appApiKey,
+        ),
+      );
+      switch (result.status) {
+        case AtOnboardingResultStatus.success:
+          _logger.finer('Successfully onboarded ${result.atsign}');
+          // dudeService..atClient = result.
           DudeService.getInstance().monitorNotifications(context);
           DudeService.getInstance()
               .atClientManager
               .syncService
               .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
-        },
-        onError: (error) {
-          _logger.severe('Onboarding throws $error error');
-        },
-        nextScreen: ShowCaseWidget(
-            builder: Builder(builder: ((context) => const SendDudeScreen()))),
-      );
+
+          await Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: ((context) => ShowCaseWidget(
+                  builder:
+                      Builder(builder: (context) => const SendDudeScreen()),
+                )),
+          ));
+
+          break;
+
+        case AtOnboardingResultStatus.error:
+          _logger.severe('Onboarding throws ${result.message} error');
+          SnackBars.errorSnackBar(
+              content: result.message ?? '', context: context);
+          break;
+
+        case AtOnboardingResultStatus.cancel:
+          break;
+      }
     }
   }
 
@@ -139,7 +147,7 @@ class _MyAppState extends State<MyApp> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('@dude'),
+        title: const Text('atDude'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -189,15 +197,5 @@ class _MyAppState extends State<MyApp> {
         ],
       ),
     );
-  }
-}
-
-class MySyncProgressListener extends SyncProgressListener {
-  @override
-  void onSyncProgressEvent(SyncProgress syncProgress) async {
-    if (syncProgress.syncStatus == SyncStatus.success) {
-      BuildContext context = NavigationService.navKey.currentContext!;
-      await context.read<DudeController>().getDudes();
-    }
   }
 }

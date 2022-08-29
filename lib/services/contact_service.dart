@@ -57,7 +57,7 @@ class ContactsService {
 
       return isAdded;
     } on AtClientException catch (atClientExcep) {
-      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      _logger.severe('❌ AtClientException : ${atClientExcep.message}');
       return false;
     } catch (e) {
       _logger.severe('❌ Exception : ${e.toString()}');
@@ -72,7 +72,7 @@ class ContactsService {
 
       return isDeleted;
     } on AtClientException catch (atClientExcep) {
-      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      _logger.severe('❌ AtClientException : ${atClientExcep.message}');
       return false;
     } catch (e) {
       _logger.severe('❌ Exception : ${e.toString()}');
@@ -87,7 +87,7 @@ class ContactsService {
 
       return isMarked;
     } on AtClientException catch (atClientExcep) {
-      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      _logger.severe('❌ AtClientException : ${atClientExcep.message}');
       return false;
     } catch (e) {
       _logger.severe('❌ Exception : ${e.toString()}');
