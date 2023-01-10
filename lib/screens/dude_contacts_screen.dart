@@ -91,12 +91,13 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
           });
         }
       }
+
       final addContactStatus =
           await SharedPreferencesService.getAddContactStatus();
       addContactStatus ? showcaseList.add(addContactKey) : null;
 
       showcaseList.isNotEmpty
-          ? ShowCaseWidget.of(context)!.startShowCase(showcaseList)
+          ? ShowCaseWidget.of(context).startShowCase(showcaseList)
           : null;
 
       showcaseList.contains(addContactKey)
@@ -120,7 +121,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
       sendDudeContactStatus ? showcaseList.add(sendDudeContactKey) : null;
 
       showcaseList.isNotEmpty
-          ? ShowCaseWidget.of(context)!.startShowCase(showcaseList)
+          ? ShowCaseWidget.of(context).startShowCase(showcaseList)
           : null;
 
       showcaseList.contains(listTileKey)

@@ -53,7 +53,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       if (contactScreenStatus) showcaseList.add(keyContactButton);
 
       if (showcaseList.isNotEmpty) {
-        ShowCaseWidget.of(context)!.startShowCase(showcaseList);
+        ShowCaseWidget.of(context).startShowCase(showcaseList);
       }
 
       if (showcaseList.contains(keyFingerPrintButton)) {
@@ -84,7 +84,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       if (sendDudeFavoriteContactStatus) showcaseList.add(keyFavoriteContact);
 
       if (showcaseList.isNotEmpty) {
-        ShowCaseWidget.of(context)!.startShowCase(showcaseList);
+        ShowCaseWidget.of(context).startShowCase(showcaseList);
       }
 
       if (showcaseList.contains(keyFavoriteContact)) {

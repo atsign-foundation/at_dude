@@ -1,24 +1,22 @@
 // 🎯 Dart imports:
 import 'dart:async';
 
-import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
-
 import 'package:at_app_flutter/at_app_flutter.dart';
-
 import 'package:at_client_mobile/at_client_mobile.dart';
-
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
+import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
+import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
+import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:at_utils/at_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../screens/screens.dart';
-
-import 'package:at_utils/at_logger.dart' show AtSignLogger;
-import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
-    show Onboarding;
-
+import '../utils/utils.dart';
+import '../widgets/snackbars.dart';
 import 'services.dart';
 
 /// A singleton that makes all the network calls to the @platform.
@@ -43,8 +41,20 @@ class AuthenticationService {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     if (_prefs.getBool('first_run') ?? true) {
       _logger.finer('First run detected. Clearing keychain');
-      await KeyChainManager.getInstance().clearKeychainEntries();
+      await clearKeychainEntries();
       await _prefs.setBool('first_run', false);
+    }
+  }
+
+  Future<void> clearKeychainEntries() async {
+    List<String> atsignList =
+        await KeyChainManager.getInstance().getAtSignListFromKeychain();
+    if (atsignList.isEmpty) {
+      return;
+    } else {
+      await Future.forEach(atsignList, (String atsign) async {
+        await KeyChainManager.getInstance().resetAtSignFromKeychain(atsign);
+      });
     }
   }
 
@@ -64,29 +74,70 @@ class AuthenticationService {
   }
 
   /// Signs user into the @platform.
-  void handleOnboard(String atsign) async {
-    Onboarding(
-      atsign: atsign,
+  void handleSwitchAtsign(String? atsign) async {
+    final result = await AtOnboarding.onboard(
       context: NavigationService.navKey.currentContext!,
-      atClientPreference: await loadAtClientPreference(),
-      domain: AtEnv.rootDomain,
-      rootEnvironment: AtEnv.rootEnvironment,
-      appAPIKey: AtEnv.appApiKey,
-      onboard: (value, atsign) async {
-        DudeService.getInstance()
-          ..atClientService = value[atsign]
-          ..atClient = DudeService.getInstance()
-              .atClientService!
-              .atClientManager
-              .atClient;
-
-        _logger.finer('Successfully onboarded $atsign');
-      },
-      onError: (error) {
-        _logger.severe('Onboarding throws $error error');
-      },
-      nextScreen: const SendDudeScreen(),
+      isSwitchingAtsign: true,
+      atsign: atsign,
+      config: AtOnboardingConfig(
+        atClientPreference: await loadAtClientPreference(),
+        domain: AtEnv.rootDomain,
+        rootEnvironment: AtEnv.rootEnvironment,
+        appAPIKey: AtEnv.appApiKey,
+      ),
     );
+    switch (result.status) {
+      case AtOnboardingResultStatus.success:
+        _logger.finer('Successfully onboarded ${result.atsign}');
+        DudeService.getInstance()
+            .monitorNotifications(NavigationService.navKey.currentContext!);
+        DudeService.getInstance()
+            .atClientManager
+            .syncService
+            .addProgressListener(MySyncProgressListener());
+        initializeContactsService(rootDomain: AtEnv.rootDomain);
+
+        await Navigator.of(NavigationService.navKey.currentContext!)
+            .pushReplacement(MaterialPageRoute(
+          builder: ((context) => ShowCaseWidget(
+                builder: Builder(builder: (context) => const SendDudeScreen()),
+              )),
+        ));
+
+        break;
+
+      case AtOnboardingResultStatus.error:
+        _logger.severe('Onboarding throws ${result.message} error');
+        SnackBars.errorSnackBar(
+            content: result.message ?? '',
+            context: NavigationService.navKey.currentContext!);
+        break;
+
+      case AtOnboardingResultStatus.cancel:
+        break;
+    }
+    // Onboarding(
+    //   atsign: atsign,
+    //   context: NavigationService.navKey.currentContext!,
+    //   atClientPreference: await loadAtClientPreference(),
+    //   domain: AtEnv.rootDomain,
+    //   rootEnvironment: AtEnv.rootEnvironment,
+    //   appAPIKey: AtEnv.appApiKey,
+    //   onboard: (value, atsign) async {
+    //     DudeService.getInstance()
+    //       ..atClientService = value[atsign]
+    //       ..atClient = DudeService.getInstance()
+    //           .atClientService!
+    //           .atClientManager
+    //           .atClient;
+
+    //     _logger.finer('Successfully onboarded $atsign');
+    //   },
+    //   onError: (error) {
+    //     _logger.severe('Onboarding throws $error error');
+    //   },
+    //   nextScreen: const SendDudeScreen(),
+    // );
   }
 
   /// Get atsigns associated with the app.
@@ -94,7 +145,7 @@ class AuthenticationService {
     try {
       return KeychainUtil.getAtsignList();
     } on AtClientException catch (atClientExcep) {
-      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      _logger.severe('❌ AtClientException : ${atClientExcep.message}');
       return [];
     } catch (e) {
       _logger.severe('❌ Exception : ${e.toString()}');

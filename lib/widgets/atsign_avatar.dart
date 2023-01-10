@@ -25,7 +25,8 @@ class _AtsignAvatarState extends State<AtsignAvatar> {
         image = value['image'];
         profileName = value['name'];
       });
-      profileName ??= DudeService.getInstance().atClient!.getCurrentAtSign();
+      profileName ??=
+          DudeService.getInstance().atClientManager.atClient.getCurrentAtSign();
       setState(() {});
     });
     super.initState();

@@ -3,16 +3,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
-
 import 'package:at_app_flutter/at_app_flutter.dart';
 // ignore: implementation_imports
-import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_commons/at_commons.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_utils/at_utils.dart';
+import 'package:flutter/material.dart';
+
 import '../models/dude_model.dart';
 import '../models/profile_model.dart';
 import 'local_notification_service.dart';
@@ -27,16 +25,16 @@ class DudeService {
   }
   final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
 
-  AtClient? atClient;
   AtClientService? atClientService;
   var atClientManager = AtClientManager.getInstance();
+
   static var contactService = ContactService();
 
   /// Saves Dude to the receiver's remote secondary and stats to the sender's local secondary.
   Future<bool> putDude(
       DudeModel dude, String contactAtsign, BuildContext context) async {
     bool isCompleted = false;
-    dude.saveSender(atClient!.getCurrentAtSign()!);
+    dude.saveSender(atClientManager.atClient.getCurrentAtSign()!);
     dude.saveReceiver(contactAtsign);
     dude.saveId();
     var metaData = Metadata()
@@ -72,7 +70,7 @@ class DudeService {
       ..metadata = profileMetaData;
 
     try {
-      AtValue profileAtValue = await atClient!.get(profileKey);
+      AtValue profileAtValue = await atClientManager.atClient.get(profileKey);
       ProfileModel profileModel =
           ProfileModel.fromJson(jsonDecode(profileAtValue.value));
       profileModel.saveId(dude.sender);
@@ -81,7 +79,7 @@ class DudeService {
       if (dude.duration > profileModel.longestDude) {
         profileModel.saveLongestDude(dude.duration);
       }
-      await atClient!
+      await atClientManager.atClient
           .put(
             profileKey,
             json.encode(
@@ -92,7 +90,7 @@ class DudeService {
           .onError((error, stackTrace) => isCompleted = false);
     } catch (e) {
       // Exception should be thrown the first time a profile is created for an atsign
-      await atClient!
+      await atClientManager.atClient
           .put(
             profileKey,
             json.encode(
@@ -120,7 +118,7 @@ class DudeService {
     //   atsign = atsign.replaceAll('@', '');
     // }
     List<AtKey> receivedKeysList = [];
-    var key = await atClient!.getAtKeys(
+    var key = await atClientManager.atClient.getAtKeys(
       regex: '^cached:.*@.+\$',
       // sharedBy: atsign,
     );
@@ -131,7 +129,7 @@ class DudeService {
     for (AtKey key in receivedKeysList) {
       try {
         if (key.sharedBy != null && key.key!.length == 36) {
-          AtValue _keyValue = await atClient!.get(key);
+          AtValue _keyValue = await atClientManager.atClient.get(key);
 
           dudes.add(DudeModel.fromJson(jsonDecode(_keyValue.value)));
         }
@@ -148,8 +146,10 @@ class DudeService {
         .subscribe(regex: 'at_skeleton_app')
         .listen(
       (AtNotification notification) async {
-        String? currentAtsign =
-            DudeService.getInstance().atClient!.getCurrentAtSign();
+        String? currentAtsign = DudeService.getInstance()
+            .atClientManager
+            .atClient
+            .getCurrentAtSign();
 
         if (currentAtsign == notification.to) {
           await LocalNotificationService().showNotifications(
@@ -170,7 +170,7 @@ class DudeService {
   /// Fetch the current atsign profile image
   Future<Uint8List?> getCurrentAtsignProfileImage() async {
     return contactService
-        .getContactDetails(atClient!.getCurrentAtSign(), null)
+        .getContactDetails(atClientManager.atClient.getCurrentAtSign(), null)
         .then((value) {
       return value['image'];
     });
@@ -179,7 +179,7 @@ class DudeService {
   /// Fetch details for the current atsign
   Future<dynamic> getCurrentAtsignContactDetails() async {
     return contactService
-        .getContactDetails(atClient!.getCurrentAtSign(), null)
+        .getContactDetails(atClientManager.atClient.getCurrentAtSign(), null)
         .then((value) {
       return value;
     });
@@ -187,13 +187,13 @@ class DudeService {
 
   /// Get the profile stats for the current atsign
   Future<ProfileModel> getProfile() async {
-    return await atClient!
+    return await atClientManager.atClient
         .getAtKeys(
           regex: 'dude_profile_',
-          sharedBy: atClient!.getCurrentAtSign(),
+          sharedBy: atClientManager.atClient.getCurrentAtSign(),
         )
         .then(
-          (value) => atClient!.get(value[0]).then(
+          (value) => atClientManager.atClient.get(value[0]).then(
                 (value) => ProfileModel.fromJson(
                   jsonDecode(value.value),
                 ),
@@ -223,7 +223,7 @@ class DudeService {
         ),
       );
     } on AtClientException catch (atClientExcep) {
-      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      _logger.severe('❌ AtClientException : ${atClientExcep.message}');
     } catch (e) {
       _logger.severe('❌ Exception : ${e.toString()}');
     }
@@ -235,15 +235,15 @@ class DudeService {
     // @blizzard30:signing_privatekey@blizzard30
 
     List<AtKey> keysList =
-        await atClient!.getAtKeys(regex: 'dude_sender_atsigns_');
+        await atClientManager.atClient.getAtKeys(regex: 'dude_sender_atsigns_');
 
     List<String> senderAtsigns = [];
     for (AtKey key in keysList) {
       try {
-        AtValue _keyValue = await atClient!.get(key);
+        AtValue _keyValue = await atClientManager.atClient.get(key);
         senderAtsigns.add(_keyValue.value);
       } on AtClientException catch (atClientExcep) {
-        _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+        _logger.severe('❌ AtClientException : ${atClientExcep.message}');
       } catch (e) {
         _logger.severe('❌ Exception : ${e.toString()}');
       }
@@ -254,12 +254,13 @@ class DudeService {
   /// Delete dude sent to the current atsign.
   Future<bool> deleteDude(DudeModel dude) async {
     try {
-      List<AtKey> dudeAtKey = await atClient!.getAtKeys(regex: dude.id);
-      bool isDeleted = await atClient!.delete(dudeAtKey[0]);
+      List<AtKey> dudeAtKey =
+          await atClientManager.atClient.getAtKeys(regex: dude.id);
+      bool isDeleted = await atClientManager.atClient.delete(dudeAtKey[0]);
 
       return isDeleted;
     } on AtClientException catch (atClientExcep) {
-      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      _logger.severe('❌ AtClientException : ${atClientExcep.message}');
       return false;
     } catch (e) {
       _logger.severe('❌ Exception : ${e.toString()}');
@@ -274,7 +275,7 @@ class DudeService {
 
       return isDeleted;
     } on AtClientException catch (atClientExcep) {
-      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
+      _logger.severe('❌ AtClientException : ${atClientExcep.message}');
       return false;
     } catch (e) {
       _logger.severe('❌ Exception : ${e.toString()}');

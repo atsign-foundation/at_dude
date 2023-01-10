@@ -1,5 +1,5 @@
 class Texts {
-  static const String atsign = 'Atsign';
+  static const String atsign = 'atSign';
   static const String sendDudeIconDesc =
       'The longer you press and hold this button the longer the "dude" you create.';
 

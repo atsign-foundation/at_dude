@@ -1,11 +1,9 @@
 import 'package:at_common_flutter/services/size_config.dart';
-
+import 'package:at_contact/at_contact.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:at_contact/at_contact.dart';
 
 import '../controller/controller.dart';
-
 import '../services/services.dart';
 import 'widgets.dart';
 
@@ -80,7 +78,7 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                                   Navigator.pop(context);
                                                   AuthenticationService
                                                           .getInstance()
-                                                      .handleOnboard(
+                                                      .handleSwitchAtsign(
                                                           authenticationController
                                                                   .atsignList[
                                                               index]);
@@ -111,7 +109,7 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                   Navigator.pop(context);
                                 });
                                 AuthenticationService.getInstance()
-                                    .handleOnboard("");
+                                    .handleSwitchAtsign(null);
 
                                 setState(() {
                                   isLoading = false;
