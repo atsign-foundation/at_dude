@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 import '../controller/dude_controller.dart';
@@ -31,7 +30,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         actions: const [AtsignAvatar()],
         automaticallyImplyLeading: widget.canPop,
       ),
-      bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 1),
+      bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 3),
       extendBody: true,
       extendBodyBehindAppBar: true,
       body: Stack(children: [

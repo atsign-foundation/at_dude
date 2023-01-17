@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
-
 import 'package:badges/badges.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
 import '../screens/screens.dart';
+import '../utils/texts.dart';
 
 class DudeBottomNavigationBar extends StatefulWidget {
   const DudeBottomNavigationBar({required this.selectedIndex, Key? key})
@@ -20,7 +21,7 @@ class DudeBottomNavigationBar extends StatefulWidget {
 
 class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   void _handleOnTap(int currentIndex) {
-    if (currentIndex == 0) {
+    if (currentIndex == 2) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: ((context) => ShowCaseWidget(
@@ -40,14 +41,27 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       elevation: 0.0,
-      backgroundColor: const Color(0x00ffffff),
       currentIndex: widget.selectedIndex,
       onTap: _handleOnTap,
       items: <BottomNavigationBarItem>[
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.send_outlined),
-          label: 'Send Dude',
-        ),
+        BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/images/nav_icons/contacts.svg',
+              color: widget.selectedIndex == 0 ? kPrimaryColor : Colors.black,
+            ),
+            label: Texts.contacts),
+        BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/images/nav_icons/stats.svg',
+              color: widget.selectedIndex == 1 ? kPrimaryColor : Colors.black,
+            ),
+            label: Texts.stats),
+        BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/images/nav_icons/send_dude.svg',
+              color: widget.selectedIndex == 2 ? kPrimaryColor : Colors.black,
+            ),
+            label: Texts.sendDude),
         BottomNavigationBarItem(
           icon: Consumer<DudeController>(
             builder: ((context, dudeController, child) {
@@ -63,14 +77,22 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
                         ),
                       )
                     : null,
-                child: const Icon(
-                  Icons.history_outlined,
+                child: SvgPicture.asset(
+                  'assets/images/nav_icons/history.svg',
+                  color:
+                      widget.selectedIndex == 3 ? kPrimaryColor : Colors.black,
                 ),
               );
             }),
           ),
-          label: 'History',
+          label: Texts.history,
         ),
+        BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/images/nav_icons/settings.svg',
+              color: widget.selectedIndex == 4 ? kPrimaryColor : Colors.black,
+            ),
+            label: Texts.settings),
       ],
     );
   }

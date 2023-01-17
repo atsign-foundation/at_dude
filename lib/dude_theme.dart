@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 // 00b7ff
@@ -7,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 // tide pool blue: 0a569a
 
 const kCaribbeanShallows = Color(0XFF57cbe7);
-const kPrimaryColor = Color(0XFF289ED2);
+const kPrimaryColor = Color(0XFFF95B5C);
 const kAlternativeColor = Color(0XFF42C1BA);
 
 class DudeTheme {
@@ -105,11 +104,11 @@ class DudeTheme {
           foregroundColor: Color(0xFFF8C630),
           backgroundColor: Colors.black,
         ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          // backgroundColor: kPrimaryColor,
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Color.fromRGBO(254, 245, 230, 74),
           selectedItemColor: kPrimaryColor,
-          selectedLabelStyle: const TextStyle().copyWith(fontSize: 20),
-          unselectedLabelStyle: const TextStyle().copyWith(fontSize: 20),
+          unselectedItemColor: Colors.black,
         ),
         textTheme: lightTextTheme,
         elevatedButtonTheme: ElevatedButtonThemeData(

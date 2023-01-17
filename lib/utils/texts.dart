@@ -5,9 +5,12 @@ class Texts {
 
   static const String showContactScreenIconDesc =
       'Press this button to navigate to the contacts screen.';
-
+// Navigation Strings
+  static const String contacts = 'Contacts';
+  static const String stats = 'Stats';
   static const String sendDude = 'Send Dude';
   static const String history = 'History';
+  static const String settings = 'Settings';
 
   static const String favoritesContactWidgetTitle = 'Favorites';
 

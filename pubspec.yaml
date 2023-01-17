@@ -9,14 +9,15 @@ dependencies:
   at_app_flutter: ^5.1.0
   at_client_mobile: ^3.2.0
   at_contacts_flutter: ^4.0.5
+  at_onboarding_flutter: ^5.0.0
   at_utils: ^3.0.9
-  at_onboarding_flutter: ^5.0.0 
   audioplayers: ^1.0.1
   badges: ^2.0.2
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2
   flutter_local_notifications: ^9.4.0
+  flutter_svg: ^1.1.6
   glass: ^1.0.1+1
   google_fonts: ^3.0.1
   path_provider: ^2.0.5
@@ -27,8 +28,6 @@ dependencies:
   timezone: ^0.8.0
   uuid: ^3.0.6
   workmanager: ^0.5.0
-  
-
 
 dev_dependencies:
   flutter_launcher_icons: ^0.9.3
@@ -41,6 +40,7 @@ flutter:
   assets:
     - .env
     - assets/images/
+    - assets/images/nav_icons/
     - assets/audios/
 flutter_icons:
   android: "launcher_icon"

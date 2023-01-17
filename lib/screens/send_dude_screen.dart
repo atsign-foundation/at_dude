@@ -1,17 +1,15 @@
 // import 'package:flutter_spotlight/flutter_spotlight.dart';
 
-import '../controller/controller.dart';
-import 'package:flutter/material.dart';
-
 import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
+import '../controller/controller.dart';
 import '../models/dude_model.dart';
 import '../services/services.dart';
-
 import '../utils/utils.dart';
 import '../widgets/atsign_avatar.dart';
 import '../widgets/widgets.dart';
@@ -152,7 +150,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       extendBody: true,
       extendBodyBehindAppBar: true,
       bottomNavigationBar: const DudeBottomNavigationBar(
-        selectedIndex: 0,
+        selectedIndex: 2,
       ),
       body: Stack(children: [
         const AppBackground(
