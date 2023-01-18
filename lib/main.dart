@@ -18,17 +18,17 @@ import 'package:showcaseview/showcaseview.dart';
 
 import 'controller/controller.dart';
 import 'dude_theme.dart';
-import 'screens/profile_screen.dart';
 import 'screens/screens.dart';
+import 'screens/stats_screen.dart';
 import 'services/services.dart';
 import 'utils/utils.dart';
 import 'widgets/widgets.dart';
 
-AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
+AtSignLogger _logger = AtSignLogger('at_dude');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AtEnv.load();
+
   await LocalNotificationService().initNotification();
 
   // * AtEnv is an abstraction of the flutter_dotenv package used to
@@ -42,7 +42,6 @@ Future<void> main() async {
     _logger.finer('Environment failed to load from .env: ', e);
   }
 
-  _logger = AtSignLogger(AtEnv.appNamespace);
   runApp(
     MultiProvider(
         providers: [
@@ -57,7 +56,7 @@ Future<void> main() async {
           routes: {
             SendDudeScreen.routeName: (context) => const SendDudeScreen(),
             HistoryScreen.routeName: (context) => const HistoryScreen(),
-            ProfileScreen.routeName: (context) => const ProfileScreen(),
+            StatsScreen.routeName: (context) => const StatsScreen(),
           },
           navigatorKey: NavigationService.navKey,
         )),
