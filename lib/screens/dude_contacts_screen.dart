@@ -1,29 +1,24 @@
+import 'dart:async';
+
+import 'package:at_common_flutter/at_common_flutter.dart';
+import 'package:at_contact/at_contact.dart';
+import 'package:at_contacts_flutter/models/contact_base_model.dart';
+import 'package:at_contacts_flutter/services/contact_service.dart';
+import 'package:at_contacts_flutter/utils/colors.dart';
+import 'package:at_contacts_flutter/utils/text_strings.dart';
+import 'package:at_contacts_flutter/widgets/bottom_sheet.dart';
+import 'package:at_contacts_flutter/widgets/custom_search_field.dart';
+import 'package:at_contacts_flutter/widgets/error_screen.dart';
+import 'package:at_contacts_flutter/widgets/horizontal_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'dart:async';
 
 import '../controller/controller.dart';
 import '../services/shared_preferences_service.dart';
 import '../utils/utils.dart';
 import '../widgets/widgets.dart';
-
-import 'package:at_contact/at_contact.dart';
-
-import 'package:at_common_flutter/at_common_flutter.dart';
-
-import 'package:at_contacts_flutter/models/contact_base_model.dart';
-import 'package:at_contacts_flutter/services/contact_service.dart';
-import 'package:at_contacts_flutter/utils/colors.dart';
-import 'package:at_contacts_flutter/utils/text_strings.dart';
-
-import 'package:at_contacts_flutter/widgets/bottom_sheet.dart';
-
-import 'package:at_contacts_flutter/widgets/custom_search_field.dart';
-import 'package:at_contacts_flutter/widgets/error_screen.dart';
-import 'package:at_contacts_flutter/widgets/horizontal_list_view.dart';
-
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 /// The screen which is exposed from the library for displaying, adding, selecting and deleting Contacts.
 class DudeContactsScreen extends StatefulWidget {
@@ -200,124 +195,129 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
           ),
         ),
       ),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       body: errorOcurred
           ? const ErrorScreen()
-          : Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 16.toWidth, vertical: 16.toHeight),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ContactSearchField(
-                    TextStrings().searchContact,
-                    (text) => setState(() {
-                      searchText = text;
-                    }),
-                  ),
-                  SizedBox(
-                    height: 15.toHeight,
-                  ),
-                  (widget.asSelectionScreen)
-                      ? (widget.asSingleSelectionScreen)
-                          ? Container()
-                          : const HorizontalCircularList()
-                      : Container(),
-                  Expanded(
-                      child: StreamBuilder<List<BaseContact?>>(
-                    stream: _contactService!.contactStream,
-                    initialData: _contactService!.baseContactList,
-                    builder: (context, snapshot) {
-                      if ((snapshot.connectionState ==
-                          ConnectionState.waiting)) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        if ((snapshot.data == null || snapshot.data!.isEmpty)) {
+          : Stack(children: [
+              Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 16.toWidth, vertical: 16.toHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ContactSearchField(
+                      TextStrings().searchContact,
+                      (text) => setState(() {
+                        searchText = text;
+                      }),
+                    ),
+                    SizedBox(
+                      height: 15.toHeight,
+                    ),
+                    (widget.asSelectionScreen)
+                        ? (widget.asSingleSelectionScreen)
+                            ? Container()
+                            : const HorizontalCircularList()
+                        : Container(),
+                    Expanded(
+                        child: StreamBuilder<List<BaseContact?>>(
+                      stream: _contactService!.contactStream,
+                      initialData: _contactService!.baseContactList,
+                      builder: (context, snapshot) {
+                        if ((snapshot.connectionState ==
+                            ConnectionState.waiting)) {
                           return const Center(
-                            child: Text(Texts.noContactsAvailable),
+                            child: CircularProgressIndicator(),
                           );
                         } else {
-                          var _filteredList = <BaseContact?>[];
-                          for (var c in snapshot.data!) {
-                            if (c!.contact!.atSign!
-                                .toUpperCase()
-                                .contains(searchText.toUpperCase())) {
-                              _filteredList.add(c);
+                          if ((snapshot.data == null ||
+                              snapshot.data!.isEmpty)) {
+                            return const Center(
+                              child: Text(Texts.noContactsAvailable),
+                            );
+                          } else {
+                            var _filteredList = <BaseContact?>[];
+                            for (var c in snapshot.data!) {
+                              if (c!.contact!.atSign!
+                                  .toUpperCase()
+                                  .contains(searchText.toUpperCase())) {
+                                _filteredList.add(c);
+                              }
                             }
-                          }
 
-                          if (_filteredList.isEmpty) {
-                            return Center(
-                              child: Text(TextStrings().noContactsFound),
+                            if (_filteredList.isEmpty) {
+                              return Center(
+                                child: Text(TextStrings().noContactsFound),
+                              );
+                            }
+
+                            return ListView.builder(
+                              padding: EdgeInsets.only(bottom: 80.toHeight),
+                              itemCount: 27,
+                              shrinkWrap: true,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemBuilder: (context, alphabetIndex) {
+                                var contactsForAlphabet = <AtContact?>[];
+                                var currentChar =
+                                    String.fromCharCode(alphabetIndex + 65)
+                                        .toUpperCase();
+                                if (alphabetIndex == 26) {
+                                  currentChar = 'Others';
+                                  for (var c in _filteredList) {
+                                    if (!RegExp(r'^[a-z]+$').hasMatch(
+                                      c!.contact!.atSign![1].toLowerCase(),
+                                    )) {
+                                      contactsForAlphabet.add(c.contact!);
+                                    }
+                                  }
+                                } else {
+                                  for (var c in _filteredList) {
+                                    if (c!.contact!.atSign![1].toUpperCase() ==
+                                        currentChar) {
+                                      contactsForAlphabet.add(c.contact!);
+                                    }
+                                  }
+                                }
+
+                                if (contactsForAlphabet.isEmpty) {
+                                  return Container();
+                                }
+                                return Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          currentChar,
+                                          style: TextStyle(
+                                            color: ColorConstants.blueText,
+                                            fontSize: 16.toFont,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(width: 4.toWidth),
+                                        Expanded(
+                                          child: Divider(
+                                            color: ColorConstants.dividerColor
+                                                .withOpacity(0.2),
+                                            height: 1.toHeight,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    contactListBuilder(contactsForAlphabet),
+                                  ],
+                                );
+                              },
                             );
                           }
-
-                          return ListView.builder(
-                            padding: EdgeInsets.only(bottom: 80.toHeight),
-                            itemCount: 27,
-                            shrinkWrap: true,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemBuilder: (context, alphabetIndex) {
-                              var contactsForAlphabet = <AtContact?>[];
-                              var currentChar =
-                                  String.fromCharCode(alphabetIndex + 65)
-                                      .toUpperCase();
-                              if (alphabetIndex == 26) {
-                                currentChar = 'Others';
-                                for (var c in _filteredList) {
-                                  if (!RegExp(r'^[a-z]+$').hasMatch(
-                                    c!.contact!.atSign![1].toLowerCase(),
-                                  )) {
-                                    contactsForAlphabet.add(c.contact!);
-                                  }
-                                }
-                              } else {
-                                for (var c in _filteredList) {
-                                  if (c!.contact!.atSign![1].toUpperCase() ==
-                                      currentChar) {
-                                    contactsForAlphabet.add(c.contact!);
-                                  }
-                                }
-                              }
-
-                              if (contactsForAlphabet.isEmpty) {
-                                return Container();
-                              }
-                              return Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        currentChar,
-                                        style: TextStyle(
-                                          color: ColorConstants.blueText,
-                                          fontSize: 16.toFont,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(width: 4.toWidth),
-                                      Expanded(
-                                        child: Divider(
-                                          color: ColorConstants.dividerColor
-                                              .withOpacity(0.2),
-                                          height: 1.toHeight,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  contactListBuilder(contactsForAlphabet),
-                                ],
-                              );
-                            },
-                          );
                         }
-                      }
-                    },
-                  ))
-                ],
+                      },
+                    ))
+                  ],
+                ),
               ),
-            ),
+            ]),
     );
   }
 

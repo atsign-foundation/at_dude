@@ -32,7 +32,10 @@ class DudeService {
 
   /// Saves Dude to the receiver's remote secondary and stats to the sender's local secondary.
   Future<bool> putDude(
-      DudeModel dude, String contactAtsign, BuildContext context) async {
+    DudeModel dude,
+    String contactAtsign,
+    BuildContext context,
+  ) async {
     bool isCompleted = false;
     dude.saveSender(atClientManager.atClient.getCurrentAtSign()!);
     dude.saveReceiver(contactAtsign);
@@ -193,11 +196,15 @@ class DudeService {
           sharedBy: atClientManager.atClient.getCurrentAtSign(),
         )
         .then(
-          (value) => atClientManager.atClient.get(value[0]).then(
-                (value) => ProfileModel.fromJson(
-                  jsonDecode(value.value),
-                ),
-              ),
+          (value) => atClientManager.atClient.get(value.first).then(
+            (value) {
+              var model = ProfileModel.fromJson(
+                jsonDecode(value.value),
+              );
+              model.createdAt = value.metadata!.createdAt;
+              return model;
+            },
+          ),
         );
   }
 

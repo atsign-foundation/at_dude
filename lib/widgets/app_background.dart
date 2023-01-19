@@ -15,7 +15,7 @@ class AppBackground extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: const AssetImage('assets/images/beach_alt.png'),
+            image: const AssetImage('assets/images/background_image.png'),
             fit: BoxFit.cover,
             opacity: 1,
             colorFilter:

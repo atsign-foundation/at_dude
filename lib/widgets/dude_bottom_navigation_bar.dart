@@ -7,6 +7,7 @@ import 'package:showcaseview/showcaseview.dart';
 import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
 import '../screens/screens.dart';
+import '../screens/stats_screen.dart';
 import '../utils/texts.dart';
 
 class DudeBottomNavigationBar extends StatefulWidget {
@@ -30,9 +31,13 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
                 )),
           ),
           (Route route) => false);
-    } else {
+    } else if (currentIndex == 3) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (((context) => const HistoryScreen()))),
+          ((route) => false));
+    } else if (currentIndex == 1) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (((context) => const StatsScreen()))),
           ((route) => false));
     }
   }

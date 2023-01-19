@@ -5,13 +5,14 @@ class ProfileModel {
   int dudesSent = 0;
   Duration dudeHours = const Duration(milliseconds: 0);
   Duration longestDude = const Duration(milliseconds: 0);
+  DateTime? createdAt;
 
-  ProfileModel({
-    required this.id,
-    required this.dudesSent,
-    required this.dudeHours,
-    required this.longestDude,
-  });
+  ProfileModel(
+      {required this.id,
+      required this.dudesSent,
+      required this.dudeHours,
+      required this.longestDude,
+      this.createdAt});
 
   ProfileModel.newDude();
 

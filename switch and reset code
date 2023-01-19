@@ -1,0 +1,19 @@
+Padding(
+                padding = const EdgeInsets.only(bottom: 60.0),
+                child = Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const ResetAppButton(
+                      buttonText: 'Reset @sign',
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await showModalBottomSheet(
+                            context: NavigationService.navKey.currentContext!,
+                            builder: (context) => const AtSignBottomSheet());
+                      },
+                      child: const Text('Switch @Sign'),
+                    )
+                  ],
+                ),
+              )

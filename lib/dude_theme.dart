@@ -12,40 +12,41 @@ const kAlternativeColor = Color(0XFF42C1BA);
 class DudeTheme {
   // 1
   static TextTheme lightTextTheme = TextTheme(
-    bodyText1: GoogleFonts.barlow(
+    bodyText1: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    bodyText2: GoogleFonts.barlow(
+    bodyText2: GoogleFonts.poppins(
       fontSize: 16.0,
       color: Colors.black,
     ),
-    headline1: GoogleFonts.barlow(
+
+    headline1: GoogleFonts.poppins(
       fontSize: 32.0,
       fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
-    headline2: GoogleFonts.barlow(
+    headline2: GoogleFonts.poppins(
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    headline3: GoogleFonts.barlow(
+    headline3: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    headline6: GoogleFonts.barlow(
+    headline6: GoogleFonts.poppins(
       fontSize: 20.0,
       fontWeight: FontWeight.w600,
       color: Colors.black,
     ),
-    // subtitle1: GoogleFonts.barlow(
+    // subtitle1: GoogleFonts.poppins(
     //   fontSize: 16.0,
     //   color: Colors.white,
     // ),
-    // subtitle2: GoogleFonts.barlow(
+    // subtitle2: GoogleFonts.poppins(
     //   fontSize: 16.0,
     //   color: Colors.white,
     // ),
@@ -53,27 +54,27 @@ class DudeTheme {
 
   // 2
   static TextTheme darkTextTheme = TextTheme(
-    bodyText1: GoogleFonts.barlow(
+    bodyText1: GoogleFonts.poppins(
       fontSize: 14.0,
       fontWeight: FontWeight.w700,
       color: Colors.white,
     ),
-    headline1: GoogleFonts.barlow(
+    headline1: GoogleFonts.poppins(
       fontSize: 32.0,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
-    headline2: GoogleFonts.barlow(
+    headline2: GoogleFonts.poppins(
       fontSize: 21.0,
       fontWeight: FontWeight.w700,
       color: Colors.white,
     ),
-    headline3: GoogleFonts.barlow(
+    headline3: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
     ),
-    headline6: GoogleFonts.barlow(
+    headline6: GoogleFonts.poppins(
       fontSize: 20.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
