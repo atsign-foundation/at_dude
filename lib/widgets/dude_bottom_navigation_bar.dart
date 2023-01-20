@@ -7,7 +7,6 @@ import 'package:showcaseview/showcaseview.dart';
 import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
 import '../screens/screens.dart';
-import '../screens/stats_screen.dart';
 import '../utils/texts.dart';
 
 class DudeBottomNavigationBar extends StatefulWidget {
@@ -39,6 +38,15 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (((context) => const StatsScreen()))),
           ((route) => false));
+    } else if (currentIndex == 0) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: ((context) => ShowCaseWidget(
+                  builder:
+                      Builder(builder: (context) => const DudeContactsScreen()),
+                )),
+          ),
+          (Route route) => false);
     }
   }
 

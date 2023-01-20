@@ -264,8 +264,8 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                                           builder: Builder(
                                               builder: ((context) =>
                                                   DudeContactsScreen(
-                                                    showFavoriteContactTutorial:
-                                                        showFavoriteContactTutorial,
+                                                    // showFavoriteContactTutorial:
+                                                    //     showFavoriteContactTutorial,
                                                     onSendIconPressed: (String
                                                             atsign) =>
                                                         _handleSendDudeToContact(

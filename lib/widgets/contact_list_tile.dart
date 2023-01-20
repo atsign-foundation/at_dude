@@ -1,24 +1,19 @@
-/// A custom list tile to display the contacts
-/// takes in a function @param [onTap] to define what happens on tap of the tile
-/// @param [onTrailingPresses] to set the behaviour for trailing icon
-/// @param [asSelectionTile] to toggle whether the tile is selectable to select contacts
-/// @param [contact] for details of the contact
-/// @param [contactService] to get an instance of [AtContactsImpl]
-
+import 'dart:async';
 import 'dart:typed_data';
+
+import 'package:at_common_flutter/services/size_config.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
-import 'package:at_contacts_flutter/utils/colors.dart';
-import 'package:at_contacts_flutter/utils/images.dart';
 import 'package:at_contacts_flutter/widgets/contacts_initials.dart';
 import 'package:at_contacts_flutter/widgets/custom_circle_avatar.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:flutter/material.dart';
-import 'package:at_common_flutter/services/size_config.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
+import '../dude_theme.dart';
+import '../services/shared_preferences_service.dart';
 import '../utils/utils.dart';
 
 class ContactListTile extends StatefulWidget {
@@ -50,6 +45,38 @@ class ContactListTile extends StatefulWidget {
 class _ContactListTileState extends State<ContactListTile> {
   final AtSignLogger _logger = AtSignLogger('Custom List Tile');
   bool isSelected = false;
+
+  /// boolean flag to indicate marking favorite action in progress
+  bool markingFavoriteContact = false;
+
+  Future<void> markUnmarkFavoriteContact(AtContact contact) async {
+    setState(() {
+      markingFavoriteContact = true;
+    });
+
+    // if (markingFavoriteContact) {
+    //   unawaited(showDialog(
+    //     context: context,
+    //     builder: (context) => AlertDialog(
+    //       title: const Center(
+    //         child: Text('Marking Favorite'),
+    //       ),
+    //       content: SizedBox(
+    //         height: 100.toHeight,
+    //         child: const Center(
+    //           child: CircularProgressIndicator(),
+    //         ),
+    //       ),
+    //     ),
+    //   ));
+    // }
+    await context.read<ContactsController>().markUnmarkFavorites(contact);
+
+    setState(() {
+      markingFavoriteContact = false;
+      Navigator.pop(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +123,7 @@ class _ContactListTileState extends State<ContactListTile> {
           }
           return ListTile(
             onTap: () {
+              // log(true.toString());
               if (widget.asSelectionTile) {
                 setState(() {
                   if (isSelected) {
@@ -118,23 +146,23 @@ class _ContactListTileState extends State<ContactListTile> {
               }
             },
             title: Text(
+              (widget.contact!.tags != null &&
+                      widget.contact!.tags!['nickname'] != null
+                  ? '${widget.contact!.tags!['nickname']} (${widget.contact!.atSign!})'
+                  : widget.contact!.atSign!),
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontSize: 14.toFont,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            subtitle: Text(
               widget.contact!.tags != null &&
                       widget.contact!.tags!['name'] != null
                   ? widget.contact!.tags!['name']
                   : widget.contact!.atSign!.substring(1),
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 14.toFont,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-            subtitle: Text(
-              (widget.contact!.tags != null &&
-                      widget.contact!.tags!['nickname'] != null
-                  ? '${widget.contact!.tags!['nickname']} (${widget.contact!.atSign!})'
-                  : widget.contact!.atSign!),
-              style: TextStyle(
-                color: ColorConstants.fadedText,
                 fontSize: 14.toFont,
                 fontWeight: FontWeight.normal,
               ),
@@ -155,7 +183,16 @@ class _ContactListTileState extends State<ContactListTile> {
               child: IconButton(
                 onPressed: widget.asSelectionTile
                     ? null
-                    : () {
+                    : () async {
+                        await markUnmarkFavoriteContact(widget.contact!);
+                        final bool sendDudeFavoriteContactStatus =
+                            await SharedPreferencesService
+                                .getSendDudeToFavoriteStatus();
+                        if (sendDudeFavoriteContactStatus) {
+                          Navigator.pop(context);
+                        }
+                        // await widget.showFavoriteContactTutorial();
+
                         if (widget.onTrailingPressed != null) {
                           widget.onTrailingPressed!(widget.contact!.atSign);
                         }
@@ -164,12 +201,15 @@ class _ContactListTileState extends State<ContactListTile> {
                     ? (isSelected)
                         ? const Icon(Icons.close)
                         : const Icon(Icons.add)
-                    : Image.asset(
-                        ImageConstants.sendIcon,
-                        width: 21.toWidth,
-                        height: 18.toHeight,
-                        package: 'at_contacts_flutter',
-                      ),
+                    : widget.contact!.favourite!
+                        ? const Icon(
+                            Icons.star_rounded,
+                            color: kPrimaryColor,
+                          )
+                        : const Icon(
+                            Icons.star_border_rounded,
+                            color: kPrimaryColor,
+                          ),
               ),
             ),
           );

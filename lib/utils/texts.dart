@@ -24,4 +24,9 @@ class Texts {
 
   static const String createDudeFirst = 'Create dude first.';
   static const String dudeSuccessfullySent = 'Dude Successfully Sent.';
+
+  // Contact Screen
+
+  static const String filterFavs = 'Filter Favs';
+  static const String addNew = 'Add New';
 }

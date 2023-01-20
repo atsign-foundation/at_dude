@@ -84,44 +84,48 @@ class DudeTheme {
   // 3
   static ThemeData light() {
     return ThemeData(
-        primaryColor: kPrimaryColor,
-        brightness: Brightness.light,
-        colorScheme: const ColorScheme.light().copyWith(
-          primary: kPrimaryColor,
+      primaryColor: kPrimaryColor,
+      brightness: Brightness.light,
+      colorScheme: const ColorScheme.light().copyWith(
+        primary: kPrimaryColor,
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateColor.resolveWith(
+          (states) {
+            return Colors.black;
+          },
         ),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateColor.resolveWith(
-            (states) {
-              return Colors.black;
-            },
-          ),
-        ),
-        appBarTheme: AppBarTheme(
-            foregroundColor: Colors.white,
-            backgroundColor: kPrimaryColor,
-            titleTextStyle: lightTextTheme.bodyText1!
-                .copyWith(color: Colors.white, fontSize: 17)),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          foregroundColor: Color(0xFFF8C630),
-          backgroundColor: Colors.black,
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Color.fromRGBO(254, 245, 230, 74),
-          selectedItemColor: kPrimaryColor,
-          unselectedItemColor: Colors.black,
-        ),
-        textTheme: lightTextTheme,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ),
+      ),
+      appBarTheme: AppBarTheme(
+          foregroundColor: Colors.white,
+          backgroundColor: kPrimaryColor,
+          titleTextStyle: lightTextTheme.bodyText1!
+              .copyWith(color: Colors.white, fontSize: 17)),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        foregroundColor: Color(0xFFF8C630),
+        backgroundColor: Colors.black,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Color.fromRGBO(254, 245, 230, 74),
+        selectedItemColor: kPrimaryColor,
+        unselectedItemColor: Colors.black,
+      ),
+      textTheme: lightTextTheme,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
             ),
           ),
         ),
-        iconTheme: const IconThemeData(color: kPrimaryColor));
+      ),
+      iconTheme: const IconThemeData(color: kPrimaryColor),
+      cardTheme: CardTheme(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+    );
   }
 
   // 4
