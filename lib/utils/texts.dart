@@ -26,7 +26,16 @@ class Texts {
   static const String dudeSuccessfullySent = 'Dude Successfully Sent.';
 
   // Contact Screen
-
   static const String filterFavs = 'Filter Favs';
   static const String addNew = 'Add New';
+
+  // Settings Screen
+  static const String selectYourDude = 'Select your dude';
+  static const String backupYourKeys = 'Backup Your Keys';
+  static const String switchAtsign = 'Switch atSign';
+  static const String resetAtsign = 'Reset Atsign';
+  static const String deleteYourKey = 'Delete Your Key';
+  static const String faq = 'FAQ';
+  static const String contactUs = 'Contact Us';
+  static const String privacyPolicy = 'Privacy Policy';
 }

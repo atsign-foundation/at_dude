@@ -19,7 +19,6 @@ import 'package:showcaseview/showcaseview.dart';
 import 'controller/controller.dart';
 import 'dude_theme.dart';
 import 'screens/screens.dart';
-import 'screens/stats_screen.dart';
 import 'services/services.dart';
 import 'utils/utils.dart';
 import 'widgets/widgets.dart';

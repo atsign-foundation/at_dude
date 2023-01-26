@@ -51,7 +51,7 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                       ),
                     ),
                     Container(
-                      height: 100.toHeight < 105 ? 105 : 100.toHeight,
+                      height: 100.toHeight < 105 ? 110 : 100.toHeight,
                       width: SizeConfig().screenWidth,
                       color: Colors.white,
                       child: Consumer<AuthenticationController>(

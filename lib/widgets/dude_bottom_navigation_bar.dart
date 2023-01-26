@@ -7,6 +7,7 @@ import 'package:showcaseview/showcaseview.dart';
 import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
 import '../screens/screens.dart';
+import '../screens/settings_screen.dart';
 import '../utils/texts.dart';
 
 class DudeBottomNavigationBar extends StatefulWidget {
@@ -21,7 +22,11 @@ class DudeBottomNavigationBar extends StatefulWidget {
 
 class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   void _handleOnTap(int currentIndex) {
-    if (currentIndex == 2) {
+    if (currentIndex == 4) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (((context) => const SettingsScreen()))),
+          ((route) => false));
+    } else if (currentIndex == 2) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: ((context) => ShowCaseWidget(

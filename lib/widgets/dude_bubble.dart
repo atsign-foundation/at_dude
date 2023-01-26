@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:audioplayers/audioplayers.dart';
-import 'package:glass/glass.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
@@ -70,6 +68,6 @@ class DudeBubble extends StatelessWidget {
           ],
         ),
       ),
-    ).asGlass();
+    );
   }
 }

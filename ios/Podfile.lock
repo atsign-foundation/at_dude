@@ -11,14 +11,14 @@ PODS:
     - Flutter
   - biometric_storage (0.0.1):
     - Flutter
-  - DKImagePickerController/Core (4.3.2):
+  - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
-  - DKImagePickerController/ImageDataManager (4.3.2)
-  - DKImagePickerController/PhotoGallery (4.3.2):
+  - DKImagePickerController/ImageDataManager (4.3.4)
+  - DKImagePickerController/PhotoGallery (4.3.4):
     - DKImagePickerController/Core
     - DKPhotoGallery
-  - DKImagePickerController/Resource (4.3.2)
+  - DKImagePickerController/Resource (4.3.4)
   - DKPhotoGallery (0.0.17):
     - DKPhotoGallery/Core (= 0.0.17)
     - DKPhotoGallery/Model (= 0.0.17)
@@ -50,8 +50,6 @@ PODS:
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - flutter_qr_reader (0.0.1):
-    - Flutter
   - MTBBarcodeScanner (5.0.11)
   - package_info_plus (0.4.5):
     - Flutter
@@ -62,14 +60,14 @@ PODS:
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
-  - SDWebImage (5.12.3):
-    - SDWebImage/Core (= 5.12.3)
-  - SDWebImage/Core (5.12.3)
+  - SDWebImage (5.15.0):
+    - SDWebImage/Core (= 5.15.0)
+  - SDWebImage/Core (5.15.0)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_ios (0.0.1):
     - Flutter
-  - SwiftyGif (5.4.3)
+  - SwiftyGif (5.4.4)
   - url_launcher_ios (0.0.1):
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
@@ -88,7 +86,6 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_keychain (from `.symlinks/plugins/flutter_keychain/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
-  - flutter_qr_reader (from `.symlinks/plugins/flutter_qr_reader/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
@@ -128,8 +125,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keychain/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
-  flutter_qr_reader:
-    :path: ".symlinks/plugins/flutter_qr_reader/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_ios:
@@ -154,28 +149,27 @@ SPEC CHECKSUMS:
   at_contacts_flutter: 11ad3deb3c2a8f1e9daf302ac5962dadd48e21fb
   at_file_saver: c0e052c72d8c0296318bd70f2ae7f510887014ce
   at_onboarding_flutter: e8219b6d0bfb236d3837ec3528871aebdcc56e8d
-  audioplayers_darwin: 387322cb364026a1782298c982693b1b6aa9fa1b
+  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   biometric_storage: 1400f1382af3a4cc2bf05340e13c3d8de873ceb9
-  DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
+  DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
+  file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_keychain: 01aabf894ffe8b01adfda1d9df21c210c1b4b452
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
-  flutter_qr_reader: d930dde3b2cfe2b3d0bb7d66e5ff3e514300a5e5
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
-  SDWebImage: 53179a2dba77246efa8a9b85f5c5b21f8f43e38f
+  SDWebImage: 9bec4c5cdd9579e1f57104735ee0c37df274d593
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
-  SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
+  SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
   workmanager: 0afdcf5628bbde6924c21af7836fed07b42e30e6
 
-PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
+PODFILE CHECKSUM: db8a7794fb1b0bee1e3803fed876c7cf9577099b
 
 COCOAPODS: 1.11.3

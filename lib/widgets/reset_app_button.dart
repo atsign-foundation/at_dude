@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../utils/at_error_dialog.dart';
+import '../utils/texts.dart';
+import 'settings_button.dart';
 
 /// Custom reset button widget is to reset an atsign from keychain list,
 
@@ -29,11 +31,10 @@ class _ResetAppButtonState extends State<ResetAppButton> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: _showResetDialog,
-      child: const Text(
-        'Reset App',
-      ),
+    return SettingsButton(
+      icon: Icons.restart_alt_outlined,
+      title: Texts.resetAtsign,
+      onTap: _showResetDialog,
     );
   }
 
