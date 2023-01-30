@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 // ignore: implementation_imports
 
-import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
@@ -17,7 +16,9 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'controller/controller.dart';
+import 'controller/persona_controller.dart';
 import 'dude_theme.dart';
+import 'screens/persona_screen.dart';
 import 'screens/screens.dart';
 import 'services/services.dart';
 import 'utils/utils.dart';
@@ -47,6 +48,7 @@ Future<void> main() async {
           ChangeNotifierProvider.value(value: DudeController()),
           ChangeNotifierProvider.value(value: ContactsController()),
           ChangeNotifierProvider.value(value: AuthenticationController()),
+          ChangeNotifierProvider.value(value: PersonaController()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -56,6 +58,7 @@ Future<void> main() async {
             SendDudeScreen.routeName: (context) => const SendDudeScreen(),
             HistoryScreen.routeName: (context) => const HistoryScreen(),
             StatsScreen.routeName: (context) => const StatsScreen(),
+            PersonaScreen.routeName: (context) => const PersonaScreen(),
           },
           navigatorKey: NavigationService.navKey,
         )),
@@ -91,8 +94,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _handleOnboard(context));
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    //  => _handleOnboard(context)
   }
 
   /// Signs user into the @platform.
@@ -146,57 +149,64 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitDown,
     ]);
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('atDude'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IconButton(
-            iconSize: 200,
-            icon: Image.asset('assets/images/dude_logo.png'),
-            onPressed: null,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _handleOnboard(context);
-            },
-            child: const Text('Start Duding'),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: const Text('atDude'),
+      // ),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      body: Stack(children: [
+        const AppBackground(
+          alignment: Alignment.center,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              iconSize: 200,
+              icon: Image.asset('assets/images/splash_img.png'),
+              onPressed: null,
             ),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.black,
+            ElevatedButton(
+              onPressed: () {
+                _handleOnboard(context);
+              },
+              child: const Text('Start Duding'),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Text(
-                      'Or',
-                      textAlign: TextAlign.center,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Text(
+                        'Or',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.black,
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                ]),
-          ),
-          const ResetAppButton(
-            buttonText: 'Reset @sign',
-          ),
-        ],
-      ),
+                  ]),
+            ),
+            const ResetAppButton(
+              buttonText: 'Reset @sign',
+            ),
+          ],
+        ),
+      ]),
     );
   }
 }

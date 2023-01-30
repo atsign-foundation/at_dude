@@ -38,4 +38,7 @@ class Texts {
   static const String faq = 'FAQ';
   static const String contactUs = 'Contact Us';
   static const String privacyPolicy = 'Privacy Policy';
+
+  // Persona Screen
+  static const String eyeSelectYourDude = '👀   Select your dude';
 }

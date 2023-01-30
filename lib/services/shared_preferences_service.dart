@@ -98,4 +98,20 @@ class SharedPreferencesService {
     final storage = await SharedPreferences.getInstance();
     return storage.getBool('send_dude_contact_status') ?? true;
   }
+
+  /// Set the persona_status as false
+  static Future<void> setPersonaStatus() async {
+    final storage = await SharedPreferences.getInstance();
+
+    var result = await storage.setBool('persona_status', false);
+    log('set persona status: $result');
+  }
+
+  /// Return true if persona_status is null or the result otherwise.
+  static Future<bool> getPersonaStatus() async {
+    final storage = await SharedPreferences.getInstance();
+    var result = storage.getBool('persona_status');
+    log("persona status: ${result ?? true}");
+    return result ?? true;
+  }
 }

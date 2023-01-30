@@ -9,6 +9,7 @@ import '../utils/texts.dart';
 import '../widgets/settings_button.dart';
 import '../widgets/switch_atsign.dart';
 import '../widgets/widgets.dart';
+import 'persona_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -69,7 +70,10 @@ class SettingsScreen extends StatelessWidget {
                               style: TextStyle(fontSize: 18),
                             ),
                             trailing: const Icon(Icons.chevron_right_rounded),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(PersonaScreen.routeName);
+                            },
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
                           ),

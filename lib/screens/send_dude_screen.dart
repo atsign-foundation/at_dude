@@ -9,6 +9,7 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../controller/controller.dart';
 import '../models/dude_model.dart';
+import '../models/persona_model.dart';
 import '../services/services.dart';
 import '../utils/utils.dart';
 import '../widgets/atsign_avatar.dart';
@@ -60,6 +61,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
       if (showcaseList.contains(keyContactButton)) {
         await SharedPreferencesService.setContactScreenNavigationStatus();
+      }
+
+      final personaStatus = await SharedPreferencesService.getPersonaStatus();
+      if (personaStatus) {
+        var dudeService = DudeService.getInstance();
+        var result = await dudeService.putPersona(PersonaModel.standard());
+        if (result) await SharedPreferencesService.setPersonaStatus();
       }
     });
 

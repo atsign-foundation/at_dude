@@ -12,6 +12,7 @@ import 'package:at_utils/at_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../models/dude_model.dart';
+import '../models/persona_model.dart';
 import '../models/profile_model.dart';
 import 'local_notification_service.dart';
 
@@ -288,5 +289,46 @@ class DudeService {
       _logger.severe('❌ Exception : ${e.toString()}');
       return false;
     }
+  }
+
+  /// Get the profile stats for the current atsign
+  Future<PersonaModel> getPersona() async {
+    return await atClientManager.atClient
+        .getAtKeys(
+          regex: 'dude_persona',
+          sharedBy: atClientManager.atClient.getCurrentAtSign(),
+        )
+        .then(
+          (value) => atClientManager.atClient.get(value.first).then(
+            (value) {
+              return PersonaModel.fromJson(
+                jsonDecode(value.value),
+              );
+            },
+          ),
+        );
+  }
+
+  /// Saves Dude to the receiver's remote secondary and stats to the sender's local secondary.
+  Future<bool> putPersona(
+    PersonaModel persona,
+  ) async {
+    bool isCompleted = false;
+
+    var profileKey = AtKey.self('dude_persona',
+            sharedBy: atClientManager.atClient.getCurrentAtSign()!)
+        .build();
+
+    await atClientManager.atClient
+        .put(
+          profileKey,
+          json.encode(
+            persona.toJson(),
+          ),
+        )
+        .whenComplete(() => isCompleted = true)
+        .onError((error, stackTrace) => isCompleted = false);
+
+    return isCompleted;
   }
 }
