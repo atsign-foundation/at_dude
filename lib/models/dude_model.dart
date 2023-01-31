@@ -9,6 +9,8 @@ class DudeModel {
   late String receiver;
   late DateTime timeSent;
   late Duration duration;
+  DateTime? createdAt;
+  bool? isSender;
   DudeModel({
     required this.id,
     required this.dude,
@@ -16,6 +18,8 @@ class DudeModel {
     required this.receiver,
     required this.timeSent,
     required this.duration,
+    this.isSender,
+    this.createdAt,
   });
 
   DudeModel.newDude();

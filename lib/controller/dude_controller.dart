@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:at_contact/at_contact.dart';
+import 'package:flutter/material.dart';
 
 import '../models/dude_model.dart';
 import '../services/dude_service.dart';
@@ -13,12 +12,28 @@ class DudeController with ChangeNotifier {
 
   List<DudeModel> get dudes {
     _dudes.sort((a, b) => b.timeSent.compareTo(a.timeSent));
+
     return _dudes;
+  }
+
+  Future<void> get sentDudes async {
+    _dudes = await DudeService.getInstance().getDudes();
+    _dudes = _dudes.where((element) => element.isSender!).toList();
+
+    notifyListeners();
+  }
+
+  Future<void> get receivedDudes async {
+    _dudes = await DudeService.getInstance().getDudes();
+    _dudes = _dudes.where((element) => !element.isSender!).toList();
+
+    notifyListeners();
   }
 
   /// Get dudes sent to the current astign.
   Future<void> getDudes() async {
     _dudes = await DudeService.getInstance().getDudes();
+
     notifyListeners();
   }
 

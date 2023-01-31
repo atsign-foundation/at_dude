@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
-import '../utils/utils.dart';
-import '../widgets/atsign_avatar.dart';
+import '../widgets/dude_card.dart';
 import '../widgets/widgets.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -20,34 +19,105 @@ class _HistoryScreenState extends State<HistoryScreen> {
   List<DudeModel>? dudes;
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<DudeController>(context, listen: false).getDudes();
+    });
+    super.initState();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        title: const Text(Texts.history, style: TextStyle(color: Colors.black)),
-        actions: const [AtsignAvatar()],
-        automaticallyImplyLeading: widget.canPop,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   foregroundColor: Colors.transparent,
+      //   shadowColor: Colors.transparent,
+      //   title: const Text(Texts.history, style: TextStyle(color: Colors.black)),
+      //   actions: const [AtsignAvatar()],
+      //   automaticallyImplyLeading: widget.canPop,
+      // ),
       bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 3),
-      extendBody: true,
+      // extendBody: true,
       extendBodyBehindAppBar: true,
       body: Stack(children: [
-        const AppBackground(alignment: Alignment.center),
-        Consumer<DudeController>(
-          builder: ((context, dudeController, child) =>
-              dudeController.dudes.isEmpty
-                  ? const Center(
-                      child: Text('No dudes available',
-                          style: TextStyle(fontWeight: FontWeight.bold)))
-                  : ListView.builder(
-                      reverse: true,
-                      shrinkWrap: true,
-                      itemCount: dudeController.dudes.length,
-                      itemBuilder: (context, index) {
-                        return DudeBubble(dude: dudeController.dudes[index]);
-                      })),
+        const AppBackground(alignment: Alignment.bottomCenter),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 28.0),
+            child: Consumer<DudeController>(
+              builder: ((context, dudeController, child) => Column(
+                    children: [
+                      Flexible(
+                        child: Stack(
+                            alignment: AlignmentDirectional.topStart,
+                            children: [
+                              Positioned(
+                                key: GlobalKey(),
+                                right: 30,
+                                child: ElevatedButton(
+                                  style: TextButton.styleFrom(
+                                    fixedSize: const Size(184, 50),
+                                    backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
+                                  ),
+                                  onPressed: () async {
+                                    await dudeController.receivedDudes;
+                                    setState(() {});
+                                  },
+                                  child: const Text(
+                                    'Received',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                key: GlobalKey(),
+                                left: 30,
+                                child: ElevatedButton(
+                                  style: TextButton.styleFrom(
+                                    fixedSize: const Size(184, 50),
+                                    backgroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
+                                  ),
+                                  onPressed: () async {
+                                    await dudeController.sentDudes;
+                                  },
+                                  child: const Text('Sent'),
+                                ),
+                              ),
+                            ]),
+                      ),
+                      Flexible(
+                          flex: 5,
+                          child: dudeController.dudes.isEmpty
+                              ? const Center(
+                                  child: Text('No dudes available',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)))
+                              : DudeCard(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.8,
+                                  color:
+                                      const Color.fromRGBO(255, 255, 255, 0.5),
+                                  child: ListView.builder(
+                                      // reverse: true,
+                                      shrinkWrap: true,
+                                      itemCount: dudeController.dudes.length,
+                                      itemBuilder: (context, index) {
+                                        return DudeBubble(
+                                            dude: dudeController.dudes[index]);
+                                      }),
+                                )),
+                    ],
+                  )),
+            ),
+          ),
         ),
       ]),
     );

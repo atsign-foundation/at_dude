@@ -134,8 +134,15 @@ class DudeService {
       try {
         if (key.sharedBy != null && key.key!.length == 36) {
           AtValue _keyValue = await atClientManager.atClient.get(key);
+          var model = DudeModel.fromJson(jsonDecode(_keyValue.value));
+          model.createdAt = _keyValue.metadata!.createdAt;
+          if (atClientManager.atClient.getCurrentAtSign()! == model.sender) {
+            model.isSender = true;
+          } else {
+            model.isSender = false;
+          }
 
-          dudes.add(DudeModel.fromJson(jsonDecode(_keyValue.value)));
+          dudes.add(model);
         }
       } on Exception catch (e) {
         ScaffoldMessenger(child: SnackBar(content: Text(e.toString())));
