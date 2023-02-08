@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
+import '../utils/enums.dart';
 import 'dude_card.dart';
 
 class DudeBubble extends StatelessWidget {
@@ -43,7 +44,7 @@ class DudeBubble extends StatelessWidget {
               children: [
                 IconButton(
                     onPressed: () async {
-                      if (dude.duration.inSeconds < 1) {
+                      if (dude.selectedDudeType == DudeType.hi) {
                         await audioPlayer.play(AssetSource('audios/dude.wav'));
                       } else {
                         await audioPlayer.play(AssetSource('audios/dude.mp3'));
@@ -62,10 +63,6 @@ class DudeBubble extends StatelessWidget {
             children: [
               Text(
                 DateFormat.yMd().add_jm().format(dude.createdAt!),
-                style: const TextStyle(fontSize: 10),
-              ),
-              Text(
-                "${dude.duration.inMinutes.remainder(60)}:${(dude.duration.inSeconds.remainder(60))}",
                 style: const TextStyle(fontSize: 10),
               ),
             ],

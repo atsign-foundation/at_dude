@@ -2,22 +2,34 @@
 
 import 'package:uuid/uuid.dart';
 
+import '../utils/enums.dart';
+
 class DudeModel {
   late String id;
-  String dude = '';
   late String sender;
   late String receiver;
   late DateTime timeSent;
-  late Duration duration;
+  DudeType? selectedDudeType;
   DateTime? createdAt;
   bool? isSender;
+
+  List<Map<int, String>> audios = [
+    {DudeType.hi.index: 'assets/audios/dude.wav'},
+    {DudeType.youWontBelieve.index: 'assets/audios/dude.wav'},
+    {DudeType.awesome.index: 'assets/audios/dude.mp3'},
+  ];
+  List<Map<int, String>> message = [
+    {DudeType.hi.index: 'Hi Dude!'},
+    {DudeType.youWontBelieve.index: 'You won\'t believe Dude!'},
+    {DudeType.awesome.index: 'Awesome Dude!'},
+  ];
+
   DudeModel({
     required this.id,
-    required this.dude,
     required this.sender,
     required this.receiver,
     required this.timeSent,
-    required this.duration,
+    required this.selectedDudeType,
     this.isSender,
     this.createdAt,
   });
@@ -27,37 +39,51 @@ class DudeModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'dude': dude,
       'sender': sender,
       'receiver': receiver,
       'timeSent': timeSent.toIso8601String(),
-      'duration': duration.inMilliseconds,
+      'selectedDudeType': selectedDudeType!.name
     };
   }
 
   DudeModel.fromJson(Map<String, dynamic> json)
       : this(
             id: json['id'] as String,
-            dude: json['dude'] as String,
             sender: json['sender'] as String,
             receiver: json['receiver'] as String,
             timeSent: DateTime.parse((json['timeSent'])) as DateTime,
-            duration: Duration(milliseconds: json['duration']) as Duration);
+            selectedDudeType: getEnumFromName(json['selectedDudeType']));
 
   // @override
   // String toString() {
   //   return 'DudeModel(id: $id, dude: $dude, sender: $sender, receiver: $receiver, timeSent: $timeSent, duration: $duration)';
   // }
 
+  static DudeType getEnumFromName(String name) {
+    if (name == DudeType.hi.name) {
+      return DudeType.hi;
+    } else if (name == DudeType.youWontBelieve.name) {
+      return DudeType.youWontBelieve;
+    } else {
+      return DudeType.awesome;
+    }
+  }
+
+  DudeType getEnumFromIndex(int index) {
+    if (index == DudeType.hi.index) {
+      return DudeType.hi;
+    } else if (index == DudeType.youWontBelieve.index) {
+      return DudeType.youWontBelieve;
+    } else if (index == DudeType.awesome.index) {
+      return DudeType.awesome;
+    } else {
+      return DudeType.awesome;
+    }
+  }
+
   void saveId() => id = const Uuid().v4();
-  void saveDude(String value) => dude = value;
+
   void saveSender(String value) => sender = value;
   void saveReceiver(String value) => receiver = value;
   void saveTimeSent() => timeSent = DateTime.now();
-
-  ///Record the duration of a dude.
-  /// Record the length of a dude use want to send.
-  void saveDuration(DateTime startTime) {
-    duration = DateTime.now().difference(startTime);
-  }
 }

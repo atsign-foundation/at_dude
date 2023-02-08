@@ -405,13 +405,13 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                         },
                       ),
                     ],
-                    child: ContactListTile(
+                    child: CustomContactListTile(
                       showcaseKey: sendDudeContactKey,
                       key: UniqueKey(),
                       contactService: _contactService,
                       asSelectionTile: widget.asSelectionScreen,
                       asSingleSelectionTile: widget.asSingleSelectionScreen,
-                      contact: contactsForAlphabet[index],
+                      contact: contactsForAlphabet[index]!,
                       selectedList: (s) {
                         selectedList = s!;
                         if (widget.selectedList != null) {

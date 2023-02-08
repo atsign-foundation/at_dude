@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../models/persona_model.dart';
@@ -9,6 +11,7 @@ class PersonaController with ChangeNotifier {
   PersonaModel get personaModel => _personaModel;
   Future<void> getPersona() async {
     _personaModel = await DudeService.getInstance().getPersona();
+    log('get persona called');
     notifyListeners();
   }
 

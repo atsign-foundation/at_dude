@@ -1,24 +1,31 @@
 // import 'package:flutter_spotlight/flutter_spotlight.dart';
 
 import 'package:at_app_flutter/at_app_flutter.dart';
+import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
+import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rive/rive.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../controller/controller.dart';
+import '../controller/persona_controller.dart';
 import '../models/dude_model.dart';
 import '../models/persona_model.dart';
 import '../services/services.dart';
 import '../utils/utils.dart';
-import '../widgets/atsign_avatar.dart';
+import '../widgets/dude_card.dart';
+import '../widgets/dude_list_tile.dart';
+import '../widgets/tip_card.dart';
 import '../widgets/widgets.dart';
 import 'screens.dart';
 
 class SendDudeScreen extends StatefulWidget {
   const SendDudeScreen({this.canPop = false, Key? key}) : super(key: key);
   final bool canPop;
+
   static String routeName = 'sendDudeScreen';
 
   @override
@@ -26,7 +33,7 @@ class SendDudeScreen extends StatefulWidget {
 }
 
 class _SendDudeScreenState extends State<SendDudeScreen> {
-  bool _buttonPressed = false;
+  final bool _buttonPressed = false;
   DudeModel dude = DudeModel.newDude();
   late DateTime startTime;
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
@@ -36,13 +43,18 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
   GlobalKey keyContactButton = GlobalKey();
   GlobalKey keyFavoriteContact = GlobalKey();
+  GlobalKey contactKey = GlobalKey();
   List<GlobalKey<State<StatefulWidget>>> showcaseList = [];
+
+  late RiveAnimationController _controller;
+  bool onPressed = false;
 
   @override
   void initState() {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<PersonaController>(context, listen: false).getPersona();
       final createDudeStatus =
           await SharedPreferencesService.getCreateDudeStatus();
       if (createDudeStatus) showcaseList.add(keyFingerPrintButton);
@@ -70,8 +82,25 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
         if (result) await SharedPreferencesService.setPersonaStatus();
       }
     });
-
     super.initState();
+    _controller = OneShotAnimation(
+      'bouncing ball',
+      autoplay: false,
+      onStop: () => setState(() => onPressed = false),
+      onStart: () => setState(() => onPressed = true),
+    );
+  }
+
+  late SMITrigger? _onPressed;
+  late SMIInput<double> _cardInt;
+  double cardCount = -1;
+
+  void _onRiveInit(Artboard artboard) {
+    final controller =
+        StateMachineController.fromArtboard(artboard, 'State Machine 1');
+    artboard.addController(controller!);
+    _onPressed = controller.findInput<bool>('onPressed') as SMITrigger;
+    _cardInt = controller.findInput<double>('cardInt') as SMINumber;
   }
 
   @override
@@ -112,9 +141,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     required String contactAtsign,
     required BuildContext context,
   }) async {
-    if (dude.dude.isEmpty) {
+    if (dude.selectedDudeType == null) {
       SnackBars.notificationSnackBar(
-          content: Texts.createDudeFirst, context: context);
+          content: 'Select Dude First', context: context);
     } else {
       SnackBars.notificationSnackBar(
           content: 'Sending Dude... please wait.', context: context);
@@ -139,22 +168,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AtContact? contact =
+        ModalRoute.of(context)!.settings.arguments as AtContact?;
     SizeConfig().init(context);
 
     List<String> strArr = ['D', 'u', 'd', 'e'];
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        title: const Text(
-          Texts.sendDude,
-          style: TextStyle(color: Colors.black),
-        ),
-        actions: const [AtsignAvatar()],
-        automaticallyImplyLeading: widget.canPop,
-      ),
       extendBody: true,
       extendBodyBehindAppBar: true,
       bottomNavigationBar: const DudeBottomNavigationBar(
@@ -164,146 +184,225 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
         const AppBackground(
           alignment: Alignment.centerLeft,
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              flex: 5,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 200,
-                  ),
-                  DudeTimer(rawTime: rawTime),
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        dude.dude,
-                        style: Theme.of(context).textTheme.headline1,
-                        textAlign: TextAlign.center,
-                        maxLines: 4,
-                        softWrap: true,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Flexible(
-              flex: 3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Showcase(
-                    key: keyFingerPrintButton,
-                    description: Texts.sendDudeIconDesc,
-                    contentPadding: const EdgeInsets.only(
-                        top: 8, bottom: 8, right: 8, left: 44),
-                    child: GestureDetector(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          startTime = DateTime.now();
-
-                          _stopWatchTimer.onExecute.add(StopWatchExecute.start);
-                          dude.saveId;
-                          setState(() {
-                            rawTime = _stopWatchTimer.rawTime.value;
-                            dude.saveDude(strArr.join("").toString());
-                          });
-                          _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-
-                          dude.saveDuration(startTime);
-                        },
-                        child: const Icon(
-                          Icons.fingerprint,
-                          size: 40,
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      contact == null
+                          ? const DudeListTile(
+                              title: 'Send a Dude!',
+                              subtitle: 'Pst...Pick a contact first!',
+                              trailing: '📢')
+                          : DudeCard(
+                              child: const Text('Sending to...'),
+                              width: double.maxFinite,
+                            ),
+                      contact != null
+                          ? DudeCard(
+                              color: Colors.white,
+                              child: CustomContactListTile(
+                                showcaseKey: contactKey,
+                                contact: contact,
+                                contactService: ContactService(),
+                              ),
+                            )
+                          : const SizedBox(),
+                      contact == null
+                          ? ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize:
+                                      const Size(double.maxFinite, 61.22)),
+                              onPressed: () async {
+                                await Navigator.of(context)
+                                    .push(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              ShowCaseWidget(
+                                                  builder: Builder(
+                                                      builder: ((context) =>
+                                                          DudeContactsScreen(
+                                                            // showFavoriteContactTutorial:
+                                                            //     showFavoriteContactTutorial,
+                                                            onSendIconPressed: (String
+                                                                    atsign) =>
+                                                                _handleSendDudeToContact(
+                                                                    dude: dude,
+                                                                    contactAtsign:
+                                                                        atsign,
+                                                                    context:
+                                                                        context),
+                                                          ))))),
+                                    )
+                                    .whenComplete(() async => await context
+                                        .read<DudeController>()
+                                        .getContacts());
+                              },
+                              child: const Text('Select Contact'),
+                            )
+                          : ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize:
+                                      const Size(double.maxFinite, 61.22)),
+                              onPressed: () {
+                                _handleSendDudeToContact(
+                                    dude: dude,
+                                    contactAtsign: contact.atSign!,
+                                    context: context);
+                              },
+                              child: const Text('Send Dude')),
+                      SizedBox(
+                        height: 400,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (contact == null) {
+                              SnackBars.notificationSnackBar(
+                                  content: 'Select Contact first',
+                                  context: context);
+                            } else {
+                              _onPressed?.fire();
+                              setState(() {
+                                cardCount = cardCount + 1;
+                                if (cardCount > 2) {
+                                  cardCount = 0;
+                                }
+                              });
+                              _cardInt.value = cardCount;
+                              dude.selectedDudeType =
+                                  dude.getEnumFromIndex(_cardInt.value.toInt());
+                              dude.saveId();
+                            }
+                          },
+                          child: RiveAnimation.asset(
+                            'assets/animations/drifty_rory_alt_6.riv',
+                            fit: BoxFit.contain,
+                            animations: const ['state machine 2'],
+                            // controllers: [_controller],
+                            onInit: _onRiveInit,
+                          ),
                         ),
                       ),
-                      onLongPressStart: (_) async {
-                        startTime = DateTime.now();
-                        if (_stopWatchTimer.rawTime.value > 0) {
-                          _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
-                        }
-                        _stopWatchTimer.onExecute.add(StopWatchExecute.start);
-
-                        _buttonPressed = true;
-                        do {
-                          strArr.insert(1, "u");
-                          setState(() {
-                            rawTime = _stopWatchTimer.rawTime.value;
-                            dude.saveDude(strArr.join("").toString());
-                          });
-                          await Future.delayed(const Duration(seconds: 1));
-                        } while (_buttonPressed);
-                      },
-                      onLongPressEnd: (_) {
-                        setState(() {
-                          _buttonPressed = false;
-                        });
-
-                        _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-
-                        dude.saveDuration(startTime);
-                        dude.saveId();
-                      },
-                    ),
+                      contact == null
+                          ? const SizedBox()
+                          : const TipCard(tip: 'Tap the ball to select a Dude!')
+                    ],
                   ),
-                  const SizedBox(
-                    width: 25,
-                  ),
-                  Showcase(
-                    key: keyContactButton,
-                    description: Texts.showContactScreenIconDesc,
-                    child: ElevatedButton(
-                      child: const Icon(
-                        Icons.contacts_outlined,
-                        size: 40,
-                      ),
-                      onPressed: () async {
-                        await Navigator.of(context)
-                            .push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ShowCaseWidget(
-                                          builder: Builder(
-                                              builder: ((context) =>
-                                                  DudeContactsScreen(
-                                                    // showFavoriteContactTutorial:
-                                                    //     showFavoriteContactTutorial,
-                                                    onSendIconPressed: (String
-                                                            atsign) =>
-                                                        _handleSendDudeToContact(
-                                                            dude: dude,
-                                                            contactAtsign:
-                                                                atsign,
-                                                            context: context),
-                                                  ))))),
-                            )
-                            .whenComplete(() async => await context
-                                .read<DudeController>()
-                                .getContacts());
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                // Flexible(
+                //   flex: 3,
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Showcase(
+                //         key: keyFingerPrintButton,
+                //         description: Texts.sendDudeIconDesc,
+                //         contentPadding: const EdgeInsets.only(
+                //             top: 8, bottom: 8, right: 8, left: 44),
+                //         child: GestureDetector(
+                //           child: ElevatedButton(
+                //             onPressed: () async {
+                //               startTime = DateTime.now();
+
+                //               _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                //               dude.saveId;
+                //               setState(() {
+                //                 rawTime = _stopWatchTimer.rawTime.value;
+                //                 dude.saveDude(strArr.join("").toString());
+                //               });
+                //               _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+
+                //               dude.saveDuration(startTime);
+                //             },
+                //             child: const Icon(
+                //               Icons.fingerprint,
+                //               size: 40,
+                //             ),
+                //           ),
+                //           onLongPressStart: (_) async {
+                //             startTime = DateTime.now();
+                //             if (_stopWatchTimer.rawTime.value > 0) {
+                //               _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+                //             }
+                //             _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+
+                //             _buttonPressed = true;
+                //             do {
+                //               strArr.insert(1, "u");
+                //               setState(() {
+                //                 rawTime = _stopWatchTimer.rawTime.value;
+                //                 dude.saveDude(strArr.join("").toString());
+                //               });
+                //               await Future.delayed(const Duration(seconds: 1));
+                //             } while (_buttonPressed);
+                //           },
+                //           onLongPressEnd: (_) {
+                //             setState(() {
+                //               _buttonPressed = false;
+                //             });
+
+                //             _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+
+                //             dude.saveDuration(startTime);
+                //             dude.saveId();
+                //           },
+                //         ),
+                //       ),
+                //       const SizedBox(
+                //         width: 25,
+                //       ),
+                //       Showcase(
+                //         key: keyContactButton,
+                //         description: Texts.showContactScreenIconDesc,
+                //         child: ElevatedButton(
+                //           child: const Icon(
+                //             Icons.contacts_outlined,
+                //             size: 40,
+                //           ),
+                //           onPressed: () async {
+                //             await Navigator.of(context)
+                //                 .push(
+                //                   MaterialPageRoute(
+                //                       builder: (BuildContext context) =>
+                //                           ShowCaseWidget(
+                //                               builder: Builder(
+                //                                   builder: ((context) =>
+                //                                       DudeContactsScreen(
+                //                                         // showFavoriteContactTutorial:
+                //                                         //     showFavoriteContactTutorial,
+                //                                         onSendIconPressed: (String
+                //                                                 atsign) =>
+                //                                             _handleSendDudeToContact(
+                //                                                 dude: dude,
+                //                                                 contactAtsign:
+                //                                                     atsign,
+                //                                                 context: context),
+                //                                       ))))),
+                //                 )
+                //                 .whenComplete(() async => await context
+                //                     .read<DudeController>()
+                //                     .getContacts());
+                //           },
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: 180,
+                //   child: FavoriteContacts(
+                //     favoriteContactKey: keyFavoriteContact,
+                //     dude: dude,
+                //     updateIsLoading: updateIsLoading,
+                //   ),
+                // ),
+              ],
             ),
-            SizedBox(
-              height: 180,
-              child: FavoriteContacts(
-                favoriteContactKey: keyFavoriteContact,
-                dude: dude,
-                updateIsLoading: updateIsLoading,
-              ),
-            ),
-            const SizedBox(
-              height: kBottomNavigationBarHeight,
-            ),
-          ],
+          ),
         ),
         isLoading ? const LoadingIndicator() : const SizedBox()
       ]),

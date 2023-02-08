@@ -16,6 +16,17 @@ class PersonaModel {
     {Persona.gigiRiptide.index: 'assets/images/personas/gigi_riptide.png'},
     {Persona.driftyRory.index: 'assets/images/personas/drifty_rory.png'},
   ];
+  List<Map<int, String>> happyImages = [
+    {
+      Persona.tidalWaveTory.index:
+          'assets/images/personas/tidal_wave_tory_happy.png'
+    },
+    {
+      Persona.kawabungaKenny.index: 'assets/images/personas/kawabunga_kenny.png'
+    },
+    {Persona.gigiRiptide.index: 'assets/images/personas/gigi_riptide.png'},
+    {Persona.driftyRory.index: 'assets/images/personas/drifty_rory.png'},
+  ];
 
   Persona selectedPersona = Persona.tidalWaveTory;
 

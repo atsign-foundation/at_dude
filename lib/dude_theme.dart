@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 const kCaribbeanShallows = Color(0XFF57cbe7);
 const kPrimaryColor = Color(0XFFF95B5C);
-const kAlternativeColor = Color(0XFF42C1BA);
+const kAlternativeColor = Color(0XFF56C7DF);
 
 class DudeTheme {
   // 1

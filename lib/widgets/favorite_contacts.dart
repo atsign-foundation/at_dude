@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
-
 import '../models/models.dart';
 import '../services/services.dart';
 import '../utils/utils.dart';
@@ -95,7 +93,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                         } else {
                           return GestureDetector(
                             onTap: () {
-                              if (widget.dude.dude.isEmpty) {
+                              if (widget.dude.selectedDudeType != null) {
                                 SnackBars.notificationSnackBar(
                                     content: Texts.createDudeFirst,
                                     context: context);

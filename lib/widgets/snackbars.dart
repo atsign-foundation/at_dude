@@ -17,7 +17,7 @@ class SnackBars extends StatelessWidget {
 
   static void notificationSnackBar(
       {required String content, required BuildContext context}) {
-    Duration duration = const Duration(seconds: 3);
+    Duration duration = const Duration(seconds: 2);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         content,

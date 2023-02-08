@@ -79,10 +79,7 @@ class DudeService {
           ProfileModel.fromJson(jsonDecode(profileAtValue.value));
       profileModel.saveId(dude.sender);
       profileModel.dudesSent += 1;
-      profileModel.dudeHours += dude.duration;
-      if (dude.duration > profileModel.longestDude) {
-        profileModel.saveLongestDude(dude.duration);
-      }
+
       await atClientManager.atClient
           .put(
             profileKey,
@@ -99,11 +96,9 @@ class DudeService {
             profileKey,
             json.encode(
               ProfileModel(
-                      id: dude.sender,
-                      dudesSent: 1,
-                      dudeHours: dude.duration,
-                      longestDude: dude.duration)
-                  .toJson(),
+                id: dude.sender,
+                dudesSent: 1,
+              ).toJson(),
             ),
           )
           .whenComplete(() => isCompleted = true)

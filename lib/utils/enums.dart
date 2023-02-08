@@ -4,3 +4,9 @@ enum Persona {
   gigiRiptide,
   driftyRory,
 }
+
+enum DudeType {
+  hi,
+  youWontBelieve,
+  awesome,
+}
