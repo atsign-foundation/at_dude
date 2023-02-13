@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../controller/dude_controller.dart';
+import '../controller/controller.dart';
 import '../models/dude_model.dart';
 import '../utils/enums.dart';
 import 'dude_card.dart';
@@ -33,6 +35,25 @@ class DudeBubble extends StatelessWidget {
       }
     }
 
+    String getAtsignName(String atsign) {
+      var atContacts = context.watch<ContactsController>().contacts;
+      log('atcontact is: ${atContacts.toString()}');
+      String? name;
+      if (atContacts.isNotEmpty) {
+        var name = atContacts
+            .where((element) => element.atSign == atsign)
+            .first
+            .tags!['name'] as String?;
+      }
+
+      log(dude.sender);
+      if (name != null) {
+        return name;
+      } else {
+        return atsign;
+      }
+    }
+
     return DudeCard(
       color: Colors.white,
       child: Row(
@@ -54,7 +75,7 @@ class DudeBubble extends StatelessWidget {
                           .deleteDude(dude);
                     },
                     icon: const Icon(Icons.play_arrow_outlined)),
-                Flexible(child: Text(dude.sender.replaceFirst('@', ''))),
+                Flexible(child: Text(getAtsignName(dude.sender))),
               ],
             ),
           ),
@@ -62,7 +83,7 @@ class DudeBubble extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                DateFormat.yMd().add_jm().format(dude.createdAt!),
+                DateFormat.yMd().add_jm().format(dude.timeSent),
                 style: const TextStyle(fontSize: 10),
               ),
             ],

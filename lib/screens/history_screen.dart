@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../controller/contacts_controller.dart';
 import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
 import '../widgets/dude_card.dart';
@@ -22,6 +23,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Provider.of<DudeController>(context, listen: false).getDudes();
+      await Provider.of<ContactsController>(context, listen: false)
+          .getContacts();
     });
     super.initState();
     super.initState();
@@ -49,50 +52,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
             child: Consumer<DudeController>(
               builder: ((context, dudeController, child) => Column(
                     children: [
-                      Flexible(
-                        child: Stack(
-                            alignment: AlignmentDirectional.topStart,
-                            children: [
-                              Positioned(
-                                key: GlobalKey(),
-                                right: 30,
-                                child: ElevatedButton(
-                                  style: TextButton.styleFrom(
-                                    fixedSize: const Size(184, 50),
-                                    backgroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
-                                  ),
-                                  onPressed: () async {
-                                    await dudeController.receivedDudes;
-                                    setState(() {});
-                                  },
-                                  child: const Text(
-                                    'Received',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                key: GlobalKey(),
-                                left: 30,
-                                child: ElevatedButton(
-                                  style: TextButton.styleFrom(
-                                    fixedSize: const Size(184, 50),
-                                    backgroundColor: Colors.red,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
-                                  ),
-                                  onPressed: () async {
-                                    await dudeController.sentDudes;
-                                  },
-                                  child: const Text('Sent'),
-                                ),
-                              ),
-                            ]),
-                      ),
                       Flexible(
                           flex: 5,
                           child: dudeController.dudes.isEmpty

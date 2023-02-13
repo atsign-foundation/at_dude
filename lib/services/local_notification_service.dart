@@ -2,7 +2,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -41,8 +40,8 @@ class LocalNotificationService {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@drawable/ic_stat_speaker_phone');
 
-    const IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
+    const DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: true,
       requestSoundPermission: true,
@@ -52,13 +51,20 @@ class LocalNotificationService {
     const InitializationSettings initializationSettings =
         InitializationSettings(
             android: initializationSettingsAndroid,
-            iOS: initializationSettingsIOS);
+            iOS: initializationSettingsDarwin);
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onSelectNotification: (payload) =>
-          Navigator.of(NavigationService.navKey.currentContext!)
-              .popAndPushNamed(HistoryScreen.routeName),
+      onDidReceiveNotificationResponse: (details) {
+        switch (details.notificationResponseType) {
+          case NotificationResponseType.selectedNotification:
+            Navigator.of(NavigationService.navKey.currentContext!)
+                .popAndPushNamed(HistoryScreen.routeName);
+            break;
+          case NotificationResponseType.selectedNotificationAction:
+            break;
+        }
+      },
     );
   }
 
@@ -89,7 +95,7 @@ class LocalNotificationService {
             importance: Importance.max,
             priority: Priority.high,
             icon: '@drawable/ic_stat_speaker_phone'),
-        iOS: IOSNotificationDetails(
+        iOS: DarwinNotificationDetails(
           sound: 'default.wav',
           presentAlert: true,
           presentBadge: true,

@@ -43,23 +43,19 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   }
 
   /// Sends dude to selected contact
-  Future<void> _handleSendDudeToContact(
-      {required DudeModel dude,
-      required String contactAtsign,
-      required BuildContext context}) async {
+  Future<void> _handleSendDudeToContact({
+    required DudeModel dude,
+    required String contactAtsign,
+  }) async {
     widget.updateIsLoading(true);
-    await DudeService.getInstance()
-        .putDude(dude, contactAtsign, context)
-        .then((value) {
+    await DudeService.getInstance().putDude(dude, contactAtsign).then((value) {
       if (value) {
         widget.updateIsLoading(false);
-        SnackBars.notificationSnackBar(
-            content: 'Dude successfully sent', context: context);
+        SnackBars.notificationSnackBar(content: 'Dude successfully sent');
       } else {
         widget.updateIsLoading(false);
         SnackBars.errorSnackBar(
-            content: 'Something went wrong, please try again',
-            context: context);
+            content: 'Something went wrong, please try again');
       }
     });
   }
@@ -95,14 +91,12 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                             onTap: () {
                               if (widget.dude.selectedDudeType != null) {
                                 SnackBars.notificationSnackBar(
-                                    content: Texts.createDudeFirst,
-                                    context: context);
+                                    content: Texts.createDudeFirst);
                               } else {
                                 _handleSendDudeToContact(
                                     dude: widget.dude,
                                     contactAtsign: contactsController
-                                        .favoriteContacts[index].atSign!,
-                                    context: context);
+                                        .favoriteContacts[index].atSign!);
                               }
                             },
                             child: Showcase(

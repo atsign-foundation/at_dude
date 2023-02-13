@@ -12,6 +12,7 @@ import '../widgets/widgets.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
+  static String routeName = 'settingsScreen';
 
   @override
   Widget build(BuildContext context) {

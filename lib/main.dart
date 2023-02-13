@@ -13,13 +13,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import 'controller/controller.dart';
-import 'controller/persona_controller.dart';
 import 'dude_theme.dart';
 import 'screens/persona_screen.dart';
 import 'screens/screens.dart';
+import 'screens/settings_screen.dart';
 import 'services/services.dart';
 import 'utils/utils.dart';
 import 'widgets/widgets.dart';
@@ -48,7 +47,6 @@ Future<void> main() async {
           ChangeNotifierProvider.value(value: DudeController()),
           ChangeNotifierProvider.value(value: ContactsController()),
           ChangeNotifierProvider.value(value: AuthenticationController()),
-          ChangeNotifierProvider.value(value: PersonaController()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -59,6 +57,9 @@ Future<void> main() async {
             HistoryScreen.routeName: (context) => const HistoryScreen(),
             StatsScreen.routeName: (context) => const StatsScreen(),
             PersonaScreen.routeName: (context) => const PersonaScreen(),
+            DudeContactsScreen.routeName: (context) =>
+                const DudeContactsScreen(),
+            SettingsScreen.routeName: (context) => const SettingsScreen()
           },
           navigatorKey: NavigationService.navKey,
         )),
@@ -121,19 +122,13 @@ class _MyAppState extends State<MyApp> {
               .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
 
-          await Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: ((context) => ShowCaseWidget(
-                  builder:
-                      Builder(builder: (context) => const SendDudeScreen()),
-                )),
-          ));
+          await Navigator.of(context).pushNamed(SendDudeScreen.routeName);
 
           break;
 
         case AtOnboardingResultStatus.error:
           _logger.severe('Onboarding throws ${result.message} error');
-          SnackBars.errorSnackBar(
-              content: result.message ?? '', context: context);
+          SnackBars.errorSnackBar(content: result.message ?? '');
           break;
 
         case AtOnboardingResultStatus.cancel:

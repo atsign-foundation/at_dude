@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:at_app_flutter/at_app_flutter.dart';
-import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
@@ -108,9 +107,7 @@ class AuthenticationService {
 
       case AtOnboardingResultStatus.error:
         _logger.severe('Onboarding throws ${result.message} error');
-        SnackBars.errorSnackBar(
-            content: result.message ?? '',
-            context: NavigationService.navKey.currentContext!);
+        SnackBars.errorSnackBar(content: result.message ?? '');
         break;
 
       case AtOnboardingResultStatus.cancel:

@@ -93,7 +93,7 @@ class _AtSignBottomSheetState extends State<AtSignBottomSheet> {
                                         return const LoadingIndicator();
                                       } else {
                                         SnackBars.errorSnackBar(
-                                            content: 'Error', context: context);
+                                            content: 'Error');
                                         return const SizedBox();
                                       }
                                     }));

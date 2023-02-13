@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../models/dude_model.dart';
 import '../services/dude_service.dart';
-import '../services/navigation_service.dart';
 import '../widgets/widgets.dart';
 
 /// A Dude class that controls the UI update when the [DudeService] methods are called.
@@ -63,9 +62,7 @@ class DudeController with ChangeNotifier {
     bool result = await DudeService.getInstance().deleteContact(atSign);
     result
         ? await getContacts()
-        : SnackBars.errorSnackBar(
-            content: 'Contact not deleted',
-            context: NavigationService.navKey.currentContext!);
+        : SnackBars.errorSnackBar(content: 'Contact not deleted');
     notifyListeners();
   }
 }

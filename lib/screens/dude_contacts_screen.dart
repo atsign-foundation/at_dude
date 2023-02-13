@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:at_common_flutter/at_common_flutter.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/models/contact_base_model.dart';
@@ -11,12 +9,8 @@ import 'package:at_contacts_flutter/widgets/error_screen.dart';
 import 'package:at_contacts_flutter/widgets/horizontal_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 
-import '../controller/controller.dart';
 import '../dude_theme.dart';
-import '../services/shared_preferences_service.dart';
 import '../utils/utils.dart';
 import '../widgets/contact_search_field.dart';
 import '../widgets/contacts_icon.dart';
@@ -25,6 +19,8 @@ import '../widgets/widgets.dart';
 
 /// The screen which is exposed from the library for displaying, adding, selecting and deleting Contacts.
 class DudeContactsScreen extends StatefulWidget {
+  static String routeName = 'dudeContactScreen';
+
   /// takes in @param [context] to get the app context
   final BuildContext? context;
 
@@ -76,7 +72,6 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
   GlobalKey addContactKey = GlobalKey();
   GlobalKey listTileKey = GlobalKey();
   GlobalKey sendDudeContactKey = GlobalKey();
-  List<GlobalKey<State<StatefulWidget>>> showcaseList = [];
 
   /// List of selected contacts
   List<AtContact?> selectedList = [];
@@ -98,66 +93,9 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
         _contactService.selectedContactSink
             .add(_contactService.selectedContacts);
       }
-
-      final addContactStatus =
-          await SharedPreferencesService.getAddContactStatus();
-      addContactStatus ? showcaseList.add(addContactKey) : null;
-
-      showcaseList.isNotEmpty
-          ? ShowCaseWidget.of(context).startShowCase(showcaseList)
-          : null;
-
-      showcaseList.contains(addContactKey)
-          ? await SharedPreferencesService.setContactStatus()
-          : null;
     });
 
     super.initState();
-  }
-
-  Future<void> showFavoriteContactTutorial() async {
-    if (context.read<ContactsController>().favoriteContacts.length == 1) {
-      showcaseList.clear();
-
-      final sendDudeFavoriteContactStatus =
-          await SharedPreferencesService.getSendDudeToFavoriteStatus();
-
-      // if (sendDudeFavoriteContactStatus) showcaseList.add(keyFavoriteContact);
-
-      if (showcaseList.isNotEmpty) {
-        ShowCaseWidget.of(context).startShowCase(showcaseList);
-      }
-
-      // if (showcaseList.contains(keyFavoriteContact)) {
-      //   await SharedPreferencesService.setSendDudeToFavoriteStatus();
-      // }
-    }
-  }
-
-  Future<void> showContactTutorial() async {
-    if (context.read<ContactsController>().contacts.length == 1) {
-      showcaseList.clear();
-
-      final listTileStatus = await SharedPreferencesService.getListTileStatus();
-
-      final sendDudeContactStatus =
-          await SharedPreferencesService.getSendDudeContactStatus();
-
-      listTileStatus ? showcaseList.add(listTileKey) : null;
-      sendDudeContactStatus ? showcaseList.add(sendDudeContactKey) : null;
-
-      showcaseList.isNotEmpty
-          ? ShowCaseWidget.of(context).startShowCase(showcaseList)
-          : null;
-
-      showcaseList.contains(listTileKey)
-          ? await SharedPreferencesService.setListTileStatus()
-          : null;
-
-      showcaseList.contains(listTileKey)
-          ? await SharedPreferencesService.setSendDudeContactStatus()
-          : null;
-    }
   }
 
   @override
@@ -235,8 +173,6 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                                         builder: (context) =>
                                             const DudeAddContactDialog(),
                                       );
-
-                                      await showContactTutorial();
                                     }),
                               )
                             ],
@@ -375,54 +311,48 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
             ),
         itemBuilder: (context, index) {
           return Padding(
-              padding: const EdgeInsets.all(8.0),
-              // child: context.read<ContactsController>().contacts.length == 1
-              //     ?
-              child: Showcase(
-                key: context.read<ContactsController>().contacts.length == 1
-                    ? listTileKey
-                    : GlobalKey(),
-                description: Texts.slidableDesc,
-                child: Card(
-                  child: Slidable(
-                    actionPane: const SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    secondaryActions: <Widget>[
-                      IconSlideAction(
-                        caption: TextStrings().block,
-                        color: ColorConstants.inputFieldColor,
-                        icon: Icons.block,
-                        onTap: () async {
-                          blockUnblockContact(contactsForAlphabet[index]!);
-                        },
-                      ),
-                      IconSlideAction(
-                        caption: TextStrings().delete,
-                        color: Colors.red,
-                        icon: Icons.delete,
-                        onTap: () async {
-                          deleteContact(contactsForAlphabet[index]!);
-                        },
-                      ),
-                    ],
-                    child: CustomContactListTile(
-                      showcaseKey: sendDudeContactKey,
-                      key: UniqueKey(),
-                      contactService: _contactService,
-                      asSelectionTile: widget.asSelectionScreen,
-                      asSingleSelectionTile: widget.asSingleSelectionScreen,
-                      contact: contactsForAlphabet[index]!,
-                      selectedList: (s) {
-                        selectedList = s!;
-                        if (widget.selectedList != null) {
-                          widget.selectedList!(selectedList);
-                        }
-                      },
-                      onTrailingPressed: widget.onSendIconPressed,
-                    ),
+            padding: const EdgeInsets.all(8.0),
+            // child: context.read<ContactsController>().contacts.length == 1
+            //     ?
+            child: Card(
+              child: Slidable(
+                actionPane: const SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: TextStrings().block,
+                    color: ColorConstants.inputFieldColor,
+                    icon: Icons.block,
+                    onTap: () async {
+                      blockUnblockContact(contactsForAlphabet[index]!);
+                    },
                   ),
+                  IconSlideAction(
+                    caption: TextStrings().delete,
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () async {
+                      deleteContact(contactsForAlphabet[index]!);
+                    },
+                  ),
+                ],
+                child: CustomContactListTile(
+                  key: UniqueKey(),
+                  contactService: _contactService,
+                  asSelectionTile: widget.asSelectionScreen,
+                  asSingleSelectionTile: widget.asSingleSelectionScreen,
+                  contact: contactsForAlphabet[index]!,
+                  selectedList: (s) {
+                    selectedList = s!;
+                    if (widget.selectedList != null) {
+                      widget.selectedList!(selectedList);
+                    }
+                  },
+                  onTrailingPressed: widget.onSendIconPressed,
                 ),
-              ));
+              ),
+            ),
+          );
         });
   }
 

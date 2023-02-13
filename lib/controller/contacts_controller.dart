@@ -1,9 +1,7 @@
+import 'package:at_contact/at_contact.dart';
 import 'package:flutter/material.dart';
 
-import 'package:at_contact/at_contact.dart';
 import '../services/contact_service.dart';
-
-import '../services/navigation_service.dart';
 import '../widgets/widgets.dart';
 
 /// A Dude class that controls the UI update when the [ContactsService] methods are called.
@@ -31,7 +29,7 @@ class ContactsController with ChangeNotifier {
         ? await getContacts()
         : SnackBars.errorSnackBar(
             content: 'Contact not deleted',
-            context: NavigationService.navKey.currentContext!);
+          );
     notifyListeners();
   }
 
@@ -50,7 +48,7 @@ class ContactsController with ChangeNotifier {
         ? await getContacts()
         : SnackBars.errorSnackBar(
             content: 'Error adding atsign, atsign may no exist',
-            context: NavigationService.navKey.currentContext!);
+          );
     notifyListeners();
   }
 
@@ -61,8 +59,7 @@ class ContactsController with ChangeNotifier {
     result
         ? await getFavoriteContacts()
         : SnackBars.errorSnackBar(
-            content: 'Error adding atsign, atsign may no exist',
-            context: NavigationService.navKey.currentContext!);
+            content: 'Error adding atsign, atsign may no exist');
     notifyListeners();
   }
 }

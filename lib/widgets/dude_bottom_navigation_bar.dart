@@ -2,7 +2,6 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
@@ -23,35 +22,15 @@ class DudeBottomNavigationBar extends StatefulWidget {
 class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   void _handleOnTap(int currentIndex) {
     if (currentIndex == 4) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (((context) => const SettingsScreen()))),
-          ((route) => false));
+      Navigator.of(context).pushNamed(SettingsScreen.routeName);
     } else if (currentIndex == 2) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: ((context) => ShowCaseWidget(
-                  builder:
-                      Builder(builder: (context) => const SendDudeScreen()),
-                )),
-          ),
-          (Route route) => false);
+      Navigator.of(context).pushNamed(SendDudeScreen.routeName);
     } else if (currentIndex == 3) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (((context) => const HistoryScreen()))),
-          ((route) => false));
+      Navigator.of(context).pushNamed(HistoryScreen.routeName);
     } else if (currentIndex == 1) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (((context) => const StatsScreen()))),
-          ((route) => false));
+      Navigator.of(context).pushNamed(StatsScreen.routeName);
     } else if (currentIndex == 0) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: ((context) => ShowCaseWidget(
-                  builder:
-                      Builder(builder: (context) => const DudeContactsScreen()),
-                )),
-          ),
-          (Route route) => false);
+      Navigator.of(context).pushNamed(DudeContactsScreen.routeName);
     }
   }
 

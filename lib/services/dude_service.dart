@@ -35,7 +35,6 @@ class DudeService {
   Future<bool> putDude(
     DudeModel dude,
     String contactAtsign,
-    BuildContext context,
   ) async {
     bool isCompleted = false;
     dude.saveSender(atClientManager.atClient.getCurrentAtSign()!);
@@ -51,17 +50,20 @@ class DudeService {
       ..key = dude.id
       ..sharedBy = dude.sender
       ..sharedWith = dude.receiver
-      ..metadata = metaData
-      ..namespace = '';
+      ..metadata = metaData;
 
     dude.saveTimeSent();
 
-    await atClientManager.notificationService.notify(
-        NotificationParams.forUpdate(
-          key,
-          value: json.encode(dude.toJson()),
-        ),
-        onSuccess: (notification) async {});
+    try {
+      await atClientManager.notificationService.notify(
+          NotificationParams.forUpdate(
+            key,
+            value: json.encode(dude.toJson()),
+          ),
+          onSuccess: (notification) async {});
+    } on AtClientException {
+      rethrow;
+    }
 
     var profileMetaData = Metadata()
       ..isEncrypted = true

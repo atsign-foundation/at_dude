@@ -9,13 +9,11 @@ import 'package:at_contacts_flutter/widgets/custom_circle_avatar.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
 import '../dude_theme.dart';
 import '../screens/screens.dart';
 import '../services/shared_preferences_service.dart';
-import '../utils/utils.dart';
 
 class CustomContactListTile extends StatefulWidget {
   final Function? onTap;
@@ -25,7 +23,6 @@ class CustomContactListTile extends StatefulWidget {
   final AtContact contact;
   final ContactService contactService;
   final ValueChanged<List<AtContact?>?>? selectedList;
-  final GlobalKey showcaseKey;
 
   const CustomContactListTile({
     Key? key,
@@ -36,7 +33,6 @@ class CustomContactListTile extends StatefulWidget {
     required this.contact,
     required this.contactService,
     this.selectedList,
-    required this.showcaseKey,
   }) : super(key: key);
 
   @override
@@ -176,42 +172,36 @@ class _CustomContactListTileState extends State<CustomContactListTile> {
                   shape: BoxShape.circle,
                 ),
                 child: contactImage),
-            trailing: Showcase(
-              key: context.read<ContactsController>().contacts.length == 1
-                  ? widget.showcaseKey
-                  : GlobalKey(),
-              description: Texts.sendDudeContactDesc,
-              child: IconButton(
-                onPressed: widget.asSelectionTile
-                    ? null
-                    : () async {
-                        await markUnmarkFavoriteContact(widget.contact);
-                        final bool sendDudeFavoriteContactStatus =
-                            await SharedPreferencesService
-                                .getSendDudeToFavoriteStatus();
-                        if (sendDudeFavoriteContactStatus) {
-                          Navigator.pop(context);
-                        }
-                        // await widget.showFavoriteContactTutorial();
+            trailing: IconButton(
+              onPressed: widget.asSelectionTile
+                  ? null
+                  : () async {
+                      await markUnmarkFavoriteContact(widget.contact);
+                      final bool sendDudeFavoriteContactStatus =
+                          await SharedPreferencesService
+                              .getSendDudeToFavoriteStatus();
+                      if (sendDudeFavoriteContactStatus) {
+                        Navigator.pop(context);
+                      }
+                      // await widget.showFavoriteContactTutorial();
 
-                        if (widget.onTrailingPressed != null) {
-                          widget.onTrailingPressed!(widget.contact.atSign);
-                        }
-                      },
-                icon: (widget.asSelectionTile)
-                    ? (isSelected)
-                        ? const Icon(Icons.close)
-                        : const Icon(Icons.add)
-                    : widget.contact.favourite!
-                        ? const Icon(
-                            Icons.star_rounded,
-                            color: kPrimaryColor,
-                          )
-                        : const Icon(
-                            Icons.star_border_rounded,
-                            color: kPrimaryColor,
-                          ),
-              ),
+                      if (widget.onTrailingPressed != null) {
+                        widget.onTrailingPressed!(widget.contact.atSign);
+                      }
+                    },
+              icon: (widget.asSelectionTile)
+                  ? (isSelected)
+                      ? const Icon(Icons.close)
+                      : const Icon(Icons.add)
+                  : widget.contact.favourite!
+                      ? const Icon(
+                          Icons.star_rounded,
+                          color: kPrimaryColor,
+                        )
+                      : const Icon(
+                          Icons.star_border_rounded,
+                          color: kPrimaryColor,
+                        ),
             ),
           );
         });

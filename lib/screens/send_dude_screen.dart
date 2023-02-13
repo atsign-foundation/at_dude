@@ -7,13 +7,10 @@ import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../controller/controller.dart';
-import '../controller/persona_controller.dart';
 import '../models/dude_model.dart';
-import '../models/persona_model.dart';
 import '../services/services.dart';
 import '../utils/utils.dart';
 import '../widgets/dude_card.dart';
@@ -44,7 +41,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   GlobalKey keyContactButton = GlobalKey();
   GlobalKey keyFavoriteContact = GlobalKey();
   GlobalKey contactKey = GlobalKey();
-  List<GlobalKey<State<StatefulWidget>>> showcaseList = [];
 
   late RiveAnimationController _controller;
   bool onPressed = false;
@@ -54,33 +50,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<PersonaController>(context, listen: false).getPersona();
-      final createDudeStatus =
-          await SharedPreferencesService.getCreateDudeStatus();
-      if (createDudeStatus) showcaseList.add(keyFingerPrintButton);
-
-      final contactScreenStatus =
-          await SharedPreferencesService.getContactScreenNavigationStatus();
-      if (contactScreenStatus) showcaseList.add(keyContactButton);
-
-      if (showcaseList.isNotEmpty) {
-        ShowCaseWidget.of(context).startShowCase(showcaseList);
-      }
-
-      if (showcaseList.contains(keyFingerPrintButton)) {
-        await SharedPreferencesService.setCreateDudeStatus();
-      }
-
-      if (showcaseList.contains(keyContactButton)) {
-        await SharedPreferencesService.setContactScreenNavigationStatus();
-      }
-
-      final personaStatus = await SharedPreferencesService.getPersonaStatus();
-      if (personaStatus) {
-        var dudeService = DudeService.getInstance();
-        var result = await dudeService.putPersona(PersonaModel.standard());
-        if (result) await SharedPreferencesService.setPersonaStatus();
-      }
+      await context.read<DudeController>().getDudes();
     });
     super.initState();
     _controller = OneShotAnimation(
@@ -105,27 +75,10 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
   @override
   void dispose() {
-    _stopWatchTimer.dispose().then((value) => null);
+    // _stopWatchTimer.dispose().then((value) => null);
+    // _onPressed!.controller.dispose();
+    // _cardInt.controller.dispose();
     super.dispose();
-  }
-
-  Future<void> showFavoriteContactTutorial() async {
-    if (context.read<ContactsController>().favoriteContacts.length == 1) {
-      showcaseList.clear();
-
-      final sendDudeFavoriteContactStatus =
-          await SharedPreferencesService.getSendDudeToFavoriteStatus();
-
-      if (sendDudeFavoriteContactStatus) showcaseList.add(keyFavoriteContact);
-
-      if (showcaseList.isNotEmpty) {
-        ShowCaseWidget.of(context).startShowCase(showcaseList);
-      }
-
-      if (showcaseList.contains(keyFavoriteContact)) {
-        await SharedPreferencesService.setSendDudeToFavoriteStatus();
-      }
-    }
   }
 
   /// Update the isLoading property to it's appropriate state.
@@ -142,22 +95,16 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     required BuildContext context,
   }) async {
     if (dude.selectedDudeType == null) {
-      SnackBars.notificationSnackBar(
-          content: 'Select Dude First', context: context);
+      SnackBars.notificationSnackBar(content: 'Select Dude First');
     } else {
-      SnackBars.notificationSnackBar(
-          content: 'Sending Dude... please wait.', context: context);
-      await DudeService.getInstance()
-          .putDude(dude, contactAtsign, context)
-          .then(
+      SnackBars.notificationSnackBar(content: 'Sending Dude... please wait.');
+      await DudeService.getInstance().putDude(dude, contactAtsign).then(
         (value) {
           if (value) {
-            SnackBars.notificationSnackBar(
-                content: Texts.dudeSuccessfullySent, context: context);
+            SnackBars.notificationSnackBar(content: Texts.dudeSuccessfullySent);
           } else {
             SnackBars.errorSnackBar(
-                content: 'Something went wrong, please try again.',
-                context: context);
+                content: 'Something went wrong, please try again.');
           }
         },
       );
@@ -207,7 +154,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                           ? DudeCard(
                               color: Colors.white,
                               child: CustomContactListTile(
-                                showcaseKey: contactKey,
                                 contact: contact,
                                 contactService: ContactService(),
                               ),
@@ -220,28 +166,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                                       const Size(double.maxFinite, 61.22)),
                               onPressed: () async {
                                 await Navigator.of(context)
-                                    .push(
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              ShowCaseWidget(
-                                                  builder: Builder(
-                                                      builder: ((context) =>
-                                                          DudeContactsScreen(
-                                                            // showFavoriteContactTutorial:
-                                                            //     showFavoriteContactTutorial,
-                                                            onSendIconPressed: (String
-                                                                    atsign) =>
-                                                                _handleSendDudeToContact(
-                                                                    dude: dude,
-                                                                    contactAtsign:
-                                                                        atsign,
-                                                                    context:
-                                                                        context),
-                                                          ))))),
-                                    )
-                                    .whenComplete(() async => await context
-                                        .read<DudeController>()
-                                        .getContacts());
+                                    .pushReplacementNamed(
+                                        DudeContactsScreen.routeName)
+                                    .whenComplete(() async =>
+                                        await NavigationService
+                                            .navKey.currentContext!
+                                            .read<DudeController>()
+                                            .getContacts());
                               },
                               child: const Text('Select Contact'),
                             )
@@ -249,8 +180,8 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                               style: ElevatedButton.styleFrom(
                                   fixedSize:
                                       const Size(double.maxFinite, 61.22)),
-                              onPressed: () {
-                                _handleSendDudeToContact(
+                              onPressed: () async {
+                                await _handleSendDudeToContact(
                                     dude: dude,
                                     contactAtsign: contact.atSign!,
                                     context: context);
@@ -262,8 +193,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                           onTap: () {
                             if (contact == null) {
                               SnackBars.notificationSnackBar(
-                                  content: 'Select Contact first',
-                                  context: context);
+                                  content: 'Select Contact first');
                             } else {
                               _onPressed?.fire();
                               setState(() {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,7 @@ class MySyncProgressListener extends SyncProgressListener {
         BuildContext context = NavigationService.navKey.currentContext!;
         if (isKeyDude) {
           await context.read<DudeController>().getDudes();
+          log('dude read is: $isKeyDude');
         }
 
         if (isKeyPersona) {
