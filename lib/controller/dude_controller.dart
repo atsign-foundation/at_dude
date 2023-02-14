@@ -65,4 +65,14 @@ class DudeController with ChangeNotifier {
         : SnackBars.errorSnackBar(content: 'Contact not deleted');
     notifyListeners();
   }
+
+  Future<bool> deleteAllData() async {
+    bool result = await DudeService.getInstance().deleteAllData();
+    result
+        ? await getDudes()
+        : SnackBars.errorSnackBar(content: 'All data not deleted');
+    notifyListeners();
+
+    return result;
+  }
 }

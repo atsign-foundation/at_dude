@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import '../controller/contacts_controller.dart';
 import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
+import '../services/navigation_service.dart';
 import '../widgets/dude_card.dart';
 import '../widgets/widgets.dart';
+import 'dude_contacts_screen.dart';
 
 class HistoryScreen extends StatefulWidget {
   static String routeName = 'history';
@@ -26,7 +28,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       await Provider.of<ContactsController>(context, listen: false)
           .getContacts();
     });
-    super.initState();
+
     super.initState();
   }
 
@@ -55,10 +57,38 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       Flexible(
                           flex: 5,
                           child: dudeController.dudes.isEmpty
-                              ? const Center(
-                                  child: Text('No dudes available',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)))
+                              ? DudeCard(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.5,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'No new dudes!',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Image.asset(
+                                          'assets/images/drifty_rory_sad.png'),
+                                      ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              fixedSize: const Size(
+                                                  double.maxFinite, 61.22)),
+                                          onPressed: () async {
+                                            await Navigator.of(context)
+                                                .pushReplacementNamed(
+                                                    DudeContactsScreen
+                                                        .routeName)
+                                                .whenComplete(() async =>
+                                                    await NavigationService
+                                                        .navKey.currentContext!
+                                                        .read<DudeController>()
+                                                        .getContacts());
+                                          },
+                                          child: const Text('Send Dude'))
+                                    ],
+                                  ),
+                                )
                               : DudeCard(
                                   height:
                                       MediaQuery.of(context).size.height * 0.8,

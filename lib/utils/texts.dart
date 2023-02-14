@@ -1,4 +1,5 @@
 class Texts {
+  static const String atDude = 'at_dude';
   static const String atsign = 'atSign';
   static const String sendDudeIconDesc =
       'The longer you press and hold this button the longer the "dude" you create.';
@@ -33,11 +34,12 @@ class Texts {
   static const String selectYourDude = 'Select your dude';
   static const String backupYourKeys = 'Backup Your Keys';
   static const String switchAtsign = 'Switch atSign';
-  static const String resetAtsign = 'Reset Atsign';
+  static const String resetAtsign = 'Reset atSign';
   static const String deleteYourKey = 'Delete Your Key';
   static const String faq = 'FAQ';
   static const String contactUs = 'Contact Us';
   static const String privacyPolicy = 'Privacy Policy';
+  static const String deleteAllData = 'Delete all dudes';
 
   // Persona Screen
   static const String eyeSelectYourDude = '👀   Select your dude';

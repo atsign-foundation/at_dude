@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
+import '../dude_theme.dart';
 import '../models/dude_model.dart';
 import '../utils/enums.dart';
 import 'dude_card.dart';
@@ -36,8 +37,9 @@ class DudeBubble extends StatelessWidget {
     }
 
     String getAtsignName(String atsign) {
+      context.read<ContactsController>().getContacts();
       var atContacts = context.watch<ContactsController>().contacts;
-      log('atcontact is: ${atContacts.toString()}');
+
       String? name;
       if (atContacts.isNotEmpty) {
         var name = atContacts
@@ -46,7 +48,6 @@ class DudeBubble extends StatelessWidget {
             .tags!['name'] as String?;
       }
 
-      log(dude.sender);
       if (name != null) {
         return name;
       } else {
@@ -65,17 +66,43 @@ class DudeBubble extends StatelessWidget {
               children: [
                 IconButton(
                     onPressed: () async {
-                      if (dude.selectedDudeType == DudeType.hi) {
-                        await audioPlayer.play(AssetSource('audios/dude.wav'));
-                      } else {
-                        await audioPlayer.play(AssetSource('audios/dude.mp3'));
+                      try {
+                        if (dude.selectedDudeType == DudeType.hi) {
+                          await audioPlayer.play(
+                            AssetSource('audios/hi_dude_scott.wav'),
+                          );
+                        } else if (dude.selectedDudeType ==
+                            DudeType.youWontBelieve) {
+                          await audioPlayer.play(AssetSource(
+                              'audios/you_woudnt_believe_dude_scott.wav'));
+                        } else if (dude.selectedDudeType == DudeType.awesome) {
+                          await audioPlayer.play(
+                              AssetSource('audios/awesome_dude_scott.wav'));
+                        }
+                      } catch (e) {
+                        log(e.toString());
                       }
 
                       Provider.of<DudeController>(context, listen: false)
                           .deleteDude(dude);
                     },
                     icon: const Icon(Icons.play_arrow_outlined)),
-                Flexible(child: Text(getAtsignName(dude.sender))),
+                Flexible(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      getAtsignName(dude.sender),
+                    ),
+                    Text(
+                      '"${dude.message[dude.selectedDudeType!.index].values.first}"',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2!
+                          .copyWith(color: kPrimaryColor, fontSize: 12),
+                    )
+                  ],
+                )),
               ],
             ),
           ),

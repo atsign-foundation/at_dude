@@ -33,13 +33,15 @@ class SnackBars extends StatelessWidget {
 
   static void notificationSnackBar({
     required String content,
+    SnackBarAction? action,
+    Duration duration = const Duration(seconds: 2),
   }) {
-    Duration duration = const Duration(seconds: 2);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         content,
         textAlign: TextAlign.center,
       ),
+      action: action,
       duration: duration,
       backgroundColor: kAlternativeColor,
     ));

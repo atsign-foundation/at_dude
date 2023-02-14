@@ -1,8 +1,10 @@
 import 'package:at_backupkey_flutter/at_backupkey_flutter.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
 import '../services/navigation_service.dart';
 import '../utils/texts.dart';
@@ -110,6 +112,30 @@ class SettingsScreen extends StatelessWidget {
                       }
                     },
                   ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  SettingsButton(
+                    icon: Icons.delete_forever,
+                    title: Texts.deleteAllData,
+                    onTap: () async {
+                      SnackBars.notificationSnackBar(
+                        content: 'Are you sure',
+                        action: SnackBarAction(
+                            label: 'Yes',
+                            textColor: Colors.white,
+                            onPressed: () async {
+                              bool result = await context
+                                  .read<DudeController>()
+                                  .deleteAllData();
+                              if (result) {
+                                SnackBars.notificationSnackBar(
+                                    content: "All Dude Deleted");
+                              }
+                            }),
+                      );
+                    },
+                  )
                 ],
               ),
             ),

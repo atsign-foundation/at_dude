@@ -21,14 +21,13 @@ import 'screens/screens.dart';
 import 'screens/settings_screen.dart';
 import 'services/services.dart';
 import 'utils/utils.dart';
+import 'widgets/settings_button.dart';
 import 'widgets/widgets.dart';
 
 AtSignLogger _logger = AtSignLogger('at_dude');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await LocalNotificationService().initNotification();
 
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
@@ -40,6 +39,7 @@ Future<void> main() async {
   } catch (e) {
     _logger.finer('Environment failed to load from .env: ', e);
   }
+  await LocalNotificationService().initNotification();
 
   runApp(
     MultiProvider(
@@ -163,11 +163,12 @@ class _MyAppState extends State<MyApp> {
               icon: Image.asset('assets/images/splash_img.png'),
               onPressed: null,
             ),
-            ElevatedButton(
-              onPressed: () {
+            SettingsButton(
+              icon: Icons.surfing_outlined,
+              onTap: () {
                 _handleOnboard(context);
               },
-              child: const Text('Start Duding'),
+              title: 'Start Duding',
             ),
             Padding(
               padding: const EdgeInsets.symmetric(

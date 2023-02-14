@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import '../models/dude_model.dart';
 import '../models/persona_model.dart';
 import '../models/profile_model.dart';
+import '../utils/texts.dart';
 import 'local_notification_service.dart';
 
 /// A singleton that makes all the network calls to the @platform.
@@ -150,9 +151,7 @@ class DudeService {
 
   /// Subscribes to the stream of data being sent to the current atsign.
   void monitorNotifications(BuildContext context) {
-    atClientManager.notificationService
-        .subscribe(regex: 'at_skeleton_app')
-        .listen(
+    atClientManager.notificationService.subscribe(regex: Texts.atDude).listen(
       (AtNotification notification) async {
         String? currentAtsign = DudeService.getInstance()
             .atClientManager
@@ -160,7 +159,7 @@ class DudeService {
             .getCurrentAtSign();
 
         if (currentAtsign == notification.to) {
-          await LocalNotificationService().showNotifications(
+          await LocalNotificationService.getInstance().showNotifications(
               notification.id.length,
               'Dude',
               '${notification.from} sent you a dude',
@@ -334,5 +333,20 @@ class DudeService {
         .onError((error, stackTrace) => isCompleted = false);
 
     return isCompleted;
+  }
+
+  Future<bool> deleteAllData() async {
+    // will delate all instances that match the key
+
+    var success = true;
+    var atKeys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: 'cached:@');
+    for (var atKey in atKeys) {
+      success =
+          success && await AtClientManager.getInstance().atClient.delete(atKey);
+    }
+    _logger.info('delete returning success = $success');
+    return success;
   }
 }
