@@ -3,7 +3,6 @@ import 'package:at_common_flutter/widgets/custom_app_bar.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/models/contact_base_model.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
-import 'package:at_contacts_flutter/utils/colors.dart';
 import 'package:at_contacts_flutter/utils/text_strings.dart';
 import 'package:at_contacts_flutter/widgets/blocked_user_card.dart';
 import 'package:at_contacts_flutter/widgets/circular_contacts.dart';
@@ -74,32 +73,6 @@ class _CustomBlockedScreenState extends State<CustomBlockedScreen> {
                 },
                 child: Column(
                   children: [
-                    _contactService.blockContactList.isEmpty
-                        ? Container()
-                        : Container(
-                            padding: EdgeInsets.only(right: 20.toWidth),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const Icon(
-                                  Icons.view_module,
-                                  color: ColorConstants.greyText,
-                                ),
-                                Switch(
-                                    value: toggleList,
-                                    activeColor: Colors.white,
-                                    activeTrackColor:
-                                        ColorConstants.fadedGreyBackground,
-                                    onChanged: (s) {
-                                      setState(() {
-                                        toggleList = !toggleList;
-                                      });
-                                    }),
-                                const Icon(Icons.view_list,
-                                    color: ColorConstants.greyText),
-                              ],
-                            ),
-                          ),
                     Expanded(
                       child: StreamBuilder(
                         initialData: _contactService.baseBlockedList,
