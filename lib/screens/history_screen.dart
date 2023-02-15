@@ -9,16 +9,16 @@ import '../widgets/dude_card.dart';
 import '../widgets/widgets.dart';
 import 'dude_contacts_screen.dart';
 
-class HistoryScreen extends StatefulWidget {
-  static String routeName = 'history';
+class NotificationScreen extends StatefulWidget {
+  static String routeName = 'notification';
   final bool canPop;
-  const HistoryScreen({this.canPop = false, Key? key}) : super(key: key);
+  const NotificationScreen({this.canPop = false, Key? key}) : super(key: key);
 
   @override
-  State<HistoryScreen> createState() => _HistoryScreenState();
+  State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _NotificationScreenState extends State<NotificationScreen> {
   List<DudeModel>? dudes;
 
   @override

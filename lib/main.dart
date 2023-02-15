@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 import 'controller/controller.dart';
 import 'dude_theme.dart';
+import 'screens/custom_blocked_screen.dart';
 import 'screens/persona_screen.dart';
 import 'screens/screens.dart';
 import 'screens/settings_screen.dart';
@@ -54,12 +55,15 @@ Future<void> main() async {
           theme: DudeTheme.light(),
           routes: {
             SendDudeScreen.routeName: (context) => const SendDudeScreen(),
-            HistoryScreen.routeName: (context) => const HistoryScreen(),
+            NotificationScreen.routeName: (context) =>
+                const NotificationScreen(),
             StatsScreen.routeName: (context) => const StatsScreen(),
             PersonaScreen.routeName: (context) => const PersonaScreen(),
             DudeContactsScreen.routeName: (context) =>
                 const DudeContactsScreen(),
-            SettingsScreen.routeName: (context) => const SettingsScreen()
+            SettingsScreen.routeName: (context) => const SettingsScreen(),
+            CustomBlockedScreen.routeName: (context) =>
+                const CustomBlockedScreen()
           },
           navigatorKey: NavigationService.navKey,
         )),

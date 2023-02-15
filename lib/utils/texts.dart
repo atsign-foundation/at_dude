@@ -10,7 +10,7 @@ class Texts {
   static const String contacts = 'Contacts';
   static const String stats = 'Stats';
   static const String sendDude = 'Send Dude';
-  static const String history = 'History';
+  static const String notifications = 'Notifications';
   static const String settings = 'Settings';
 
   static const String favoritesContactWidgetTitle = 'Favorites';

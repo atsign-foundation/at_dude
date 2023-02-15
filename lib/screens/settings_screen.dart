@@ -11,6 +11,7 @@ import '../utils/texts.dart';
 import '../widgets/settings_button.dart';
 import '../widgets/switch_atsign.dart';
 import '../widgets/widgets.dart';
+import 'custom_blocked_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -44,6 +45,17 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(
                     height: 30,
+                  ),
+                  SettingsButton(
+                    icon: Icons.block_outlined,
+                    title: 'Blocked Contacts',
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(CustomBlockedScreen.routeName);
+                    },
+                  ),
+                  const SizedBox(
+                    height: 15,
                   ),
                   SettingsButton(
                     icon: Icons.bookmark_outline,

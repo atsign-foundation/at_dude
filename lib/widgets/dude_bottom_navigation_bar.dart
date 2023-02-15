@@ -26,7 +26,7 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
     } else if (currentIndex == 2) {
       Navigator.of(context).pushNamed(SendDudeScreen.routeName);
     } else if (currentIndex == 3) {
-      Navigator.of(context).pushNamed(HistoryScreen.routeName);
+      Navigator.of(context).pushNamed(NotificationScreen.routeName);
     } else if (currentIndex == 1) {
       Navigator.of(context).pushNamed(StatsScreen.routeName);
     } else if (currentIndex == 0) {
@@ -37,6 +37,8 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      selectedFontSize: 12,
+      unselectedFontSize: 12,
       elevation: 0.0,
       currentIndex: widget.selectedIndex,
       onTap: _handleOnTap,
@@ -75,14 +77,14 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
                       )
                     : null,
                 child: SvgPicture.asset(
-                  'assets/images/nav_icons/history.svg',
+                  'assets/images/nav_icons/notifications.svg',
                   color:
                       widget.selectedIndex == 3 ? kPrimaryColor : Colors.black,
                 ),
               );
             }),
           ),
-          label: Texts.history,
+          label: Texts.notifications,
         ),
         BottomNavigationBarItem(
             icon: SvgPicture.asset(

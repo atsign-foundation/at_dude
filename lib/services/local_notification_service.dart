@@ -59,7 +59,7 @@ class LocalNotificationService {
         switch (details.notificationResponseType) {
           case NotificationResponseType.selectedNotification:
             Navigator.of(NavigationService.navKey.currentContext!)
-                .popAndPushNamed(HistoryScreen.routeName);
+                .popAndPushNamed(NotificationScreen.routeName);
             break;
           case NotificationResponseType.selectedNotificationAction:
             break;
