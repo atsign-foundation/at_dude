@@ -36,12 +36,12 @@ class SettingsScreen extends StatelessWidget {
                     ContactService().currentAtsign,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText1!
+                        .bodyLarge!
                         .copyWith(color: kPrimaryColor),
                   ),
                   Text(
                     ContactService().loggedInUserDetails!.tags!['name'] ?? '',
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.displaySmall,
                   ),
                   const SizedBox(
                     height: 30,

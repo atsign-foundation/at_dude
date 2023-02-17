@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../controller/controller.dart';
 import '../dude_theme.dart';
 import '../models/dude_model.dart';
+import '../services/navigation_service.dart';
 import '../utils/enums.dart';
 import 'dude_card.dart';
 
@@ -19,42 +20,32 @@ class DudeBubble extends StatelessWidget {
 
   final DudeModel dude;
   final AudioPlayer audioPlayer = AudioPlayer();
+  String getAtsignName(String atsign) {
+    var context = NavigationService.navKey.currentContext!;
+    context.read<ContactsController>().getContacts();
+    var atContacts = context.watch<ContactsController>().contacts;
 
-  @override
-  Widget build(BuildContext context) {
-    String timeCategory(Duration duration) {
-      if (duration < const Duration(seconds: 1)) {
-        return duration.inSeconds.toString();
-      } else if (duration >= const Duration(seconds: 1) &&
-          duration < const Duration(seconds: 60)) {
-        return duration.inMinutes.toString();
-      } else if (duration >= const Duration(minutes: 1) &&
-          duration < const Duration(minutes: 60)) {
-        return duration.inMinutes.toString();
-      } else {
-        return '${duration.inHours} hour ';
-      }
-    }
-
-    String getAtsignName(String atsign) {
-      context.read<ContactsController>().getContacts();
-      var atContacts = context.watch<ContactsController>().contacts;
-
-      String? name;
+    String? name;
+    try {
       if (atContacts.isNotEmpty) {
-        var name = atContacts
+        name = atContacts
             .where((element) => element.atSign == atsign)
             .first
             .tags!['name'] as String?;
       }
-
-      if (name != null) {
-        return name;
-      } else {
-        return atsign;
-      }
+    } catch (e) {
+      log('where condition not met');
     }
 
+    if (name != null) {
+      return name;
+    } else {
+      return atsign;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return DudeCard(
       color: Colors.white,
       child: Row(
@@ -98,7 +89,7 @@ class DudeBubble extends StatelessWidget {
                       '"${dude.message[dude.selectedDudeType!.index].values.first}"',
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2!
+                          .bodyMedium!
                           .copyWith(color: kPrimaryColor, fontSize: 12),
                     )
                   ],

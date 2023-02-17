@@ -13,7 +13,6 @@ dependencies:
   at_onboarding_flutter: ^6.0.0
   at_utils: ^3.0.9
   audioplayers: ^2.0.0
-  badges: ^2.0.2
   carousel_slider: ^4.2.1
   flutter:
     sdk: flutter

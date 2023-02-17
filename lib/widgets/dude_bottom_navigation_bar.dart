@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+// import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -65,15 +65,18 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
           icon: Consumer<DudeController>(
             builder: ((context, dudeController, child) {
               return Badge(
-                elevation: dudeController.dudeCount > 0 ? 2 : 0,
-                showBadge: dudeController.dudeCount > 0 ? true : false,
-                badgeColor: Theme.of(context).bottomAppBarColor,
-                badgeContent: dudeController.dudeCount > 0
+                isLabelVisible: dudeController.dudeCount > 0 ? true : false,
+                backgroundColor: kAlternativeColor,
+                textColor: Colors.black,
+                // elevation: dudeController.dudeCount > 0 ? 2 : 0,
+                // showBadge: dudeController.dudeCount > 0 ? true : false,
+                // badgeColor: Theme.of(context).bottomAppBarColor,
+                label: dudeController.dudeCount > 0
                     ? Text(
                         dudeController.dudeCount.toString(),
                         style: const TextStyle(
-                          color: kAlternativeColor,
-                        ),
+                            // color: kAlternativeColor,
+                            ),
                       )
                     : null,
                 child: SvgPicture.asset(

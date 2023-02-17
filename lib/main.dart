@@ -148,63 +148,81 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitDown,
     ]);
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text('atDude'),
-      // ),
       extendBody: true,
       extendBodyBehindAppBar: true,
       body: Stack(children: [
         const AppBackground(
-          alignment: Alignment.center,
+          alignment: Alignment.bottomCenter,
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            IconButton(
-              iconSize: 200,
-              icon: Image.asset('assets/images/splash_img.png'),
-              onPressed: null,
-            ),
-            SettingsButton(
-              icon: Icons.surfing_outlined,
-              onTap: () {
-                _handleOnboard(context);
-              },
-              title: 'Start Duding',
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
+        SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+                  child: Image.asset(
+                    'assets/images/dude_logo.png',
+                  ),
+                ),
               ),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Expanded(
-                      child: Divider(
-                        color: Colors.black,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Text(
-                        'Or',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: Colors.black,
-                      ),
-                    ),
-                  ]),
-            ),
-            const ResetAppButton(
-              buttonText: 'Reset @sign',
-            ),
-          ],
+              const Text(
+                'Saying "Hi" is too mainstream',
+                style: TextStyle(color: Color(0xff417C88)),
+              ),
+              Expanded(
+                flex: 2,
+                child: Image.asset(
+                  'assets/images/splash_img.png',
+                ),
+              ),
+              Flexible(
+                child: SettingsButton(
+                  icon: Icons.surfing_outlined,
+                  onTap: () {
+                    _handleOnboard(context);
+                  },
+                  title: 'Start Duding',
+                ),
+              ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Expanded(
+                          child: Divider(
+                            color: Colors.black,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Text(
+                            'Or',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ]),
+                ),
+              ),
+              const Flexible(
+                child: ResetAppButton(
+                  buttonText: 'Reset @sign',
+                ),
+              ),
+            ],
+          ),
         ),
       ]),
     );
