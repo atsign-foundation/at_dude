@@ -41,7 +41,7 @@ class _PersonaScreenState extends State<PersonaScreen> {
         iconTheme: Theme.of(context).iconTheme.copyWith(color: Colors.black),
         title: Text(
           Texts.eyeSelectYourDude,
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
       ),
       body: Stack(children: [

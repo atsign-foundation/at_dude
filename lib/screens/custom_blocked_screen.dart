@@ -10,6 +10,7 @@ import 'package:at_contacts_flutter/widgets/error_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/app_background.dart';
+import '../widgets/dude_card.dart';
 
 /// Screen exposed to see blocked contacts and unblock them
 class CustomBlockedScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _CustomBlockedScreenState extends State<CustomBlockedScreen> {
 
   /// boolean flag to indicate if blocking flow is in progress
   bool isBlocking = false;
-  bool toggleList = false;
+  bool toggleList = true;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -64,93 +65,97 @@ class _CustomBlockedScreenState extends State<CustomBlockedScreen> {
           ? const ErrorScreen()
           : Stack(children: [
               const AppBackground(alignment: Alignment.bottomCenter),
-              RefreshIndicator(
-                color: Colors.transparent,
-                strokeWidth: 0,
-                backgroundColor: Colors.transparent,
-                onRefresh: () async {
-                  await _contactService.fetchBlockContactList();
-                },
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: StreamBuilder(
-                        initialData: _contactService.baseBlockedList,
-                        stream: _contactService.blockedContactStream,
-                        builder: (context,
-                            AsyncSnapshot<List<BaseContact?>> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.active) {
-                            return (snapshot.data!.isEmpty)
-                                ? Center(
-                                    child: Text(
-                                      TextStrings().emptyBlockedList,
-                                      style: TextStyle(
-                                        fontSize: 16.toFont,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    ),
-                                  )
-                                : (toggleList)
-                                    ? ListView.separated(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 40.toHeight),
-                                        itemCount: _contactService
-                                            .blockContactList.length,
-                                        separatorBuilder: (context, index) =>
-                                            Divider(
-                                          indent: 16.toWidth,
+              SafeArea(
+                child: RefreshIndicator(
+                  color: Colors.transparent,
+                  strokeWidth: 0,
+                  backgroundColor: Colors.transparent,
+                  onRefresh: () async {
+                    await _contactService.fetchBlockContactList();
+                  },
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: StreamBuilder(
+                          initialData: _contactService.baseBlockedList,
+                          stream: _contactService.blockedContactStream,
+                          builder: (context,
+                              AsyncSnapshot<List<BaseContact?>> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.active) {
+                              return (snapshot.data!.isEmpty)
+                                  ? Center(
+                                      child: Text(
+                                        TextStrings().emptyBlockedList,
+                                        style: TextStyle(
+                                          fontSize: 16.toFont,
+                                          fontWeight: FontWeight.normal,
                                         ),
-                                        itemBuilder: (context, index) {
-                                          return BlockedUserCard(
-                                              blockeduser: snapshot
-                                                  .data?[index]?.contact,
-                                              unblockAtsign: () async {
-                                                await unblockAtsign(snapshot
-                                                        .data?[index]
-                                                        ?.contact ??
-                                                    AtContact());
-                                              });
-                                        },
-                                      )
-                                    : GridView.builder(
-                                        physics:
-                                            const AlwaysScrollableScrollPhysics(),
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: SizeConfig()
-                                                        .isTablet(context)
-                                                    ? 5
-                                                    : 3,
-                                                childAspectRatio: 1 /
-                                                    (SizeConfig()
-                                                            .isTablet(context)
-                                                        ? 1.2
-                                                        : 1.1)),
-                                        shrinkWrap: true,
-                                        itemCount: _contactService
-                                            .blockContactList.length,
-                                        itemBuilder: (context, index) {
-                                          return CircularContacts(
-                                              contact: snapshot
-                                                  .data?[index]?.contact,
-                                              onCrossPressed: () async {
-                                                await unblockAtsign(snapshot
-                                                        .data?[index]
-                                                        ?.contact ??
-                                                    AtContact());
-                                              });
-                                        },
-                                      );
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
+                                      ),
+                                    )
+                                  : (toggleList)
+                                      ? ListView.separated(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 40.toHeight),
+                                          itemCount: _contactService
+                                              .blockContactList.length,
+                                          separatorBuilder: (context, index) =>
+                                              Divider(
+                                            indent: 16.toWidth,
+                                          ),
+                                          itemBuilder: (context, index) {
+                                            return DudeCard(
+                                              child: BlockedUserCard(
+                                                  blockeduser: snapshot
+                                                      .data?[index]?.contact,
+                                                  unblockAtsign: () async {
+                                                    await unblockAtsign(snapshot
+                                                            .data?[index]
+                                                            ?.contact ??
+                                                        AtContact());
+                                                  }),
+                                            );
+                                          },
+                                        )
+                                      : GridView.builder(
+                                          physics:
+                                              const AlwaysScrollableScrollPhysics(),
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: SizeConfig()
+                                                          .isTablet(context)
+                                                      ? 5
+                                                      : 3,
+                                                  childAspectRatio: 1 /
+                                                      (SizeConfig()
+                                                              .isTablet(context)
+                                                          ? 1.2
+                                                          : 1.1)),
+                                          shrinkWrap: true,
+                                          itemCount: _contactService
+                                              .blockContactList.length,
+                                          itemBuilder: (context, index) {
+                                            return CircularContacts(
+                                                contact: snapshot
+                                                    .data?[index]?.contact,
+                                                onCrossPressed: () async {
+                                                  await unblockAtsign(snapshot
+                                                          .data?[index]
+                                                          ?.contact ??
+                                                      AtContact());
+                                                });
+                                          },
+                                        );
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ]),
