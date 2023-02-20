@@ -20,9 +20,9 @@ class DudeListTile extends StatelessWidget {
       child: ListTile(
         title: Text(
           title,
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
-        subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodyText2),
+        subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
         trailing: Text(
           trailing,
           style: const TextStyle(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DudeCard extends StatelessWidget {
-  DudeCard({
+  const DudeCard({
     Key? key,
     required this.child,
     this.width = 343.0,
@@ -11,8 +11,8 @@ class DudeCard extends StatelessWidget {
 
   final Widget child;
   final double width;
-  double? height;
-  Color color;
+  final double? height;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,6 @@ import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../controller/controller.dart';
 import '../models/dude_model.dart';
@@ -30,19 +29,11 @@ class SendDudeScreen extends StatefulWidget {
 }
 
 class _SendDudeScreenState extends State<SendDudeScreen> {
-  final bool _buttonPressed = false;
   DudeModel dude = DudeModel.newDude();
   late DateTime startTime;
-  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
+
   bool isLoading = false;
 
-  GlobalKey keyFingerPrintButton = GlobalKey();
-
-  GlobalKey keyContactButton = GlobalKey();
-  GlobalKey keyFavoriteContact = GlobalKey();
-  GlobalKey contactKey = GlobalKey();
-
-  late RiveAnimationController _controller;
   bool onPressed = false;
 
   @override
@@ -53,12 +44,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       await context.read<DudeController>().getDudes();
     });
     super.initState();
-    _controller = OneShotAnimation(
-      'bouncing ball',
-      autoplay: false,
-      onStop: () => setState(() => onPressed = false),
-      onStart: () => setState(() => onPressed = true),
-    );
   }
 
   late SMITrigger? _onPressed;
@@ -71,14 +56,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     artboard.addController(controller!);
     _onPressed = controller.findInput<bool>('onPressed') as SMITrigger;
     _cardInt = controller.findInput<double>('cardInt') as SMINumber;
-  }
-
-  @override
-  void dispose() {
-    // _stopWatchTimer.dispose().then((value) => null);
-    // _onPressed!.controller.dispose();
-    // _cardInt.controller.dispose();
-    super.dispose();
   }
 
   /// Update the isLoading property to it's appropriate state.
@@ -119,8 +96,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
         ModalRoute.of(context)!.settings.arguments as AtContact?;
     SizeConfig().init(context);
 
-    List<String> strArr = ['D', 'u', 'd', 'e'];
-
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -146,8 +121,8 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                               title: 'Send a Dude!',
                               subtitle: 'Pst...Pick a contact first!',
                               trailing: '📢')
-                          : DudeCard(
-                              child: const Text('Sending to...'),
+                          : const DudeCard(
+                              child: Text('Sending to...'),
                               width: double.maxFinite,
                             ),
                       contact != null
@@ -223,113 +198,6 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                     ],
                   ),
                 ),
-                // Flexible(
-                //   flex: 3,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       Showcase(
-                //         key: keyFingerPrintButton,
-                //         description: Texts.sendDudeIconDesc,
-                //         contentPadding: const EdgeInsets.only(
-                //             top: 8, bottom: 8, right: 8, left: 44),
-                //         child: GestureDetector(
-                //           child: ElevatedButton(
-                //             onPressed: () async {
-                //               startTime = DateTime.now();
-
-                //               _stopWatchTimer.onExecute.add(StopWatchExecute.start);
-                //               dude.saveId;
-                //               setState(() {
-                //                 rawTime = _stopWatchTimer.rawTime.value;
-                //                 dude.saveDude(strArr.join("").toString());
-                //               });
-                //               _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-
-                //               dude.saveDuration(startTime);
-                //             },
-                //             child: const Icon(
-                //               Icons.fingerprint,
-                //               size: 40,
-                //             ),
-                //           ),
-                //           onLongPressStart: (_) async {
-                //             startTime = DateTime.now();
-                //             if (_stopWatchTimer.rawTime.value > 0) {
-                //               _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
-                //             }
-                //             _stopWatchTimer.onExecute.add(StopWatchExecute.start);
-
-                //             _buttonPressed = true;
-                //             do {
-                //               strArr.insert(1, "u");
-                //               setState(() {
-                //                 rawTime = _stopWatchTimer.rawTime.value;
-                //                 dude.saveDude(strArr.join("").toString());
-                //               });
-                //               await Future.delayed(const Duration(seconds: 1));
-                //             } while (_buttonPressed);
-                //           },
-                //           onLongPressEnd: (_) {
-                //             setState(() {
-                //               _buttonPressed = false;
-                //             });
-
-                //             _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-
-                //             dude.saveDuration(startTime);
-                //             dude.saveId();
-                //           },
-                //         ),
-                //       ),
-                //       const SizedBox(
-                //         width: 25,
-                //       ),
-                //       Showcase(
-                //         key: keyContactButton,
-                //         description: Texts.showContactScreenIconDesc,
-                //         child: ElevatedButton(
-                //           child: const Icon(
-                //             Icons.contacts_outlined,
-                //             size: 40,
-                //           ),
-                //           onPressed: () async {
-                //             await Navigator.of(context)
-                //                 .push(
-                //                   MaterialPageRoute(
-                //                       builder: (BuildContext context) =>
-                //                           ShowCaseWidget(
-                //                               builder: Builder(
-                //                                   builder: ((context) =>
-                //                                       DudeContactsScreen(
-                //                                         // showFavoriteContactTutorial:
-                //                                         //     showFavoriteContactTutorial,
-                //                                         onSendIconPressed: (String
-                //                                                 atsign) =>
-                //                                             _handleSendDudeToContact(
-                //                                                 dude: dude,
-                //                                                 contactAtsign:
-                //                                                     atsign,
-                //                                                 context: context),
-                //                                       ))))),
-                //                 )
-                //                 .whenComplete(() async => await context
-                //                     .read<DudeController>()
-                //                     .getContacts());
-                //           },
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 180,
-                //   child: FavoriteContacts(
-                //     favoriteContactKey: keyFavoriteContact,
-                //     dude: dude,
-                //     updateIsLoading: updateIsLoading,
-                //   ),
-                // ),
               ],
             ),
           ),

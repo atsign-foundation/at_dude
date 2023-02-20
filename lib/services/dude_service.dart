@@ -56,7 +56,7 @@ class DudeService {
     dude.saveTimeSent();
 
     try {
-      await atClientManager.notificationService.notify(
+      await atClientManager.atClient.notificationService.notify(
           NotificationParams.forUpdate(
             key,
             value: json.encode(dude.toJson()),
@@ -151,7 +151,9 @@ class DudeService {
 
   /// Subscribes to the stream of data being sent to the current atsign.
   void monitorNotifications(BuildContext context) {
-    atClientManager.notificationService.subscribe(regex: Texts.atDude).listen(
+    atClientManager.atClient.notificationService
+        .subscribe(regex: Texts.atDude)
+        .listen(
       (AtNotification notification) async {
         String? currentAtsign = DudeService.getInstance()
             .atClientManager
@@ -227,7 +229,7 @@ class DudeService {
       ..sharedWith = receiverAtsign
       ..namespace = '';
     try {
-      await atClientManager.notificationService.notify(
+      await atClientManager.atClient.notificationService.notify(
         NotificationParams.forUpdate(
           key,
           value: senderAtsign,

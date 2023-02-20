@@ -12,69 +12,60 @@ const kAlternativeColor = Color(0XFF56C7DF);
 class DudeTheme {
   // 1
   static TextTheme lightTextTheme = TextTheme(
-    bodyText1: GoogleFonts.poppins(
+    bodyLarge: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    bodyText2: GoogleFonts.poppins(
+    bodyMedium: GoogleFonts.poppins(
       fontSize: 16.0,
       color: Colors.black,
     ),
-
-    headline1: GoogleFonts.poppins(
+    displayLarge: GoogleFonts.poppins(
       fontSize: 32.0,
       fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
-    headline2: GoogleFonts.poppins(
+    displayMedium: GoogleFonts.poppins(
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    headline3: GoogleFonts.poppins(
+    displaySmall: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    headline6: GoogleFonts.poppins(
+    titleLarge: GoogleFonts.poppins(
       fontSize: 20.0,
       fontWeight: FontWeight.w600,
       color: Colors.black,
     ),
-    // subtitle1: GoogleFonts.poppins(
-    //   fontSize: 16.0,
-    //   color: Colors.white,
-    // ),
-    // subtitle2: GoogleFonts.poppins(
-    //   fontSize: 16.0,
-    //   color: Colors.white,
-    // ),
   );
 
   // 2
   static TextTheme darkTextTheme = TextTheme(
-    bodyText1: GoogleFonts.poppins(
+    bodyLarge: GoogleFonts.poppins(
       fontSize: 14.0,
       fontWeight: FontWeight.w700,
       color: Colors.white,
     ),
-    headline1: GoogleFonts.poppins(
+    displayLarge: GoogleFonts.poppins(
       fontSize: 32.0,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
-    headline2: GoogleFonts.poppins(
+    displayMedium: GoogleFonts.poppins(
       fontSize: 21.0,
       fontWeight: FontWeight.w700,
       color: Colors.white,
     ),
-    headline3: GoogleFonts.poppins(
+    displaySmall: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
     ),
-    headline6: GoogleFonts.poppins(
+    titleLarge: GoogleFonts.poppins(
       fontSize: 20.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
@@ -99,7 +90,7 @@ class DudeTheme {
       appBarTheme: AppBarTheme(
           foregroundColor: Colors.white,
           backgroundColor: kPrimaryColor,
-          titleTextStyle: lightTextTheme.bodyText1!
+          titleTextStyle: lightTextTheme.bodyLarge!
               .copyWith(color: Colors.white, fontSize: 17)),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         foregroundColor: Color(0xFFF8C630),

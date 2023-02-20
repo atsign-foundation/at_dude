@@ -17,7 +17,6 @@ import 'package:provider/provider.dart';
 import 'controller/controller.dart';
 import 'dude_theme.dart';
 import 'screens/custom_blocked_screen.dart';
-import 'screens/persona_screen.dart';
 import 'screens/screens.dart';
 import 'screens/settings_screen.dart';
 import 'services/services.dart';
@@ -58,7 +57,6 @@ Future<void> main() async {
             NotificationScreen.routeName: (context) =>
                 const NotificationScreen(),
             StatsScreen.routeName: (context) => const StatsScreen(),
-            PersonaScreen.routeName: (context) => const PersonaScreen(),
             DudeContactsScreen.routeName: (context) =>
                 const DudeContactsScreen(),
             SettingsScreen.routeName: (context) => const SettingsScreen(),
@@ -122,6 +120,7 @@ class _MyAppState extends State<MyApp> {
           DudeService.getInstance().monitorNotifications(context);
           DudeService.getInstance()
               .atClientManager
+              .atClient
               .syncService
               .addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);

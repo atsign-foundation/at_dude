@@ -92,6 +92,7 @@ class AuthenticationService {
             .monitorNotifications(NavigationService.navKey.currentContext!);
         DudeService.getInstance()
             .atClientManager
+            .atClient
             .syncService
             .addProgressListener(MySyncProgressListener());
         initializeContactsService(rootDomain: AtEnv.rootDomain);

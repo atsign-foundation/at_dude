@@ -20,7 +20,7 @@ class TipCard extends StatelessWidget {
               children: [
                 TextSpan(
                     text: '💡Tip',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         fontWeight: FontWeight.w700,
                         fontSize: 11,
                         color: Colors.white)),

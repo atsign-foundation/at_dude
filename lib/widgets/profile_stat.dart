@@ -26,7 +26,7 @@ class ProfileStat extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(stat,
-                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: kPrimaryColor,
                             fontSize: 30,
                             fontWeight: FontWeight.w500)),
@@ -35,7 +35,7 @@ class ProfileStat extends StatelessWidget {
                             unit!,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline6!
+                                .titleLarge!
                                 .copyWith(color: kPrimaryColor, fontSize: 12),
                           )
                         : const SizedBox()
@@ -54,7 +54,7 @@ class ProfileStat extends StatelessWidget {
                   description,
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2!
+                      .bodyMedium!
                       .copyWith(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               ),

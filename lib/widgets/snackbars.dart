@@ -15,7 +15,7 @@ class SnackBars extends StatelessWidget {
         content,
         textAlign: TextAlign.center,
       ),
-      backgroundColor: Theme.of(context).errorColor,
+      backgroundColor: Theme.of(context).colorScheme.error,
     ));
   }
 

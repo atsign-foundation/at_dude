@@ -29,7 +29,7 @@ class ContactsIcon extends StatelessWidget {
           title,
           style: Theme.of(context)
               .textTheme
-              .bodyText2
+              .bodyMedium
               ?.copyWith(fontSize: 10, color: kPrimaryColor),
         )
       ],
