@@ -27,18 +27,13 @@ import 'widgets/widgets.dart';
 AtSignLogger _logger = AtSignLogger('at_dude');
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
 
+  AtSignLogger.root_level = 'Finer';
+  await AtEnv.load();
   await AuthenticationService.getInstance().checkFirstRun();
-  try {
-    await AtEnv.load();
-    AtSignLogger.root_level = 'Finer';
-  } catch (e) {
-    _logger.finer('Environment failed to load from .env: ', e);
-  }
+
   await LocalNotificationService().initNotification();
 
   runApp(

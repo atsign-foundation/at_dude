@@ -109,10 +109,10 @@ packages:
     dependency: transitive
     description:
       name: at_commons
-      sha256: c5b2931c024b62df9f9f45e083629e23e1efdc88544412c1e09869c1122e062e
+      sha256: "8d3f16ea5720b7a8e1958c8589091566342568d569d5a8b9f99523f11d81a1a8"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.37"
+    version: "3.0.38"
   at_contact:
     dependency: transitive
     description:
@@ -157,18 +157,18 @@ packages:
     dependency: transitive
     description:
       name: at_persistence_secondary_server
-      sha256: f4263138e22ab68a2bbb988e85c2c70a98171f1d9a55714fedde79bae8fbda19
+      sha256: c3ddcce9a693a01583e7980a650598858f90ab8c77a606ae0e3250f6e89d4b09
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.46"
+    version: "3.0.47"
   at_persistence_spec:
     dependency: transitive
     description:
       name: at_persistence_spec
-      sha256: "7664d3e576936f0edef642821486594c4ab86fb2678c68998d97f778d5c2a63e"
+      sha256: bc67fedd9791965124f7e7a6bfb41f73ae1c1e92a928d7d47650e82a4220b980
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.10"
+    version: "2.0.11"
   at_server_status:
     dependency: transitive
     description:
@@ -506,10 +506,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_local_notifications_linux
-      sha256: "8f6c1611e0c4a88a382691a97bb3c3feb24cc0c0b54152b8b5fb7ffb837f7fbf"
+      sha256: ccb08b93703aeedb58856e5637450bf3ffec899adb66dc325630b68994734b89
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.0+1"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
@@ -1161,10 +1161,10 @@ packages:
     dependency: transitive
     description:
       name: source_maps
-      sha256: "490098075234dcedb83c5d949b4c93dad5e6b7702748de000be2b57b8e6b2427"
+      sha256: "708b3f6b97248e5781f493b765c3337db11c5d2c81c3094f10904bfa8004c703"
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.11"
+    version: "0.10.12"
   source_span:
     dependency: transitive
     description:
@@ -1361,10 +1361,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter
-      sha256: f7ec234830f86d0ef2bd664e8460b0038b8c1a83ff076035cad74ac70273753c
+      sha256: dad1f2caa3272071275436984eb123276a6810dbe7cd6f4c60697640b56a4699
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.0.4"
   webview_flutter_android:
     dependency: transitive
     description:
