@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.at_dude">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.atsign.atdude">
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
