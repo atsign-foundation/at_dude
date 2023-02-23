@@ -1,5 +1,7 @@
 // import 'package:flutter_spotlight/flutter_spotlight.dart';
 
+import 'dart:developer';
+
 import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
@@ -35,7 +37,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   bool isLoading = false;
 
   bool onPressed = false;
-
+  bool onInit = false;
   @override
   void initState() {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
@@ -43,6 +45,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await context.read<DudeController>().getDudes();
     });
+    onInit = true;
     super.initState();
   }
 
@@ -88,12 +91,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     }
   }
 
-  int rawTime = 0;
-
+  AtContact? contact;
   @override
   Widget build(BuildContext context) {
-    final AtContact? contact =
-        ModalRoute.of(context)!.settings.arguments as AtContact?;
+    if (onInit) {
+      contact = ModalRoute.of(context)!.settings.arguments as AtContact?;
+    }
+    log('contact is : ${contact.toString()}');
     SizeConfig().init(context);
 
     return Scaffold(
@@ -129,7 +133,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                           ? DudeCard(
                               color: Colors.white,
                               child: CustomContactListTile(
-                                contact: contact,
+                                contact: contact!,
                                 contactService: ContactService(),
                               ),
                             )
@@ -158,8 +162,14 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                               onPressed: () async {
                                 await _handleSendDudeToContact(
                                     dude: dude,
-                                    contactAtsign: contact.atSign!,
+                                    contactAtsign: contact!.atSign!,
                                     context: context);
+                                // prevent modal route from being called
+                                onInit = false;
+                                setState(() {
+                                  contact = null;
+                                  log('set state called');
+                                });
                               },
                               child: const Text('Send Dude')),
                       SizedBox(
