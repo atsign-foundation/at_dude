@@ -45,18 +45,17 @@ class SharedPreferencesService {
     return storage.getBool('navigate_to_contact_status') ?? true;
   }
 
-  /// Set the send_dude_to_favorite_status as false
-  static Future<void> setSendDudeToFavoriteStatus() async {
+  /// Set the filter_favorite_status as false
+  static Future<void> setFilterFavoriteStatus() async {
     final storage = await SharedPreferences.getInstance();
-    final bool result =
-        await storage.setBool('send_dude_to_favorite_status', false);
-    log("favorite status set : $result");
+    final bool result = await storage.setBool('filter_favorite_status', false);
+    log("filter favorite status set : $result");
   }
 
-  /// Returns true if the send_dude_to_favorite_status is null or the result otherwise
-  static Future<bool> getSendDudeToFavoriteStatus() async {
+  /// Returns true if the filter_favorite_status is null or the result otherwise
+  static Future<bool> getFilterFavoriteStatus() async {
     final storage = await SharedPreferences.getInstance();
-    final bool result = storage.getBool('send_dude_to_favorite_status') ?? true;
+    final bool result = storage.getBool('filter_favorite_status') ?? true;
     log("favorite status: $result");
     return result;
   }

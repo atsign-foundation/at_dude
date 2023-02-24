@@ -9,6 +9,7 @@ import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
 import '../models/dude_model.dart';
@@ -145,8 +146,15 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                                       const Size(double.maxFinite, 61.22)),
                               onPressed: () async {
                                 await Navigator.of(context)
-                                    .pushReplacementNamed(
-                                        DudeContactsScreen.routeName)
+                                    .push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ShowCaseWidget(
+                                            builder: Builder(
+                                          builder: (context) =>
+                                              const DudeContactsScreen(),
+                                        )),
+                                      ),
+                                    )
                                     .whenComplete(() async =>
                                         await NavigationService
                                             .navKey.currentContext!

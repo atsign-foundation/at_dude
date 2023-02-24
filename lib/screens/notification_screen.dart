@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/contacts_controller.dart';
 import '../controller/dude_controller.dart';
@@ -76,9 +77,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                   double.maxFinite, 61.22)),
                                           onPressed: () async {
                                             await Navigator.of(context)
-                                                .pushReplacementNamed(
-                                                    DudeContactsScreen
-                                                        .routeName)
+                                                .push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ShowCaseWidget(
+                                                            builder: Builder(
+                                                      builder: (context) =>
+                                                          const DudeContactsScreen(),
+                                                    )),
+                                                  ),
+                                                )
                                                 .whenComplete(() async =>
                                                     await NavigationService
                                                         .navKey.currentContext!

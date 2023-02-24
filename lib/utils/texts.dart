@@ -17,8 +17,6 @@ class Texts {
 
   static const String noContactsAvailable = 'No Contacts Available';
 
-  static const String addContactIconDesc = 'Press this icon to add a contact.';
-
   static const String slidableDesc = 'Slide left for more options.';
   static const String sendDudeContactDesc =
       'Press this icon to send a "dude" to this contact.';
@@ -28,7 +26,10 @@ class Texts {
 
   // Contact Screen
   static const String filterFavs = 'Filter Favs';
+  static const String filterFavoriteIconDesc =
+      'Press this icon to filter favorite contacts.';
   static const String addNew = 'Add New';
+  static const String addContactIconDesc = 'Press this icon to add a contact.';
 
   // Settings Screen
   static const String selectYourDude = 'Select your dude';

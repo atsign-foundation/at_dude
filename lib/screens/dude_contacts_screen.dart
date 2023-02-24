@@ -9,8 +9,10 @@ import 'package:at_contacts_flutter/widgets/error_screen.dart';
 import 'package:at_contacts_flutter/widgets/horizontal_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../dude_theme.dart';
+import '../services/shared_preferences_service.dart';
 import '../utils/utils.dart';
 import '../widgets/contact_search_field.dart';
 import '../widgets/contacts_icon.dart';
@@ -70,30 +72,53 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
   bool isFavoriteActive = false;
 
   GlobalKey addContactKey = GlobalKey();
-  GlobalKey listTileKey = GlobalKey();
-  GlobalKey sendDudeContactKey = GlobalKey();
+  GlobalKey filterFavoriteKey = GlobalKey();
+  List<GlobalKey<State<StatefulWidget>>> showcaseList = [];
 
   /// List of selected contacts
   List<AtContact?> selectedList = [];
+
   @override
   void initState() {
     _contactService = ContactService();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      var _result = await _contactService.fetchContacts();
-      if (_result == null) {
-        if (mounted) {
-          setState(() {
-            errorOcurred = true;
-          });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        var _result = await _contactService.fetchContacts();
+        if (_result == null) {
+          if (mounted) {
+            setState(() {
+              errorOcurred = true;
+            });
+          }
         }
-      }
 
-      if (widget.selectedContactsHistory != null) {
-        _contactService.selectedContacts = widget.selectedContactsHistory!;
-        _contactService.selectedContactSink
-            .add(_contactService.selectedContacts);
-      }
-    });
+        if (widget.selectedContactsHistory != null) {
+          _contactService.selectedContacts = widget.selectedContactsHistory!;
+          _contactService.selectedContactSink
+              .add(_contactService.selectedContacts);
+        }
+
+        final addContactStatus =
+            await SharedPreferencesService.getAddContactStatus();
+        if (addContactStatus) showcaseList.add(addContactKey);
+
+        final filterFavoriteStatus =
+            await SharedPreferencesService.getFilterFavoriteStatus();
+        if (filterFavoriteStatus) showcaseList.add(filterFavoriteKey);
+
+        if (showcaseList.isNotEmpty) {
+          ShowCaseWidget.of(context).startShowCase(showcaseList);
+        }
+
+        if (showcaseList.contains(addContactKey)) {
+          await SharedPreferencesService.setContactStatus();
+        }
+
+        if (showcaseList.contains(filterFavoriteKey)) {
+          await SharedPreferencesService.setFilterFavoriteStatus();
+        }
+      },
+    );
 
     super.initState();
   }
@@ -153,27 +178,35 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                                 ),
                               ),
                               Flexible(
-                                child: ContactsIcon(
-                                  title: Texts.filterFavs,
-                                  icon: Icons.star_border_rounded,
-                                  onPress: () {
-                                    setState(() {
-                                      isFavoriteActive = !isFavoriteActive;
-                                    });
-                                  },
+                                child: Showcase(
+                                  key: filterFavoriteKey,
+                                  description: Texts.filterFavoriteIconDesc,
+                                  child: ContactsIcon(
+                                    title: Texts.filterFavs,
+                                    icon: Icons.star_border_rounded,
+                                    onPress: () {
+                                      setState(() {
+                                        isFavoriteActive = !isFavoriteActive;
+                                      });
+                                    },
+                                  ),
                                 ),
                               ),
                               Flexible(
-                                child: ContactsIcon(
-                                    title: Texts.addNew,
-                                    icon: Icons.add,
-                                    onPress: () async {
-                                      await showDialog(
-                                        context: context,
-                                        builder: (context) =>
-                                            const DudeAddContactDialog(),
-                                      );
-                                    }),
+                                child: Showcase(
+                                  key: addContactKey,
+                                  description: Texts.addContactIconDesc,
+                                  child: ContactsIcon(
+                                      title: Texts.addNew,
+                                      icon: Icons.add,
+                                      onPress: () async {
+                                        await showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              const DudeAddContactDialog(),
+                                        );
+                                      }),
+                                ),
                               )
                             ],
                           ),

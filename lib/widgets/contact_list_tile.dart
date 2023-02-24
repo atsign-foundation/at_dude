@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import '../controller/controller.dart';
 import '../dude_theme.dart';
 import '../screens/screens.dart';
-import '../services/shared_preferences_service.dart';
 
 class CustomContactListTile extends StatefulWidget {
   final Function? onTap;
@@ -177,12 +176,12 @@ class _CustomContactListTileState extends State<CustomContactListTile> {
                   ? null
                   : () async {
                       await markUnmarkFavoriteContact(widget.contact);
-                      final bool sendDudeFavoriteContactStatus =
-                          await SharedPreferencesService
-                              .getSendDudeToFavoriteStatus();
-                      if (sendDudeFavoriteContactStatus) {
-                        Navigator.pop(context);
-                      }
+                      // final bool sendDudeFavoriteContactStatus =
+                      //     await SharedPreferencesService
+                      //         .getSendDudeToFavoriteStatus();
+                      // if (sendDudeFavoriteContactStatus) {
+                      //   Navigator.pop(context);
+                      // }
                       // await widget.showFavoriteContactTutorial();
 
                       if (widget.onTrailingPressed != null) {

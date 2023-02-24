@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
@@ -30,7 +31,14 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
     } else if (currentIndex == 1) {
       Navigator.of(context).pushNamed(StatsScreen.routeName);
     } else if (currentIndex == 0) {
-      Navigator.of(context).pushNamed(DudeContactsScreen.routeName);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ShowCaseWidget(
+              builder: Builder(
+            builder: (context) => const DudeContactsScreen(),
+          )),
+        ),
+      );
     }
   }
 

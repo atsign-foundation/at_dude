@@ -1137,7 +1137,7 @@ packages:
     source: hosted
     version: "1.0.3"
   showcaseview:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: showcaseview
       sha256: "09b534d806572135c38e06901de4b36b2bbd61739ec56c5fa9242d10748e19df"
