@@ -12,7 +12,7 @@ dependencies:
   at_contacts_flutter: ^4.0.5
   at_onboarding_flutter: ^6.0.0
   at_utils: ^3.0.9
-  audioplayers: ^2.0.0
+  audioplayers: ^3.0.1
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2

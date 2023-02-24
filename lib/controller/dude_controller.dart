@@ -52,7 +52,7 @@ class DudeController with ChangeNotifier {
 
   /// Deletes dudes sent to the current atsign.
   ///
-  void deleteDude(DudeModel dude) async {
+  Future<void> deleteDude(DudeModel dude) async {
     bool result = await DudeService.getInstance().deleteDude(dude);
     result ? _dudes = await DudeService.getInstance().getDudes() : null;
     notifyListeners();

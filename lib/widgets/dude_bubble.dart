@@ -57,24 +57,22 @@ class DudeBubble extends StatelessWidget {
               children: [
                 IconButton(
                     onPressed: () async {
-                      try {
-                        if (dude.selectedDudeType == DudeType.hi) {
-                          await audioPlayer.play(
-                            AssetSource('audios/hi_dude_scott.wav'),
-                          );
-                        } else if (dude.selectedDudeType ==
-                            DudeType.youWontBelieve) {
-                          await audioPlayer.play(AssetSource(
-                              'audios/you_woudnt_believe_dude_scott.wav'));
-                        } else if (dude.selectedDudeType == DudeType.awesome) {
-                          await audioPlayer.play(
-                              AssetSource('audios/awesome_dude_scott.wav'));
-                        }
-                      } catch (e) {
-                        log(e.toString());
+                      await audioPlayer.setVolume(1.0);
+                      if (dude.selectedDudeType == DudeType.hi) {
+                        await audioPlayer.play(
+                          AssetSource('audios/hi_dude_scott.wav'),
+                        );
+                      } else if (dude.selectedDudeType ==
+                          DudeType.youWontBelieve) {
+                        await audioPlayer.play(AssetSource(
+                            'audios/you_woudnt_believe_dude_scott.wav'));
+                      } else if (dude.selectedDudeType == DudeType.awesome) {
+                        await audioPlayer.play(
+                          AssetSource('audios/awesome_dude_scott.wav'),
+                        );
                       }
 
-                      Provider.of<DudeController>(context, listen: false)
+                      await Provider.of<DudeController>(context, listen: false)
                           .deleteDude(dude);
                     },
                     icon: const Icon(Icons.play_arrow_outlined)),
