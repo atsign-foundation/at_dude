@@ -47,7 +47,7 @@ class ContactsController with ChangeNotifier {
     result
         ? await getContacts()
         : SnackBars.errorSnackBar(
-            content: 'Error adding atsign, atsign may no exist',
+            content: 'Error adding atsign, atsign does no exist',
           );
     notifyListeners();
   }
