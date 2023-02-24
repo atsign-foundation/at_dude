@@ -85,5 +85,5 @@ class DudeModel {
 
   void saveSender(String value) => sender = value;
   void saveReceiver(String value) => receiver = value;
-  void saveTimeSent() => timeSent = DateTime.now();
+  void saveTimeSent() => timeSent = DateTime.now().toUtc();
 }

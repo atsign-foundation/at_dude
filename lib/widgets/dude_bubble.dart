@@ -99,7 +99,7 @@ class DudeBubble extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                DateFormat.yMd().add_jm().format(dude.timeSent),
+                DateFormat.yMd().add_jm().format(dude.timeSent.toLocal()),
                 style: const TextStyle(fontSize: 10),
               ),
             ],
