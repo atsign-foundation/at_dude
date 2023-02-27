@@ -57,7 +57,6 @@ class DudeBubble extends StatelessWidget {
               children: [
                 IconButton(
                     onPressed: () async {
-                      await audioPlayer.setVolume(1.0);
                       if (dude.selectedDudeType == DudeType.hi) {
                         await audioPlayer.play(
                           AssetSource('audios/hi_dude_scott.wav'),

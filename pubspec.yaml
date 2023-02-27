@@ -34,6 +34,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+# dependency_overrides:
+#   at_client_sdk:
+#     url: https://github.com/CurtlyCritchlow/at_client_sdk
+
 flutter:
   uses-material-design: true
   assets:

@@ -6,6 +6,7 @@ import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
@@ -14,6 +15,7 @@ import 'package:showcaseview/showcaseview.dart';
 import '../controller/controller.dart';
 import '../models/dude_model.dart';
 import '../services/services.dart';
+import '../utils/enums.dart';
 import '../utils/utils.dart';
 import '../widgets/dude_card.dart';
 import '../widgets/dude_list_tile.dart';
@@ -50,13 +52,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     super.initState();
   }
 
+  final AudioPlayer audioPlayer = AudioPlayer();
   late SMITrigger? _onPressed;
   late SMIInput<double> _cardInt;
   double cardCount = -1;
 
   void _onRiveInit(Artboard artboard) {
-    final controller =
-        StateMachineController.fromArtboard(artboard, 'State Machine 1');
+    final controller = StateMachineController.fromArtboard(artboard, 'State Machine 1');
     artboard.addController(controller!);
     _onPressed = controller.findInput<bool>('onPressed') as SMITrigger;
     _cardInt = controller.findInput<double>('cardInt') as SMINumber;
@@ -84,8 +86,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
           if (value) {
             SnackBars.notificationSnackBar(content: Texts.dudeSuccessfullySent);
           } else {
-            SnackBars.errorSnackBar(
-                content: 'Something went wrong, please try again.');
+            SnackBars.errorSnackBar(content: 'Something went wrong, please try again.');
           }
         },
       );
@@ -93,6 +94,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   }
 
   AtContact? contact;
+
   @override
   Widget build(BuildContext context) {
     if (onInit) {
@@ -123,9 +125,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                     children: [
                       contact == null
                           ? const DudeListTile(
-                              title: 'Send a Dude!',
-                              subtitle: 'Pst...Pick a contact first!',
-                              trailing: '📢')
+                              title: 'Send a Dude!', subtitle: 'Pst...Pick a contact first!', trailing: '📢')
                           : const DudeCard(
                               child: Text('Sending to...'),
                               width: double.maxFinite,
@@ -141,54 +141,55 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                           : const SizedBox(),
                       contact == null
                           ? ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  fixedSize:
-                                      const Size(double.maxFinite, 61.22)),
+                              style: ElevatedButton.styleFrom(fixedSize: const Size(double.maxFinite, 61.22)),
                               onPressed: () async {
                                 await Navigator.of(context)
                                     .push(
                                       MaterialPageRoute(
                                         builder: (context) => ShowCaseWidget(
                                             builder: Builder(
-                                          builder: (context) =>
-                                              const DudeContactsScreen(),
+                                          builder: (context) => const DudeContactsScreen(),
                                         )),
                                       ),
                                     )
-                                    .whenComplete(() async =>
-                                        await NavigationService
-                                            .navKey.currentContext!
-                                            .read<DudeController>()
-                                            .getContacts());
+                                    .whenComplete(() async => await NavigationService.navKey.currentContext!
+                                        .read<DudeController>()
+                                        .getContacts());
                               },
                               child: const Text('Select Contact'),
                             )
                           : ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  fixedSize:
-                                      const Size(double.maxFinite, 61.22)),
+                              style: ElevatedButton.styleFrom(fixedSize: const Size(double.maxFinite, 61.22)),
                               onPressed: () async {
                                 await _handleSendDudeToContact(
-                                    dude: dude,
-                                    contactAtsign: contact!.atSign!,
-                                    context: context);
+                                    dude: dude, contactAtsign: contact!.atSign!, context: context);
                                 // prevent modal route from being called
                                 onInit = false;
                                 setState(() {
                                   contact = null;
-                                  log('set state called');
                                 });
                               },
                               child: const Text('Send Dude')),
                       SizedBox(
                         height: 400,
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             if (contact == null) {
-                              SnackBars.notificationSnackBar(
-                                  content: 'Select Contact first');
+                              SnackBars.notificationSnackBar(content: 'Select Contact first');
                             } else {
                               _onPressed?.fire();
+                              if (dude.selectedDudeType == DudeType.hi) {
+                                await audioPlayer.play(
+                                  AssetSource('audios/hi_dude_scott.wav'),
+                                );
+                              } else if (dude.selectedDudeType == DudeType.youWontBelieve) {
+                                await audioPlayer.play(AssetSource('audios/you_woudnt_believe_dude_scott.wav'));
+                              } else if (dude.selectedDudeType == DudeType.awesome) {
+                                await audioPlayer.play(
+                                  AssetSource('audios/awesome_dude_scott.wav'),
+                                );
+                              }
+
                               setState(() {
                                 cardCount = cardCount + 1;
                                 if (cardCount > 2) {
@@ -196,8 +197,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                                 }
                               });
                               _cardInt.value = cardCount;
-                              dude.selectedDudeType =
-                                  dude.getEnumFromIndex(_cardInt.value.toInt());
+                              dude.selectedDudeType = dude.getEnumFromIndex(_cardInt.value.toInt());
                               dude.saveId();
                             }
                           },
@@ -210,9 +210,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                           ),
                         ),
                       ),
-                      contact == null
-                          ? const SizedBox()
-                          : const TipCard(tip: 'Tap the ball to select a Dude!')
+                      contact == null ? const SizedBox() : const TipCard(tip: 'Tap the ball to select a Dude!')
                     ],
                   ),
                 ),
