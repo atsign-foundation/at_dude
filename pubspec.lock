@@ -82,12 +82,13 @@ packages:
     source: hosted
     version: "1.0.0"
   at_client:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: at_client
-      sha256: "179bea8c4ecb5cf719887f2f5b806719dd6458736cbb824c29cf928129203bf5"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/at_client"
+      ref: "932-sync-deleted-cached-keys"
+      resolved-ref: "2e8de02b813b236a4ce63caa4f2a3e10acd54e48"
+      url: "https://github.com/atsign-foundation/at_client_sdk"
+    source: git
     version: "3.0.56"
   at_client_mobile:
     dependency: "direct main"
