@@ -63,6 +63,8 @@ post_install do |installer|
 
         ## dart: PermissionGroup.sensors
         'PERMISSION_SENSORS=0'
+
+        'AUDIO_SESSION_MICROPHONE=0'
       ]
     end
   end
