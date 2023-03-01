@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
@@ -28,10 +28,7 @@ class DudeBubble extends StatelessWidget {
     String? name;
     try {
       if (atContacts.isNotEmpty) {
-        name = atContacts
-            .where((element) => element.atSign == atsign)
-            .first
-            .tags!['name'] as String?;
+        name = atContacts.where((element) => element.atSign == atsign).first.tags!['name'] as String?;
       }
     } catch (e) {
       log('where condition not met');
@@ -58,21 +55,17 @@ class DudeBubble extends StatelessWidget {
                 IconButton(
                     onPressed: () async {
                       if (dude.selectedDudeType == DudeType.hi) {
-                        await audioPlayer.play(
-                          AssetSource('audios/hi_dude_scott.wav'),
-                        );
-                      } else if (dude.selectedDudeType ==
-                          DudeType.youWontBelieve) {
-                        await audioPlayer.play(AssetSource(
-                            'audios/you_woudnt_believe_dude_scott.wav'));
+                        await audioPlayer.setAsset('audios/hi_dude_scott.wav');
+                        await audioPlayer.play();
+                      } else if (dude.selectedDudeType == DudeType.youWontBelieve) {
+                        await audioPlayer.setAsset('audios/you_woudnt_believe_dude_scott.wav');
+                        await audioPlayer.play();
                       } else if (dude.selectedDudeType == DudeType.awesome) {
-                        await audioPlayer.play(
-                          AssetSource('audios/awesome_dude_scott.wav'),
-                        );
+                        await audioPlayer.setAsset('audios/awesome_dude_scott.wav');
+                        await audioPlayer.play();
                       }
 
-                      await Provider.of<DudeController>(context, listen: false)
-                          .deleteDude(dude);
+                      await Provider.of<DudeController>(context, listen: false).deleteDude(dude);
                     },
                     icon: const Icon(Icons.play_arrow_outlined)),
                 Flexible(
@@ -84,10 +77,7 @@ class DudeBubble extends StatelessWidget {
                     ),
                     Text(
                       '"${dude.message[dude.selectedDudeType!.index].values.first}"',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: kPrimaryColor, fontSize: 12),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: kPrimaryColor, fontSize: 12),
                     )
                   ],
                 )),

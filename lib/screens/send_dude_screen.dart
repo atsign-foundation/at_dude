@@ -6,8 +6,8 @@ import 'package:at_app_flutter/at_app_flutter.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -49,13 +49,14 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       await context.read<DudeController>().getDudes();
     });
     onInit = true;
+
     super.initState();
   }
 
   final AudioPlayer audioPlayer = AudioPlayer();
   late SMITrigger? _onPressed;
   late SMIInput<double> _cardInt;
-  double cardCount = -1;
+  double cardCount = 0;
 
   void _onRiveInit(Artboard artboard) {
     final controller = StateMachineController.fromArtboard(artboard, 'State Machine 1');
@@ -100,7 +101,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     if (onInit) {
       contact = ModalRoute.of(context)!.settings.arguments as AtContact?;
     }
-    log('contact is : ${contact.toString()}');
+
     SizeConfig().init(context);
 
     return Scaffold(
@@ -178,19 +179,26 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                               SnackBars.notificationSnackBar(content: 'Select Contact first');
                             } else {
                               _onPressed?.fire();
-                              if (dude.selectedDudeType == DudeType.hi) {
-                                await audioPlayer.play(
-                                  AssetSource('audios/hi_dude_scott.wav'),
-                                );
-                              } else if (dude.selectedDudeType == DudeType.youWontBelieve) {
-                                await audioPlayer.play(AssetSource('audios/you_woudnt_believe_dude_scott.wav'));
-                              } else if (dude.selectedDudeType == DudeType.awesome) {
-                                await audioPlayer.play(
-                                  AssetSource('audios/awesome_dude_scott.wav'),
-                                );
+
+                              try {
+                                // hi dude is the first dude in the animation
+                                dude.selectedDudeType ??= DudeType.hi;
+                                if (dude.selectedDudeType == DudeType.hi) {
+                                  await audioPlayer.setAsset('assets/audios/hi_dude_scott.wav');
+                                  await audioPlayer.play();
+                                } else if (dude.selectedDudeType == DudeType.youWontBelieve) {
+                                  await audioPlayer.setAsset('assets/audios/you_woudnt_believe_dude_scott.wav');
+                                  await audioPlayer.play();
+                                } else if (dude.selectedDudeType == DudeType.awesome) {
+                                  await audioPlayer.setAsset('assets/audios/awesome_dude_scott.wav');
+                                  await audioPlayer.play();
+                                }
+                              } catch (e) {
+                                log('Error playing audio is: $e');
                               }
 
                               setState(() {
+                                // only 3 dudes available so it need to be reset to zero to restart.
                                 cardCount = cardCount + 1;
                                 if (cardCount > 2) {
                                   cardCount = 0;
