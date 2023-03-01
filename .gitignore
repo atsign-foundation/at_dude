@@ -391,4 +391,4 @@ fabric.properties
 
 
 .vscode/settings.json
-assets/.DS_store
+.DS_store
