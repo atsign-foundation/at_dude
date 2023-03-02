@@ -55,13 +55,13 @@ class DudeBubble extends StatelessWidget {
                 IconButton(
                     onPressed: () async {
                       if (dude.selectedDudeType == DudeType.hi) {
-                        await audioPlayer.setAsset('audios/hi_dude_scott.wav');
+                        await audioPlayer.setAsset('assets/audios/hi_dude_scott.wav');
                         await audioPlayer.play();
                       } else if (dude.selectedDudeType == DudeType.youWontBelieve) {
-                        await audioPlayer.setAsset('audios/you_woudnt_believe_dude_scott.wav');
+                        await audioPlayer.setAsset('assets/audios/you_woudnt_believe_dude_scott.wav');
                         await audioPlayer.play();
                       } else if (dude.selectedDudeType == DudeType.awesome) {
-                        await audioPlayer.setAsset('audios/awesome_dude_scott.wav');
+                        await audioPlayer.setAsset('assets/audios/awesome_dude_scott.wav');
                         await audioPlayer.play();
                       }
 
