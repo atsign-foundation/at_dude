@@ -15,7 +15,6 @@ import 'package:showcaseview/showcaseview.dart';
 import '../controller/controller.dart';
 import '../models/dude_model.dart';
 import '../services/services.dart';
-import '../utils/enums.dart';
 import '../utils/utils.dart';
 import '../widgets/dude_card.dart';
 import '../widgets/dude_list_tile.dart';
@@ -166,9 +165,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                                     dude: dude, contactAtsign: contact!.atSign!, context: context);
                                 // prevent modal route from being called
                                 onInit = false;
-                                setState(() {
-                                  contact = null;
-                                });
+                                if (dude.selectedDudeType == null) {
+                                  SnackBars.notificationSnackBar(content: 'Select a dude first!');
+                                } else {
+                                  setState(() {
+                                    contact = null;
+                                  });
+                                }
                               },
                               child: const Text('Send Dude')),
                       SizedBox(
@@ -181,15 +184,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                               _onPressed?.fire();
 
                               try {
-                                // hi dude is the first dude in the animation
-                                dude.selectedDudeType ??= DudeType.hi;
-                                if (dude.selectedDudeType == DudeType.hi) {
+                                if (cardCount == 0) {
                                   await audioPlayer.setAsset('assets/audios/hi_dude_scott.wav');
                                   await audioPlayer.play();
-                                } else if (dude.selectedDudeType == DudeType.youWontBelieve) {
+                                } else if (cardCount == 1) {
                                   await audioPlayer.setAsset('assets/audios/you_woudnt_believe_dude_scott.wav');
                                   await audioPlayer.play();
-                                } else if (dude.selectedDudeType == DudeType.awesome) {
+                                } else if (cardCount == 2) {
                                   await audioPlayer.setAsset('assets/audios/awesome_dude_scott.wav');
                                   await audioPlayer.play();
                                 }
@@ -197,15 +198,14 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                                 log('Error playing audio is: $e');
                               }
 
-                              setState(() {
-                                // only 3 dudes available so it need to be reset to zero to restart.
-                                cardCount = cardCount + 1;
-                                if (cardCount > 2) {
-                                  cardCount = 0;
-                                }
-                              });
-                              _cardInt.value = cardCount;
+                              // only 3 dudes available so it need to be reset to zero to restart.
+                              cardCount = cardCount + 1;
+                              if (cardCount > 2) {
+                                cardCount = 0;
+                              }
+
                               dude.selectedDudeType = dude.getEnumFromIndex(_cardInt.value.toInt());
+                              _cardInt.value = cardCount;
                               dude.saveId();
                             }
                           },
