@@ -26,8 +26,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Provider.of<DudeController>(context, listen: false).getDudes();
-      await Provider.of<ContactsController>(context, listen: false)
-          .getContacts();
+      await Provider.of<ContactsController>(context, listen: false).getContacts();
     });
 
     super.initState();
@@ -59,56 +58,45 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           flex: 5,
                           child: dudeController.dudes.isEmpty
                               ? DudeCard(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.5,
+                                  height: MediaQuery.of(context).size.height * 0.5,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       const Text(
                                         'No new dudes!',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
-                                      Image.asset(
-                                          'assets/images/drifty_rory_sad.png'),
+                                      Image.asset('assets/images/drifty_rory_sad.png'),
                                       ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              fixedSize: const Size(
-                                                  double.maxFinite, 61.22)),
+                                          style:
+                                              ElevatedButton.styleFrom(fixedSize: const Size(double.maxFinite, 61.22)),
                                           onPressed: () async {
                                             await Navigator.of(context)
                                                 .push(
                                                   MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ShowCaseWidget(
-                                                            builder: Builder(
-                                                      builder: (context) =>
-                                                          const DudeContactsScreen(),
+                                                    builder: (context) => ShowCaseWidget(
+                                                        builder: Builder(
+                                                      builder: (context) => const DudeContactsScreen(),
                                                     )),
                                                   ),
                                                 )
-                                                .whenComplete(() async =>
-                                                    await NavigationService
-                                                        .navKey.currentContext!
-                                                        .read<DudeController>()
-                                                        .getContacts());
+                                                .whenComplete(() async => await NavigationService.navKey.currentContext!
+                                                    .read<DudeController>()
+                                                    .getContacts());
                                           },
                                           child: const Text('Send Dude'))
                                     ],
                                   ),
                                 )
                               : DudeCard(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.8,
-                                  color:
-                                      const Color.fromRGBO(255, 255, 255, 0.5),
+                                  height: MediaQuery.of(context).size.height * 0.8,
+                                  color: const Color.fromRGBO(255, 255, 255, 0.5),
                                   child: ListView.builder(
                                       // reverse: true,
                                       shrinkWrap: true,
                                       itemCount: dudeController.dudes.length,
                                       itemBuilder: (context, index) {
-                                        return DudeBubble(
-                                            dude: dudeController.dudes[index]);
+                                        return DudeBubble(key: GlobalKey(), dude: dudeController.dudes[index]);
                                       }),
                                 )),
                     ],
