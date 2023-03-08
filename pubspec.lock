@@ -61,10 +61,10 @@ packages:
     dependency: "direct main"
     description:
       name: at_backupkey_flutter
-      sha256: "64fe9c50cb53089eff21febb8e62d5c552fa2878fd7eb88281959b64c57c1219"
+      sha256: "63a8fb9ba7b091aa8ff1a300509eb6933aeff02621bfbdabd738f42230f7b306"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.7"
+    version: "4.0.8"
   at_base2e15:
     dependency: transitive
     description:

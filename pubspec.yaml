@@ -7,7 +7,7 @@ environment:
 
 dependencies:
   at_app_flutter: ^5.1.1
-  at_backupkey_flutter: 4.0.7
+  at_backupkey_flutter: ^4.0.8
   at_client_mobile: ^3.2.0
   at_contacts_flutter: ^4.0.5
   at_onboarding_flutter: ^6.0.0
