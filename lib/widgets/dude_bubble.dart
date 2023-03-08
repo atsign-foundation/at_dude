@@ -129,7 +129,7 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
         ),
       ),
       DudeCard(
-        color: Colors.white,
+        color: controller.value != 315 ? Colors.white : const Color(0xffFEE8E8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.min,
@@ -190,7 +190,10 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                         children: [
                           Text(
                             'Send a dude back to',
-                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: kPrimaryColor, fontSize: 12),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: kPrimaryColor, fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             getAtsignName(widget.dude.sender) + ' ?',
