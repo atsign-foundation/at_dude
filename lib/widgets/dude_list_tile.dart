@@ -23,12 +23,14 @@ class DudeListTile extends StatelessWidget {
           style: Theme.of(context).textTheme.displayMedium,
         ),
         subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
-        trailing: Text(
-          trailing,
-          style: const TextStyle(
-            fontSize: 49,
+        trailing: FittedBox(
+          child: Text(
+            trailing,
+            style: const TextStyle(
+              fontSize: 49,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
         ),
       ),
     );
