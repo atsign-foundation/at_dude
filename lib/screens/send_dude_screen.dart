@@ -55,7 +55,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   final AudioPlayer audioPlayer = AudioPlayer();
   late SMITrigger? _onPressed;
   late SMIInput<double> _cardInt;
-  double cardCount = 0;
+  double cardCount = 0.0;
 
   void _onRiveInit(Artboard artboard) {
     final controller = StateMachineController.fromArtboard(artboard, 'State Machine 1');
@@ -181,32 +181,30 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                             if (contact == null) {
                               SnackBars.notificationSnackBar(content: 'Select Contact first');
                             } else {
+                              log('card count at start is: $cardCount');
                               _onPressed?.fire();
-
+                              var audioAssets = [
+                                'assets/audios/hi_dude_scott.wav',
+                                'assets/audios/you_woudnt_believe_dude_scott.wav',
+                                'assets/audios/awesome_dude_scott.wav'
+                              ];
                               try {
-                                if (cardCount == 0) {
-                                  await audioPlayer.setAsset('assets/audios/hi_dude_scott.wav');
-                                  await audioPlayer.play();
-                                } else if (cardCount == 1) {
-                                  await audioPlayer.setAsset('assets/audios/you_woudnt_believe_dude_scott.wav');
-                                  await audioPlayer.play();
-                                } else if (cardCount == 2) {
-                                  await audioPlayer.setAsset('assets/audios/awesome_dude_scott.wav');
-                                  await audioPlayer.play();
-                                }
+                                await audioPlayer.setAsset(audioAssets[cardCount.toInt()]);
+                                await audioPlayer.play();
                               } catch (e) {
                                 log('Error playing audio is: $e');
                               }
+
+                              _cardInt.value = cardCount;
+                              dude.selectedDudeType = dude.getEnumFromIndex(_cardInt.value.toInt());
+                              dude.saveId();
+                              log('dude type is: ${dude.selectedDudeType}');
 
                               // only 3 dudes available so it need to be reset to zero to restart.
                               cardCount = cardCount + 1;
                               if (cardCount > 2) {
                                 cardCount = 0;
                               }
-
-                              dude.selectedDudeType = dude.getEnumFromIndex(_cardInt.value.toInt());
-                              _cardInt.value = cardCount;
-                              dude.saveId();
                             }
                           },
                           child: RiveAnimation.asset(
