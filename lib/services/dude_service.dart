@@ -78,8 +78,7 @@ class DudeService {
 
     try {
       AtValue profileAtValue = await atClientManager.atClient.get(profileKey);
-      ProfileModel profileModel =
-          ProfileModel.fromJson(jsonDecode(profileAtValue.value));
+      ProfileModel profileModel = ProfileModel.fromJson(jsonDecode(profileAtValue.value));
       profileModel.saveId(dude.sender);
       profileModel.dudesSent += 1;
 
@@ -151,21 +150,14 @@ class DudeService {
 
   /// Subscribes to the stream of data being sent to the current atsign.
   void monitorNotifications(BuildContext context) {
-    atClientManager.atClient.notificationService
-        .subscribe(regex: Texts.atDude)
-        .listen(
+    atClientManager.atClient.notificationService.subscribe(regex: Texts.atDude).listen(
       (AtNotification notification) async {
-        String? currentAtsign = DudeService.getInstance()
-            .atClientManager
-            .atClient
-            .getCurrentAtSign();
+        String? currentAtsign = DudeService.getInstance().atClientManager.atClient.getCurrentAtSign();
 
         if (currentAtsign == notification.to) {
-          await LocalNotificationService.getInstance().showNotifications(
-              notification.id.length,
-              'Dude',
-              '${notification.from} sent you a dude',
-              1);
+          await LocalNotificationService.getInstance()
+              .showNotifications(notification.id.length, 'Dude', '${notification.from} sent you a dude', 1);
+          // var audioPlayer = AudioPlayer();
         }
       },
     );
@@ -178,18 +170,14 @@ class DudeService {
 
   /// Fetch the current atsign profile image
   Future<Uint8List?> getCurrentAtsignProfileImage() async {
-    return contactService
-        .getContactDetails(atClientManager.atClient.getCurrentAtSign(), null)
-        .then((value) {
+    return contactService.getContactDetails(atClientManager.atClient.getCurrentAtSign(), null).then((value) {
       return value['image'];
     });
   }
 
   /// Fetch details for the current atsign
   Future<dynamic> getCurrentAtsignContactDetails() async {
-    return contactService
-        .getContactDetails(atClientManager.atClient.getCurrentAtSign(), null)
-        .then((value) {
+    return contactService.getContactDetails(atClientManager.atClient.getCurrentAtSign(), null).then((value) {
       return value;
     });
   }
@@ -215,8 +203,7 @@ class DudeService {
   }
 
   /// Save senders atsign to the current atsign local secondary.
-  Future<void> putSenderAtsign(
-      {required String senderAtsign, required String receiverAtsign}) async {
+  Future<void> putSenderAtsign({required String senderAtsign, required String receiverAtsign}) async {
     var metaData = Metadata()
       ..isEncrypted = true
       ..namespaceAware = true
@@ -247,8 +234,7 @@ class DudeService {
     // @blizzard30:some_uuid.at_skeleton_app@assault30
     // @blizzard30:signing_privatekey@blizzard30
 
-    List<AtKey> keysList =
-        await atClientManager.atClient.getAtKeys(regex: 'dude_sender_atsigns_');
+    List<AtKey> keysList = await atClientManager.atClient.getAtKeys(regex: 'dude_sender_atsigns_');
 
     List<String> senderAtsigns = [];
     for (AtKey key in keysList) {
@@ -267,8 +253,7 @@ class DudeService {
   /// Delete dude sent to the current atsign.
   Future<bool> deleteDude(DudeModel dude) async {
     try {
-      List<AtKey> dudeAtKey =
-          await atClientManager.atClient.getAtKeys(regex: dude.id);
+      List<AtKey> dudeAtKey = await atClientManager.atClient.getAtKeys(regex: dude.id);
       bool isDeleted = await atClientManager.atClient.delete(dudeAtKey[0]);
 
       return isDeleted;
@@ -320,9 +305,7 @@ class DudeService {
   ) async {
     bool isCompleted = false;
 
-    var profileKey = AtKey.self('dude_persona',
-            sharedBy: atClientManager.atClient.getCurrentAtSign()!)
-        .build();
+    var profileKey = AtKey.self('dude_persona', sharedBy: atClientManager.atClient.getCurrentAtSign()!).build();
 
     await atClientManager.atClient
         .put(
@@ -341,12 +324,9 @@ class DudeService {
     // will delate all instances that match the key
 
     var success = true;
-    var atKeys = await AtClientManager.getInstance()
-        .atClient
-        .getAtKeys(regex: 'cached:@');
+    var atKeys = await AtClientManager.getInstance().atClient.getAtKeys(regex: 'cached:@');
     for (var atKey in atKeys) {
-      success =
-          success && await AtClientManager.getInstance().atClient.delete(atKey);
+      success = success && await AtClientManager.getInstance().atClient.delete(atKey);
     }
     _logger.info('delete returning success = $success');
     return success;

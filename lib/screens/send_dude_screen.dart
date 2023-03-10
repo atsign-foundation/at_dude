@@ -65,9 +65,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   }
 
   /// Update the isLoading property to it's appropriate state.
-  void updateIsLoading(bool value) {
+  void updateIsLoading() {
     setState(() {
-      isLoading = value;
+      isLoading = !isLoading;
     });
   }
 
@@ -80,7 +80,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     if (dude.selectedDudeType == null) {
       SnackBars.notificationSnackBar(content: 'Select Dude First');
     } else {
+      updateIsLoading();
       SnackBars.notificationSnackBar(content: 'Sending Dude... please wait.');
+
       await DudeService.getInstance().putDude(dude, contactAtsign).then(
         (value) {
           if (value) {
@@ -88,6 +90,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
           } else {
             SnackBars.errorSnackBar(content: 'Something went wrong, please try again.');
           }
+          updateIsLoading();
         },
       );
     }
@@ -165,9 +168,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                                     dude: dude, contactAtsign: contact!.atSign!, context: context);
                                 // prevent modal route from being called
                                 onInit = false;
-                                if (dude.selectedDudeType == null) {
-                                  SnackBars.notificationSnackBar(content: 'Select a dude first!');
-                                } else {
+                                if (dude.selectedDudeType != null) {
                                   setState(() {
                                     contact = null;
                                   });
@@ -224,7 +225,13 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
             ),
           ),
         ),
-        isLoading ? const LoadingIndicator() : const SizedBox()
+        isLoading
+            ? Container(
+                color: Colors.black12,
+                child: const Center(child: LoadingIndicator()),
+                height: MediaQuery.of(context).size.height,
+              )
+            : const SizedBox(),
       ]),
     );
   }
