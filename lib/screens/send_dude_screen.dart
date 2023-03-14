@@ -96,6 +96,19 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     }
   }
 
+  Future<void> _handleNavigateToContactScreen() async {
+    await Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => ShowCaseWidget(
+                builder: Builder(
+              builder: (context) => const DudeContactsScreen(),
+            )),
+          ),
+        )
+        .whenComplete(() async => await NavigationService.navKey.currentContext!.read<DudeController>().getContacts());
+  }
+
   AtContact? contact;
 
   @override
@@ -139,26 +152,14 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                               child: CustomContactListTile(
                                 contact: contact!,
                                 contactService: ContactService(),
+                                onTap: () => _handleNavigateToContactScreen(),
                               ),
                             )
                           : const SizedBox(),
                       contact == null
                           ? ElevatedButton(
                               style: ElevatedButton.styleFrom(fixedSize: const Size(double.maxFinite, 61.22)),
-                              onPressed: () async {
-                                await Navigator.of(context)
-                                    .push(
-                                      MaterialPageRoute(
-                                        builder: (context) => ShowCaseWidget(
-                                            builder: Builder(
-                                          builder: (context) => const DudeContactsScreen(),
-                                        )),
-                                      ),
-                                    )
-                                    .whenComplete(() async => await NavigationService.navKey.currentContext!
-                                        .read<DudeController>()
-                                        .getContacts());
-                              },
+                              onPressed: _handleNavigateToContactScreen,
                               child: const Text('Select Contact'),
                             )
                           : ElevatedButton(

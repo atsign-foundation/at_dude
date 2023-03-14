@@ -105,8 +105,7 @@ class _CustomContactListTileState extends State<CustomContactListTile> {
         builder: (context, snapshot) {
           // ignore: omit_local_variable_types
           for (AtContact? contact in widget.contactService.selectedContacts) {
-            if (contact == widget.contact ||
-                contact!.atSign == widget.contact.atSign) {
+            if (contact == widget.contact || contact!.atSign == widget.contact.atSign) {
               isSelected = true;
               break;
             } else {
@@ -118,8 +117,9 @@ class _CustomContactListTileState extends State<CustomContactListTile> {
           }
           return ListTile(
             onTap: () {
-              Navigator.popAndPushNamed(context, SendDudeScreen.routeName,
-                  arguments: widget.contact);
+              widget.onTap == null
+                  ? Navigator.popAndPushNamed(context, SendDudeScreen.routeName, arguments: widget.contact)
+                  : widget.onTap!();
               if (widget.asSelectionTile) {
                 setState(() {
                   if (isSelected) {
@@ -142,8 +142,7 @@ class _CustomContactListTileState extends State<CustomContactListTile> {
               }
             },
             title: Text(
-              (widget.contact.tags != null &&
-                      widget.contact.tags!['nickname'] != null
+              (widget.contact.tags != null && widget.contact.tags!['nickname'] != null
                   ? '${widget.contact.tags!['nickname']} (${widget.contact.atSign!})'
                   : widget.contact.atSign!),
               style: TextStyle(
@@ -153,8 +152,7 @@ class _CustomContactListTileState extends State<CustomContactListTile> {
               ),
             ),
             subtitle: Text(
-              widget.contact.tags != null &&
-                      widget.contact.tags!['name'] != null
+              widget.contact.tags != null && widget.contact.tags!['name'] != null
                   ? widget.contact.tags!['name']
                   : widget.contact.atSign!.substring(1),
               style: TextStyle(
