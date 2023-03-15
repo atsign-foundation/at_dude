@@ -1,4 +1,6 @@
 // import 'package:badges/badges.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -11,13 +13,11 @@ import '../screens/settings_screen.dart';
 import '../utils/texts.dart';
 
 class DudeBottomNavigationBar extends StatefulWidget {
-  const DudeBottomNavigationBar({required this.selectedIndex, Key? key})
-      : super(key: key);
+  const DudeBottomNavigationBar({required this.selectedIndex, Key? key}) : super(key: key);
 
   final int selectedIndex;
   @override
-  State<DudeBottomNavigationBar> createState() =>
-      _DudeBottomNavigationBarState();
+  State<DudeBottomNavigationBar> createState() => _DudeBottomNavigationBarState();
 }
 
 class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
@@ -72,26 +72,32 @@ class _DudeBottomNavigationBarState extends State<DudeBottomNavigationBar> {
         BottomNavigationBarItem(
           icon: Consumer<DudeController>(
             builder: ((context, dudeController, child) {
-              return Badge(
-                isLabelVisible: dudeController.dudeCount > 0 ? true : false,
-                backgroundColor: kAlternativeColor,
-                textColor: Colors.black,
-                // elevation: dudeController.dudeCount > 0 ? 2 : 0,
-                // showBadge: dudeController.dudeCount > 0 ? true : false,
-                // badgeColor: Theme.of(context).bottomAppBarColor,
-                label: dudeController.dudeCount > 0
-                    ? Text(
-                        dudeController.dudeCount.toString(),
-                        style: const TextStyle(
-                            // color: kAlternativeColor,
-                            ),
-                      )
-                    : null,
-                child: SvgPicture.asset(
-                  'assets/images/nav_icons/notifications.svg',
-                  color:
-                      widget.selectedIndex == 3 ? kPrimaryColor : Colors.black,
-                ),
+              return FutureBuilder(
+                future: dudeController.dudeReadCount,
+                builder: (context, AsyncSnapshot<int> snapshot) {
+                  var readCount = snapshot.data ?? 0;
+                  log('future read count is $readCount');
+                  return Badge(
+                    isLabelVisible: readCount > 0 ? true : false,
+                    backgroundColor: kAlternativeColor,
+                    textColor: Colors.black,
+                    // elevation: dudeController.dudeCount > 0 ? 2 : 0,
+                    // showBadge: dudeController.dudeCount > 0 ? true : false,
+                    // badgeColor: Theme.of(context).bottomAppBarColor,
+                    label: readCount > 0
+                        ? Text(
+                            readCount.toString(),
+                            style: const TextStyle(
+                                // color: kAlternativeColor,
+                                ),
+                          )
+                        : null,
+                    child: SvgPicture.asset(
+                      'assets/images/nav_icons/notifications.svg',
+                      color: widget.selectedIndex == 3 ? kPrimaryColor : Colors.black,
+                    ),
+                  );
+                },
               );
             }),
           ),

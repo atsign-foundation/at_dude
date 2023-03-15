@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/dude_model.dart';
+
 class SharedPreferencesService {
-  static final SharedPreferencesService _notificationService =
-      SharedPreferencesService._internal();
+  static final SharedPreferencesService _notificationService = SharedPreferencesService._internal();
 
   factory SharedPreferencesService() {
     return _notificationService;
@@ -112,5 +113,23 @@ class SharedPreferencesService {
     var result = storage.getBool('persona_status');
     log("persona status: ${result ?? true}");
     return result ?? true;
+  }
+
+  /// Set add_contact_status as false
+  static Future<void> setDudeReadStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    final result = await storage.setBool('read_status_' + dudeModel.id, true);
+    log('set dude read status: $result');
+  }
+
+  /// Returns true if the add_contact_status is null or the result otherwise
+  static Future<bool> getDudeReadStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.getBool('read_status_' + dudeModel.id) ?? false;
+  }
+
+  static Future<bool> deleteDudeReadStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.remove('read_status_' + dudeModel.id);
   }
 }

@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../controller/dude_controller.dart';
 import '../dude_theme.dart';
 import '../services/navigation_service.dart';
+import '../services/shared_preferences_service.dart';
 import '../utils/texts.dart';
 import '../widgets/settings_button.dart';
 import '../widgets/switch_atsign.dart';
@@ -36,10 +37,7 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     Text(
                       ContactService().currentAtsign,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(color: kPrimaryColor),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: kPrimaryColor),
                     ),
                     Text(
                       ContactService().loggedInUserDetails!.tags!['name'] ?? '',
@@ -52,8 +50,7 @@ class SettingsScreen extends StatelessWidget {
                       icon: Icons.block_outlined,
                       title: 'Blocked Contacts',
                       onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(CustomBlockedScreen.routeName);
+                        Navigator.of(context).pushNamed(CustomBlockedScreen.routeName);
                       },
                     ),
                     const SizedBox(
@@ -63,8 +60,7 @@ class SettingsScreen extends StatelessWidget {
                       icon: Icons.bookmark_outline,
                       title: 'Backup Your Keys',
                       onTap: () {
-                        BackupKeyWidget(atsign: ContactService().currentAtsign)
-                            .showBackupDialog(context);
+                        BackupKeyWidget(atsign: ContactService().currentAtsign).showBackupDialog(context);
                       },
                     ),
                     const SizedBox(
@@ -119,8 +115,7 @@ class SettingsScreen extends StatelessWidget {
                       icon: Icons.account_balance_wallet_outlined,
                       title: Texts.privacyPolicy,
                       onTap: () async {
-                        final Uri _url = Uri.parse(
-                            'https://atsign.com/apps/atDude-privacy/');
+                        final Uri _url = Uri.parse('https://atsign.com/apps/atDude-privacy/');
                         if (!await launchUrl(_url)) {
                           throw Exception('Could not launch $_url');
                         }
@@ -139,12 +134,14 @@ class SettingsScreen extends StatelessWidget {
                               label: 'Yes',
                               textColor: Colors.white,
                               onPressed: () async {
-                                bool result = await context
-                                    .read<DudeController>()
-                                    .deleteAllData();
+                                var dudes = context.read<DudeController>().dudes;
+
+                                for (var dude in dudes) {
+                                  await SharedPreferencesService.deleteDudeReadStatus(dude);
+                                }
+                                bool result = await context.read<DudeController>().deleteAllData();
                                 if (result) {
-                                  SnackBars.notificationSnackBar(
-                                      content: "All Dude Deleted");
+                                  SnackBars.notificationSnackBar(content: "All Dude Deleted");
                                 }
                               }),
                         );

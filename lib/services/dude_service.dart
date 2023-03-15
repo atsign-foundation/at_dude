@@ -1,6 +1,7 @@
 // 🎯 Dart imports:
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:at_app_flutter/at_app_flutter.dart';
@@ -106,6 +107,39 @@ class DudeService {
           .whenComplete(() => isCompleted = true)
           .onError((error, stackTrace) => isCompleted = false);
     }
+    return isCompleted;
+  }
+
+  /// Update Dude to the mark as read.
+  Future<bool> updateDude(
+    DudeModel dude,
+  ) async {
+    bool isCompleted = false;
+    dude.saveSender(atClientManager.atClient.getCurrentAtSign()!);
+    var metaData = Metadata()
+      ..isEncrypted = true
+      ..namespaceAware = true
+      ..ttr = -1
+      ..isPublic = false;
+
+    var dudeKey = AtKey()
+      ..key = dude.id
+      ..sharedBy = dude.sender
+      ..metadata = metaData;
+
+    await atClientManager.atClient
+        .put(
+          dudeKey,
+          json.encode(
+            dude.toJson(),
+          ),
+        )
+        .whenComplete(() => isCompleted = true)
+        .onError((error, stackTrace) {
+      log(error.toString());
+      return isCompleted = false;
+    });
+
     return isCompleted;
   }
 

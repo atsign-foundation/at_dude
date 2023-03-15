@@ -11,6 +11,7 @@ import '../dude_theme.dart';
 import '../models/dude_model.dart';
 import '../screens/send_dude_screen.dart';
 import '../services/navigation_service.dart';
+import '../services/shared_preferences_service.dart';
 import '../utils/enums.dart';
 import 'dude_card.dart';
 
@@ -31,8 +32,17 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
   late Animation<double> animation;
   late AnimationController controller;
   late Duration duration;
+  bool isDudeRead = false;
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      isDudeRead = await SharedPreferencesService.getDudeReadStatus(widget.dude);
+      setState(() {
+        isDudeRead;
+      });
+      log('init state isDudeRead: $isDudeRead');
+    });
+
     if (widget.dude.selectedDudeType == DudeType.hi) {
       audioPlayer.setAsset('assets/audios/hi_dude_scott.wav');
       duration = const Duration(seconds: 2);
@@ -107,6 +117,7 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     log('controller value is:' + controller.value.toString());
     log('audio player position is ${audioPlayer.position.inMilliseconds.toDouble()}');
+    log('is dudeRead is $isDudeRead');
 
     if (controller.value != 315) {
       controller.animateTo(
@@ -129,12 +140,12 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
         ),
       ),
       DudeCard(
-        color: controller.value != 315 ? Colors.white : const Color(0xffFEE8E8),
+        color: !isDudeRead ? Colors.white : const Color(0xffFEE8E8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.min,
           children: [
-            controller.value != 315
+            !isDudeRead
                 ? Expanded(
                     child: Row(
                       children: [
@@ -143,6 +154,12 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                               setState(() {});
 
                               await audioPlayer.play();
+                              await context.read<DudeController>().updateReadDudeCount(widget.dude);
+
+                              setState(() {
+                                isDudeRead = true;
+                              });
+
                               if (controller.value == 315) {
                                 // controller.reset();
                               }
@@ -181,6 +198,7 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                             var atContact = ContactService()
                                 .contactList
                                 .firstWhere((element) => element.atSign == widget.dude.sender);
+
                             Navigator.popAndPushNamed(context, SendDudeScreen.routeName, arguments: atContact);
                           },
                           icon: const Icon(Icons.reply)),
@@ -196,19 +214,20 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                                 .copyWith(color: kPrimaryColor, fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            getAtsignName(widget.dude.sender) + ' ?',
+                            getAtsignName(widget.dude.sender),
                           ),
                         ],
                       )),
                     ],
                   )),
-            controller.value != 315
+            !isDudeRead
                 ? Text(
                     DateFormat.yMd().add_jm().format(widget.dude.timeSent.toLocal()),
                     style: const TextStyle(fontSize: 10),
                   )
                 : IconButton(
                     onPressed: () async {
+                      await SharedPreferencesService.deleteDudeReadStatus(widget.dude);
                       await Provider.of<DudeController>(context, listen: false).deleteDude(widget.dude);
                     },
                     icon: const Icon(Icons.close)),

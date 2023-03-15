@@ -12,6 +12,7 @@ class DudeModel {
   DudeType? selectedDudeType;
   DateTime? createdAt;
   bool? isSender;
+  bool isRead;
 
   List<Map<int, String>> audios = [
     {DudeType.hi.index: 'assets/audios/dude.wav'},
@@ -32,9 +33,10 @@ class DudeModel {
     required this.selectedDudeType,
     this.isSender,
     this.createdAt,
+    this.isRead = false,
   });
 
-  DudeModel.newDude();
+  DudeModel.newDude({this.isRead = false});
 
   Map<String, dynamic> toJson() {
     return {
@@ -42,17 +44,19 @@ class DudeModel {
       'sender': sender,
       'receiver': receiver,
       'timeSent': timeSent.toIso8601String(),
-      'selectedDudeType': selectedDudeType!.name
+      'selectedDudeType': selectedDudeType!.name,
+      'isRead': isRead,
     };
   }
 
   DudeModel.fromJson(Map<String, dynamic> json)
       : this(
-            id: json['id'] as String,
-            sender: json['sender'] as String,
-            receiver: json['receiver'] as String,
-            timeSent: DateTime.parse((json['timeSent'])) as DateTime,
-            selectedDudeType: getEnumFromName(json['selectedDudeType']));
+          id: json['id'] as String,
+          sender: json['sender'] as String,
+          receiver: json['receiver'] as String,
+          timeSent: DateTime.parse((json['timeSent'])) as DateTime,
+          selectedDudeType: getEnumFromName(json['selectedDudeType']),
+        );
 
   // @override
   // String toString() {
