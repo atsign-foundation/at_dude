@@ -33,10 +33,12 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
   late AnimationController controller;
   late Duration duration;
   bool isDudeRead = false;
+  bool isDudeReplied = false;
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       isDudeRead = await SharedPreferencesService.getDudeReadStatus(widget.dude);
+      isDudeReplied = await SharedPreferencesService.getDudeReplyStatus(widget.dude);
       setState(() {
         isDudeRead;
       });
@@ -194,20 +196,25 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                     child: Row(
                     children: [
                       IconButton(
-                          onPressed: () {
-                            var atContact = ContactService()
-                                .contactList
-                                .firstWhere((element) => element.atSign == widget.dude.sender);
+                          onPressed: !isDudeReplied
+                              ? () {
+                                  var atContact = ContactService()
+                                      .contactList
+                                      .firstWhere((element) => element.atSign == widget.dude.sender);
 
-                            Navigator.popAndPushNamed(context, SendDudeScreen.routeName, arguments: atContact);
-                          },
-                          icon: const Icon(Icons.reply)),
+                                  Navigator.popAndPushNamed(context, SendDudeScreen.routeName, arguments: {
+                                    'atContact': atContact,
+                                    'dudeModel': widget.dude,
+                                  });
+                                }
+                              : () {},
+                          icon: !isDudeReplied ? const Icon(Icons.reply) : const Icon(Icons.check)),
                       Flexible(
                           child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Send a dude back to',
+                            !isDudeReplied ? 'Send a dude back to' : 'You sent a dude back to',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!

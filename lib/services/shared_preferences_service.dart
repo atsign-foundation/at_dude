@@ -132,4 +132,24 @@ class SharedPreferencesService {
     final storage = await SharedPreferences.getInstance();
     return storage.remove('read_status_' + dudeModel.id);
   }
+
+  // Dude Reply status
+
+  /// Set add_contact_status as false
+  static Future<void> setDudeReplyStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    final result = await storage.setBool('reply_status_' + dudeModel.id, true);
+    log('set dude reply status: $result');
+  }
+
+  /// Returns true if the add_contact_status is null or the result otherwise
+  static Future<bool> getDudeReplyStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.getBool('reply_status_' + dudeModel.id) ?? false;
+  }
+
+  static Future<bool> deleteDudeReplyStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.remove('reply_status_' + dudeModel.id);
+  }
 }

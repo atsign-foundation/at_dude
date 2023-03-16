@@ -86,6 +86,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       await DudeService.getInstance().putDude(dude, contactAtsign).then(
         (value) {
           if (value) {
+            if (onInit) {
+              SharedPreferencesService.setDudeReplyStatus(repliedToDude!);
+            }
             SnackBars.notificationSnackBar(content: Texts.dudeSuccessfullySent);
           } else {
             SnackBars.errorSnackBar(content: 'Something went wrong, please try again.');
@@ -110,11 +113,15 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   }
 
   AtContact? contact;
+  DudeModel? repliedToDude;
 
   @override
   Widget build(BuildContext context) {
     if (onInit) {
-      contact = ModalRoute.of(context)!.settings.arguments as AtContact?;
+      var arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      contact = arguments['atContact'] as AtContact?;
+
+      repliedToDude = arguments['dudeModel'] as DudeModel?;
     }
 
     SizeConfig().init(context);
@@ -167,6 +174,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
                               onPressed: () async {
                                 await _handleSendDudeToContact(
                                     dude: dude, contactAtsign: contact!.atSign!, context: context);
+
                                 // prevent modal route from being called
                                 onInit = false;
                                 if (dude.selectedDudeType != null) {
