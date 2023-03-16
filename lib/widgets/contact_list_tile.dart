@@ -118,7 +118,8 @@ class _CustomContactListTileState extends State<CustomContactListTile> {
           return ListTile(
             onTap: () {
               widget.onTap == null
-                  ? Navigator.popAndPushNamed(context, SendDudeScreen.routeName, arguments: widget.contact)
+                  ? Navigator.popAndPushNamed(context, SendDudeScreen.routeName,
+                      arguments: {'atContact': widget.contact})
                   : widget.onTap!();
               if (widget.asSelectionTile) {
                 setState(() {

@@ -118,10 +118,10 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   @override
   Widget build(BuildContext context) {
     if (onInit) {
-      var arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      contact = arguments['atContact'] as AtContact?;
+      var arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+      contact = arguments?['atContact'] as AtContact?;
 
-      repliedToDude = arguments['dudeModel'] as DudeModel?;
+      repliedToDude = arguments?['dudeModel'] as DudeModel?;
     }
 
     SizeConfig().init(context);
