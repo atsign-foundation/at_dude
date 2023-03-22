@@ -10,15 +10,12 @@ import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:path_provider/path_provider.dart'
-    show getApplicationSupportDirectory;
+import 'package:path_provider/path_provider.dart' show getApplicationSupportDirectory;
 import 'package:provider/provider.dart';
 
 import 'controller/controller.dart';
 import 'dude_theme.dart';
 import 'screens/custom_blocked_screen.dart';
-import 'screens/screens.dart';
-import 'screens/settings_screen.dart';
 import 'services/services.dart';
 import 'utils/utils.dart';
 import 'widgets/settings_button.dart';
@@ -48,15 +45,13 @@ Future<void> main() async {
           home: const MyApp(),
           theme: DudeTheme.light(),
           routes: {
-            SendDudeScreen.routeName: (context) => const SendDudeScreen(),
-            NotificationScreen.routeName: (context) =>
-                const NotificationScreen(),
-            StatsScreen.routeName: (context) => const StatsScreen(),
-            DudeContactsScreen.routeName: (context) =>
-                const DudeContactsScreen(),
-            SettingsScreen.routeName: (context) => const SettingsScreen(),
-            CustomBlockedScreen.routeName: (context) =>
-                const CustomBlockedScreen()
+            DudeNavigationScreen.routeName: (context) => const DudeNavigationScreen(),
+            // SendDudeScreen.routeName: (context) => const SendDudeScreen(),
+            // NotificationScreen.routeName: (context) => const NotificationScreen(),
+            // StatsScreen.routeName: (context) => const StatsScreen(),
+            // DudeContactsScreen.routeName: (context) => const DudeContactsScreen(),
+            // SettingsScreen.routeName: (context) => const SettingsScreen(),
+            CustomBlockedScreen.routeName: (context) => const CustomBlockedScreen()
           },
           navigatorKey: NavigationService.navKey,
         )),
@@ -93,7 +88,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {});
-    //  => _handleOnboard(context)
+    _handleOnboard(context);
   }
 
   /// Signs user into the @platform.
@@ -113,14 +108,12 @@ class _MyAppState extends State<MyApp> {
           _logger.finer('Successfully onboarded ${result.atsign}');
           // dudeService..atClient = result.
           DudeService.getInstance().monitorNotifications(context);
-          DudeService.getInstance()
-              .atClientManager
-              .atClient
-              .syncService
-              .addProgressListener(MySyncProgressListener());
+          DudeService.getInstance().atClientManager.atClient.syncService.addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
 
-          await Navigator.of(context).pushNamed(SendDudeScreen.routeName);
+          await Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const DudeNavigationScreen(),
+          ));
 
           break;
 
@@ -187,27 +180,25 @@ class _MyAppState extends State<MyApp> {
                     horizontal: 12,
                     vertical: 8,
                   ),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Expanded(
-                          child: Divider(
-                            color: Colors.black,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Text(
-                            'Or',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ]),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Text(
+                        'Or',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ]),
                 ),
               ),
               const Flexible(

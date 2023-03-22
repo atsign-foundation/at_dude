@@ -10,17 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/controller.dart';
+import '../models/arguments.dart';
 import '../models/dude_model.dart';
 import '../services/services.dart';
+import '../utils/enums.dart';
 import '../utils/utils.dart';
 import '../widgets/dude_card.dart';
 import '../widgets/dude_list_tile.dart';
 import '../widgets/tip_card.dart';
 import '../widgets/widgets.dart';
-import 'screens.dart';
 
 class SendDudeScreen extends StatefulWidget {
   const SendDudeScreen({this.canPop = false, Key? key}) : super(key: key);
@@ -100,16 +100,19 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   }
 
   Future<void> _handleNavigateToContactScreen() async {
+    // await Navigator.of(context)
+    //     .push(
+    //       MaterialPageRoute(
+    //         builder: (context) => ShowCaseWidget(
+    //             builder: Builder(
+    //           builder: (context) => const DudeContactsScreen(),
+    //         )),
+    //       ),
+    //     )
+    //     .whenComplete(() async => await NavigationService.navKey.currentContext!.read<DudeController>().getContacts());
+
     await Navigator.of(context)
-        .push(
-          MaterialPageRoute(
-            builder: (context) => ShowCaseWidget(
-                builder: Builder(
-              builder: (context) => const DudeContactsScreen(),
-            )),
-          ),
-        )
-        .whenComplete(() async => await NavigationService.navKey.currentContext!.read<DudeController>().getContacts());
+        .popAndPushNamed(DudeNavigationScreen.routeName, arguments: Arguments(route: Screens.contacts.index));
   }
 
   AtContact? contact;
@@ -117,11 +120,12 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log('send dude screen build called');
     if (onInit) {
-      var arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-      contact = arguments?['atContact'] as AtContact?;
+      var arguments = ModalRoute.of(context)!.settings.arguments as Arguments?;
+      contact = arguments?.atContact;
 
-      repliedToDude = arguments?['dudeModel'] as DudeModel?;
+      repliedToDude = arguments?.dudeModel;
     }
 
     SizeConfig().init(context);
@@ -129,9 +133,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      bottomNavigationBar: const DudeBottomNavigationBar(
-        selectedIndex: 2,
-      ),
+      // bottomNavigationBar: const DudeBottomNavigationBar(
+      //   selectedIndex: 2,
+      // ),
       body: Stack(children: [
         const AppBackground(
           alignment: Alignment.centerLeft,

@@ -23,7 +23,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 4),
+      // bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 4),
       body: Stack(
         children: [
           const AppBackground(alignment: Alignment.bottomCenter),

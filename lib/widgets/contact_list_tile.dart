@@ -12,7 +12,9 @@ import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
 import '../dude_theme.dart';
-import '../screens/screens.dart';
+import '../models/arguments.dart';
+import '../utils/enums.dart';
+import 'widgets.dart';
 
 class CustomContactListTile extends StatefulWidget {
   final Function? onTap;
@@ -118,8 +120,8 @@ class _CustomContactListTileState extends State<CustomContactListTile> {
           return ListTile(
             onTap: () {
               widget.onTap == null
-                  ? Navigator.popAndPushNamed(context, SendDudeScreen.routeName,
-                      arguments: {'atContact': widget.contact})
+                  ? Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
+                      arguments: Arguments(route: Screens.sendDude.index, atContact: widget.contact))
                   : widget.onTap!();
               if (widget.asSelectionTile) {
                 setState(() {

@@ -8,12 +8,13 @@ import 'package:provider/provider.dart';
 
 import '../controller/controller.dart';
 import '../dude_theme.dart';
+import '../models/arguments.dart';
 import '../models/dude_model.dart';
-import '../screens/send_dude_screen.dart';
 import '../services/navigation_service.dart';
 import '../services/shared_preferences_service.dart';
 import '../utils/enums.dart';
 import 'dude_card.dart';
+import 'dude_navigation_screen.dart';
 
 class DudeBubble extends StatefulWidget {
   const DudeBubble({
@@ -202,10 +203,9 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                                       .contactList
                                       .firstWhere((element) => element.atSign == widget.dude.sender);
 
-                                  Navigator.popAndPushNamed(context, SendDudeScreen.routeName, arguments: {
-                                    'atContact': atContact,
-                                    'dudeModel': widget.dude,
-                                  });
+                                  Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
+                                      arguments: Arguments(
+                                          route: Screens.sendDude.index, atContact: atContact, dudeModel: widget.dude));
                                 }
                               : () {},
                           icon: !isDudeReplied ? const Icon(Icons.reply) : const Icon(Icons.check)),

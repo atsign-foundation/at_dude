@@ -33,7 +33,7 @@ class _StatsScreenState extends State<StatsScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 1),
+      // bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 1),
       body: Stack(children: [
         const AppBackground(
           alignment: Alignment.bottomCenter,
@@ -54,9 +54,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ProfileStat(
-                      stat: profileModel.dudesSent == 0
-                          ? '-'
-                          : profileModel.dudesSent.toString(),
+                      stat: profileModel.dudesSent == 0 ? '-' : profileModel.dudesSent.toString(),
                       description: 'Dudes sent',
                     ),
                   ],

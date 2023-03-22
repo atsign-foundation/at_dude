@@ -10,3 +10,11 @@ enum DudeType {
   youWontBelieve,
   awesome,
 }
+
+enum Screens {
+  contacts,
+  stats,
+  sendDude,
+  notifications,
+  settings,
+}

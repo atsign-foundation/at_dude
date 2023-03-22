@@ -40,8 +40,7 @@ class DudeContactsScreen extends StatefulWidget {
   const DudeContactsScreen(
       {Key? key,
       this.selectedList,
-      @Deprecated('context is no longer required and will be removed in upcoming version')
-          this.context,
+      @Deprecated('context is no longer required and will be removed in upcoming version') this.context,
       this.asSelectionScreen = false,
       this.asSingleSelectionScreen = false,
       this.saveGroup,
@@ -94,16 +93,13 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
 
         if (widget.selectedContactsHistory != null) {
           _contactService.selectedContacts = widget.selectedContactsHistory!;
-          _contactService.selectedContactSink
-              .add(_contactService.selectedContacts);
+          _contactService.selectedContactSink.add(_contactService.selectedContacts);
         }
 
-        final addContactStatus =
-            await SharedPreferencesService.getAddContactStatus();
+        final addContactStatus = await SharedPreferencesService.getAddContactStatus();
         if (addContactStatus) showcaseList.add(addContactKey);
 
-        final filterFavoriteStatus =
-            await SharedPreferencesService.getFilterFavoriteStatus();
+        final filterFavoriteStatus = await SharedPreferencesService.getFilterFavoriteStatus();
         if (filterFavoriteStatus) showcaseList.add(filterFavoriteKey);
 
         if (showcaseList.isNotEmpty) {
@@ -151,7 +147,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
               ),
         extendBody: true,
         extendBodyBehindAppBar: true,
-        bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 0),
+        // bottomNavigationBar: const DudeBottomNavigationBar(selectedIndex: 0),
         body: errorOcurred
             ? const ErrorScreen()
             : GestureDetector(
@@ -160,8 +156,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                   const AppBackground(alignment: Alignment.bottomRight),
                   SafeArea(
                     child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 16.toWidth, vertical: 16.toHeight),
+                      padding: EdgeInsets.symmetric(horizontal: 16.toWidth, vertical: 16.toHeight),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -202,8 +197,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                                       onPress: () async {
                                         await showDialog(
                                           context: context,
-                                          builder: (context) =>
-                                              const DudeAddContactDialog(),
+                                          builder: (context) => const DudeAddContactDialog(),
                                         );
                                       }),
                                 ),
@@ -223,66 +217,53 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                             stream: _contactService.contactStream,
                             initialData: _contactService.baseContactList,
                             builder: (context, snapshot) {
-                              if ((snapshot.connectionState ==
-                                  ConnectionState.waiting)) {
+                              if ((snapshot.connectionState == ConnectionState.waiting)) {
                                 return const Center(
                                   child: CircularProgressIndicator(),
                                 );
                               } else {
-                                if ((snapshot.data == null ||
-                                    snapshot.data!.isEmpty)) {
+                                if ((snapshot.data == null || snapshot.data!.isEmpty)) {
                                   return const Center(
                                     child: Text(Texts.noContactsAvailable),
                                   );
                                 } else {
                                   var _filteredList = <BaseContact?>[];
                                   for (var c in snapshot.data!) {
-                                    if (c!.contact!.atSign!
-                                        .toUpperCase()
-                                        .contains(searchText.toUpperCase())) {
+                                    if (c!.contact!.atSign!.toUpperCase().contains(searchText.toUpperCase())) {
                                       _filteredList.add(c);
                                     }
 
                                     if (isFavoriteActive) {
-                                      _filteredList.retainWhere(
-                                          (c) => c!.contact!.favourite!);
+                                      _filteredList.retainWhere((c) => c!.contact!.favourite!);
                                     }
                                   }
 
                                   if (_filteredList.isEmpty) {
                                     return Center(
-                                      child:
-                                          Text(TextStrings().noContactsFound),
+                                      child: Text(TextStrings().noContactsFound),
                                     );
                                   }
 
                                   return ListView.builder(
-                                    padding:
-                                        EdgeInsets.only(bottom: 80.toHeight),
+                                    padding: EdgeInsets.only(bottom: 80.toHeight),
                                     itemCount: 27,
                                     shrinkWrap: true,
-                                    physics:
-                                        const AlwaysScrollableScrollPhysics(),
+                                    physics: const AlwaysScrollableScrollPhysics(),
                                     itemBuilder: (context, alphabetIndex) {
                                       var contactsForAlphabet = <AtContact?>[];
-                                      var currentChar = String.fromCharCode(
-                                              alphabetIndex + 65)
-                                          .toUpperCase();
+                                      var currentChar = String.fromCharCode(alphabetIndex + 65).toUpperCase();
                                       if (alphabetIndex == 26) {
                                         currentChar = 'Others';
                                         for (var c in _filteredList) {
                                           if (!RegExp(r'^[a-z]+$').hasMatch(
-                                            c!.contact!.atSign![1]
-                                                .toLowerCase(),
+                                            c!.contact!.atSign![1].toLowerCase(),
                                           )) {
                                             contactsForAlphabet.add(c.contact!);
                                           }
                                         }
                                       } else {
                                         for (var c in _filteredList) {
-                                          if (c!.contact!.atSign![1]
-                                                  .toUpperCase() ==
-                                              currentChar) {
+                                          if (c!.contact!.atSign![1].toUpperCase() == currentChar) {
                                             contactsForAlphabet.add(c.contact!);
                                           }
                                         }
@@ -312,8 +293,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
                                               ),
                                             ],
                                           ),
-                                          contactListBuilder(
-                                              contactsForAlphabet),
+                                          contactListBuilder(contactsForAlphabet),
                                         ],
                                       );
                                     },
@@ -409,8 +389,7 @@ class _DudeContactsScreenState extends State<DudeContactsScreen> {
         ),
       ),
     );
-    await _contactService.blockUnblockContact(
-        contact: contact, blockAction: true);
+    await _contactService.blockUnblockContact(contact: contact, blockAction: true);
     setState(() {
       blockingContact = false;
       Navigator.pop(context);
