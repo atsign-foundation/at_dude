@@ -78,7 +78,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
     required BuildContext context,
   }) async {
     if (dude.selectedDudeType == null) {
-      SnackBars.notificationSnackBar(content: 'Select Dude First');
+      SnackBars.notificationSnackBar(content: 'Tap the ball to select a Dude!');
     } else {
       updateIsLoading();
       SnackBars.notificationSnackBar(content: 'Sending Dude... please wait.');
