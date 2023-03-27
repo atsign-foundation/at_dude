@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:at_contact/at_contact.dart';
+import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
@@ -15,6 +16,7 @@ import '../services/shared_preferences_service.dart';
 import '../utils/enums.dart';
 import 'dude_card.dart';
 import 'dude_navigation_screen.dart';
+import 'snackbars.dart';
 
 class DudeBubble extends StatefulWidget {
   const DudeBubble({
@@ -79,7 +81,6 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
   @override
   void dispose() {
     controller.dispose();
-    audioPlayer.dispose();
     audioPlayer.dispose();
     super.dispose();
   }
@@ -210,11 +211,11 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                                       .baseContactList
                                       .indexWhere((element) => element.contact?.atSign == widget.dude.sender);
 
-                                  var atContact;
+                                  AtContact? atContact;
                                   if (contactIndex != -1) {
                                     atContact = ContactService().baseContactList[contactIndex].contact;
                                   } else {
-                                    // TODO: handle atsign not in [ContactService().contactList]
+                                    SnackBars.notificationSnackBar(content: 'Add Contact to your contact list first');
                                     return;
                                   }
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:at_contact/at_contact.dart';
 import 'package:flutter/material.dart';
 
@@ -22,9 +20,7 @@ class ContactsController with ChangeNotifier {
   /// Get contacts for the current atsign.
   Future<void> getContacts() async {
     _contacts = await ContactsService.getInstance().getContactList() ?? [];
-    for (var element in _contacts) {
-      log('contacts are ${element.atSign.toString()}');
-    }
+
     notifyListeners();
   }
 
