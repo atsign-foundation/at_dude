@@ -28,7 +28,8 @@ class DudeBubble extends StatefulWidget {
   State<DudeBubble> createState() => _DudeBubbleState();
 }
 
-class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateMixin {
+class _DudeBubbleState extends State<DudeBubble>
+    with SingleTickerProviderStateMixin {
   final AudioPlayer audioPlayer = AudioPlayer();
   late Animation<double> animation;
   late AnimationController controller;
@@ -38,8 +39,10 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      isDudeRead = await SharedPreferencesService.getDudeReadStatus(widget.dude);
-      isDudeReplied = await SharedPreferencesService.getDudeReplyStatus(widget.dude);
+      isDudeRead =
+          await SharedPreferencesService.getDudeReadStatus(widget.dude);
+      isDudeReplied =
+          await SharedPreferencesService.getDudeReplyStatus(widget.dude);
       setState(() {
         isDudeRead;
       });
@@ -58,7 +61,8 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
     }
 
     log('duration is' + duration.toString());
-    controller = AnimationController(vsync: this, duration: duration, upperBound: 315);
+    controller =
+        AnimationController(vsync: this, duration: duration, upperBound: 315);
 
     animation = Tween<double>(begin: 0, end: 315).animate(controller)
       ..addListener(() {
@@ -89,7 +93,9 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
       currentWidth = widthMin;
     } else {
       var widthRange = widthMax - widthMin;
-      currentWidth = (((currentDuration - durationMin) * widthRange) / durationRange) + widthMin;
+      currentWidth =
+          (((currentDuration - durationMin) * widthRange) / durationRange) +
+              widthMin;
     }
     log('new value is: ' + currentWidth.toString());
     return currentWidth;
@@ -103,7 +109,10 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
     String? name;
     try {
       if (atContacts.isNotEmpty) {
-        name = atContacts.where((element) => element.atSign == atsign).first.tags!['name'] as String?;
+        name = atContacts
+            .where((element) => element.atSign == atsign)
+            .first
+            .tags!['name'] as String?;
       }
     } catch (e) {
       log('where condition not met');
@@ -136,7 +145,8 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Container(
-            decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(7)),
+            decoration: BoxDecoration(
+                color: Colors.red, borderRadius: BorderRadius.circular(7)),
             width: controller.value,
             height: 50,
           ),
@@ -157,7 +167,9 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                               setState(() {});
 
                               await audioPlayer.play();
-                              await context.read<DudeController>().updateReadDudeCount(widget.dude);
+                              await context
+                                  .read<DudeController>()
+                                  .updateReadDudeCount(widget.dude);
 
                               setState(() {
                                 isDudeRead = true;
@@ -185,8 +197,10 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                             ),
                             Text(
                               '"${widget.dude.message[widget.dude.selectedDudeType!.index].values.first}"',
-                              style:
-                                  Theme.of(context).textTheme.bodyMedium!.copyWith(color: kPrimaryColor, fontSize: 12),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: kPrimaryColor, fontSize: 12),
                             )
                           ],
                         )),
@@ -199,26 +213,46 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                       IconButton(
                           onPressed: !isDudeReplied
                               ? () {
-                                  var atContact = ContactService()
+                                  var contactIndex = ContactService()
                                       .contactList
-                                      .firstWhere((element) => element.atSign == widget.dude.sender);
+                                      .indexWhere((element) =>
+                                          element.atSign == widget.dude.sender);
 
-                                  Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
+                                  var atContact;
+                                  if (contactIndex != -1) {
+                                    atContact = ContactService()
+                                        .contactList[contactIndex];
+                                  } else {
+                                    // TODO: handle atsign not in [ContactService().contactList]
+                                    return;
+                                  }
+
+                                  Navigator.popAndPushNamed(
+                                      context, DudeNavigationScreen.routeName,
                                       arguments: Arguments(
-                                          route: Screens.sendDude.index, atContact: atContact, dudeModel: widget.dude));
+                                          route: Screens.sendDude.index,
+                                          atContact: atContact,
+                                          dudeModel: widget.dude));
                                 }
                               : () {},
-                          icon: !isDudeReplied ? const Icon(Icons.reply) : const Icon(Icons.check)),
+                          icon: !isDudeReplied
+                              ? const Icon(Icons.reply)
+                              : const Icon(Icons.check)),
                       Flexible(
                           child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            !isDudeReplied ? 'Send a dude back to' : 'You sent a dude back to',
+                            !isDudeReplied
+                                ? 'Send a dude back to'
+                                : 'You sent a dude back to',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .copyWith(color: kPrimaryColor, fontSize: 12, fontWeight: FontWeight.bold),
+                                .copyWith(
+                                    color: kPrimaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
                           ),
                           Text(
                             getAtsignName(widget.dude.sender),
@@ -229,13 +263,17 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                   )),
             !isDudeRead
                 ? Text(
-                    DateFormat.yMd().add_jm().format(widget.dude.timeSent.toLocal()),
+                    DateFormat.yMd()
+                        .add_jm()
+                        .format(widget.dude.timeSent.toLocal()),
                     style: const TextStyle(fontSize: 10),
                   )
                 : IconButton(
                     onPressed: () async {
-                      await SharedPreferencesService.deleteDudeReadStatus(widget.dude);
-                      await Provider.of<DudeController>(context, listen: false).deleteDude(widget.dude);
+                      await SharedPreferencesService.deleteDudeReadStatus(
+                          widget.dude);
+                      await Provider.of<DudeController>(context, listen: false)
+                          .deleteDude(widget.dude);
                     },
                     icon: const Icon(Icons.close)),
           ],
