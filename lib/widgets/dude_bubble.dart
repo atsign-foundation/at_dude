@@ -15,7 +15,6 @@ import '../services/shared_preferences_service.dart';
 import '../utils/enums.dart';
 import 'dude_card.dart';
 import 'dude_navigation_screen.dart';
-import 'snackbars.dart';
 
 class DudeBubble extends StatefulWidget {
   const DudeBubble({
@@ -80,6 +79,7 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
   @override
   void dispose() {
     controller.dispose();
+    audioPlayer.dispose();
     audioPlayer.dispose();
     super.dispose();
   }
@@ -164,7 +164,6 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                               setState(() {});
 
                               await audioPlayer.play();
-
                               await context.read<DudeController>().updateReadDudeCount(widget.dude);
 
                               setState(() {
@@ -207,19 +206,21 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                       IconButton(
                           onPressed: !isDudeReplied
                               ? () {
-                                  if (atContact != null) {
-                                    atContact = context
-                                        .watch<ContactsController>()
-                                        .contacts
-                                        .firstWhere((element) => element.atSign == widget.dude.sender);
-                                    Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
-                                        arguments: Arguments(
-                                            route: Screens.sendDude.index,
-                                            atContact: atContact,
-                                            dudeModel: widget.dude));
+                                  var contactIndex = ContactService()
+                                      .baseContactList
+                                      .indexWhere((element) => element.contact?.atSign == widget.dude.sender);
+
+                                  var atContact;
+                                  if (contactIndex != -1) {
+                                    atContact = ContactService().baseContactList[contactIndex].contact;
                                   } else {
-                                    SnackBars.notificationSnackBar(content: 'Add Contact to your contact list first');
+                                    // TODO: handle atsign not in [ContactService().contactList]
+                                    return;
                                   }
+
+                                  Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
+                                      arguments: Arguments(
+                                          route: Screens.sendDude.index, atContact: atContact, dudeModel: widget.dude));
                                 }
                               : () {},
                           icon: !isDudeReplied ? const Icon(Icons.reply) : const Icon(Icons.check)),
