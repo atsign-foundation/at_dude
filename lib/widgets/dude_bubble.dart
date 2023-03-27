@@ -78,6 +78,7 @@ class _DudeBubbleState extends State<DudeBubble>
   @override
   void dispose() {
     controller.dispose();
+    audioPlayer.dispose();
     super.dispose();
   }
 
@@ -214,14 +215,16 @@ class _DudeBubbleState extends State<DudeBubble>
                           onPressed: !isDudeReplied
                               ? () {
                                   var contactIndex = ContactService()
-                                      .contactList
+                                      .baseContactList
                                       .indexWhere((element) =>
-                                          element.atSign == widget.dude.sender);
+                                          element.contact?.atSign ==
+                                          widget.dude.sender);
 
                                   var atContact;
                                   if (contactIndex != -1) {
                                     atContact = ContactService()
-                                        .contactList[contactIndex];
+                                        .baseContactList[contactIndex]
+                                        .contact;
                                   } else {
                                     // TODO: handle atsign not in [ContactService().contactList]
                                     return;
