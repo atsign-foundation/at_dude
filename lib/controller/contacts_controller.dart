@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:at_contact/at_contact.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +22,9 @@ class ContactsController with ChangeNotifier {
   /// Get contacts for the current atsign.
   Future<void> getContacts() async {
     _contacts = await ContactsService.getInstance().getContactList() ?? [];
+    for (var element in _contacts) {
+      log('contacts are ${element.atSign.toString()}');
+    }
     notifyListeners();
   }
 
@@ -36,14 +41,12 @@ class ContactsController with ChangeNotifier {
   /// Get favorite contacts for the current atsign.
   Future<void> getFavoriteContacts() async {
     await getContacts();
-    _favoriteContacts =
-        _contacts.where((contact) => contact.favourite == true).toList();
+    _favoriteContacts = _contacts.where((contact) => contact.favourite == true).toList();
     notifyListeners();
   }
 
   Future<void> addContacts(String atSign, String? nickname) async {
-    bool result =
-        await ContactsService.getInstance().addContact(atSign, nickname);
+    bool result = await ContactsService.getInstance().addContact(atSign, nickname);
     result
         ? await getContacts()
         : SnackBars.errorSnackBar(
@@ -54,12 +57,8 @@ class ContactsController with ChangeNotifier {
 
   /// Mark AtContact favourite property as true or false
   Future<void> markUnmarkFavorites(AtContact contact) async {
-    bool result =
-        await ContactsService.getInstance().markUnmarkFavoriteContact(contact);
-    result
-        ? await getFavoriteContacts()
-        : SnackBars.errorSnackBar(
-            content: 'Error adding atsign, atsign may no exist');
+    bool result = await ContactsService.getInstance().markUnmarkFavoriteContact(contact);
+    result ? await getFavoriteContacts() : SnackBars.errorSnackBar(content: 'Error adding atsign, atsign may no exist');
     notifyListeners();
   }
 }

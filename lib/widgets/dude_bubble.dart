@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:at_contacts_flutter/services/contact_service.dart';
+import 'package:at_contact/at_contact.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
@@ -15,6 +15,7 @@ import '../services/shared_preferences_service.dart';
 import '../utils/enums.dart';
 import 'dude_card.dart';
 import 'dude_navigation_screen.dart';
+import 'snackbars.dart';
 
 class DudeBubble extends StatefulWidget {
   const DudeBubble({
@@ -35,6 +36,7 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
   late Duration duration;
   bool isDudeRead = false;
   bool isDudeReplied = false;
+  AtContact? atContact;
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -44,6 +46,10 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
         isDudeRead;
       });
       log('init state isDudeRead: $isDudeRead');
+
+      // await ContactService().fetchContacts().then((value) {
+      //   atContact = value?.firstWhere((element) => element.atSign == widget.dude.sender);
+      // });
     });
 
     if (widget.dude.selectedDudeType == DudeType.hi) {
@@ -74,6 +80,7 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
   @override
   void dispose() {
     controller.dispose();
+    audioPlayer.dispose();
     super.dispose();
   }
 
@@ -157,6 +164,7 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                               setState(() {});
 
                               await audioPlayer.play();
+
                               await context.read<DudeController>().updateReadDudeCount(widget.dude);
 
                               setState(() {
@@ -199,13 +207,19 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                       IconButton(
                           onPressed: !isDudeReplied
                               ? () {
-                                  var atContact = ContactService()
-                                      .contactList
-                                      .firstWhere((element) => element.atSign == widget.dude.sender);
-
-                                  Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
-                                      arguments: Arguments(
-                                          route: Screens.sendDude.index, atContact: atContact, dudeModel: widget.dude));
+                                  if (atContact != null) {
+                                    atContact = context
+                                        .watch<ContactsController>()
+                                        .contacts
+                                        .firstWhere((element) => element.atSign == widget.dude.sender);
+                                    Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
+                                        arguments: Arguments(
+                                            route: Screens.sendDude.index,
+                                            atContact: atContact,
+                                            dudeModel: widget.dude));
+                                  } else {
+                                    SnackBars.notificationSnackBar(content: 'Add Contact to your contact list first');
+                                  }
                                 }
                               : () {},
                           icon: !isDudeReplied ? const Icon(Icons.reply) : const Icon(Icons.check)),

@@ -20,6 +20,7 @@ class _StatsScreenState extends State<StatsScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // Provider.of<DudeController>(context).
       profileModel = await DudeService.getInstance().getProfile();
       // profileName ??= DudeService.getInstance().atClient!.getCurrentAtSign();
       setState(() {});

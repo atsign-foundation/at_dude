@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
+import '../controller/contacts_controller.dart';
 import '../controller/dude_controller.dart';
 import '../models/dude_model.dart';
 import '../services/navigation_service.dart';
@@ -25,7 +26,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Provider.of<DudeController>(context, listen: false).getDudes();
-      // await Provider.of<ContactsController>(context, listen: false).getContacts();
+      await Provider.of<ContactsController>(context, listen: false).getContacts();
     });
 
     super.initState();
