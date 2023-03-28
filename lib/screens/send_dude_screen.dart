@@ -86,7 +86,7 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
       await DudeService.getInstance().putDude(dude, contactAtsign).then(
         (value) {
           if (value) {
-            if (onInit) {
+            if (onInit && repliedToDude != null) {
               SharedPreferencesService.setDudeReplyStatus(repliedToDude!);
             }
             SnackBars.notificationSnackBar(content: Texts.dudeSuccessfullySent);

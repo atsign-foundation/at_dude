@@ -23,7 +23,9 @@ class _StatsScreenState extends State<StatsScreen> {
       // Provider.of<DudeController>(context).
       profileModel = await DudeService.getInstance().getProfile();
       // profileName ??= DudeService.getInstance().atClient!.getCurrentAtSign();
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
     super.initState();
   }
