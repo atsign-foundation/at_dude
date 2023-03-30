@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,7 +7,9 @@ import '../controller/controller.dart';
 import 'widgets.dart';
 
 class DudeAddContactDialog extends StatefulWidget {
-  const DudeAddContactDialog({Key? key}) : super(key: key);
+  const DudeAddContactDialog({this.atsign, Key? key}) : super(key: key);
+
+  final String? atsign;
 
   @override
   State<DudeAddContactDialog> createState() => _DudeAddContactDialogState();
@@ -18,7 +22,7 @@ class _DudeAddContactDialogState extends State<DudeAddContactDialog> {
 
   @override
   void initState() {
-    atsignController = TextEditingController();
+    atsignController = TextEditingController(text: widget.atsign);
     nicknameController = TextEditingController();
     super.initState();
   }
@@ -83,18 +87,25 @@ class _DudeAddContactDialogState extends State<DudeAddContactDialog> {
           ),
           actions: [
             ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
+                onPressed: () async {
+                  log('pop called');
+                  Navigator.of(context).pop(false);
+                  // Navigator.of(context).pushReplacementNamed(routeName)
+                  // await Navigator.pushNamed(context, DudeNavigationScreen.routeName,
+                  //     arguments: Arguments(
+                  //       route: Screens.notifications.index,
+                  //     ));
                 },
                 child: const Text('Cancel')),
             ElevatedButton(
               onPressed: () async {
                 updateIsLoading(true);
-                await context.read<ContactsController>().addContacts(
-                    atsignController.value.text, nicknameController.value.text);
+                await context
+                    .read<ContactsController>()
+                    .addContacts(atsignController.value.text, nicknameController.value.text);
                 updateIsLoading(false);
 
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
               child: const Text('Add to Contacts'),
             ),

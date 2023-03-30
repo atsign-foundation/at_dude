@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/dude_controller.dart';
-import '../controller/persona_controller.dart';
 import '../services/navigation_service.dart';
 
 class MySyncProgressListener extends SyncProgressListener {
@@ -25,7 +24,7 @@ class MySyncProgressListener extends SyncProgressListener {
         }
 
         if (isKeyPersona) {
-          await context.read<PersonaController>().getPersona();
+          // await context.read<PersonaController>().getPersona();
         }
       }
     }

@@ -14,9 +14,9 @@ import '../models/dude_model.dart';
 import '../services/navigation_service.dart';
 import '../services/shared_preferences_service.dart';
 import '../utils/enums.dart';
+import 'dude_add_contact_dialog.dart';
 import 'dude_card.dart';
 import 'dude_navigation_screen.dart';
-import 'snackbars.dart';
 
 class DudeBubble extends StatefulWidget {
   const DudeBubble({
@@ -206,22 +206,39 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                     children: [
                       IconButton(
                           onPressed: !isDudeReplied
-                              ? () {
-                                  var contactIndex = ContactService()
-                                      .baseContactList
-                                      .indexWhere((element) => element.contact?.atSign == widget.dude.sender);
+                              ? () async {
+                                  /// search for dudeBubble atsign in contact list
+                                  AtContact? getAtContact() {
+                                    var contactIndex = ContactService()
+                                        .baseContactList
+                                        .indexWhere((element) => element.contact?.atSign == widget.dude.sender);
 
-                                  AtContact? atContact;
-                                  if (contactIndex != -1) {
-                                    atContact = ContactService().baseContactList[contactIndex].contact;
-                                  } else {
-                                    SnackBars.notificationSnackBar(content: 'Add Contact to your contact list first');
-                                    return;
+                                    AtContact? atContact;
+                                    if (contactIndex != -1) {
+                                      atContact = ContactService().baseContactList[contactIndex].contact;
+                                    }
+                                    return atContact;
                                   }
 
-                                  Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
-                                      arguments: Arguments(
-                                          route: Screens.sendDude.index, atContact: atContact, dudeModel: widget.dude));
+                                  var result = false;
+                                  AtContact? atContact = getAtContact();
+                                  if (atContact == null) {
+                                    result = await showDialog(
+                                      context: context,
+                                      builder: (context) => DudeAddContactDialog(
+                                        atsign: widget.dude.sender.replaceFirst('@', ''),
+                                      ),
+                                    );
+                                  }
+
+                                  if (result) {
+                                    atContact = getAtContact();
+                                    await Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
+                                        arguments: Arguments(
+                                            route: Screens.sendDude.index,
+                                            atContact: atContact,
+                                            dudeModel: widget.dude));
+                                  }
                                 }
                               : () {},
                           icon: !isDudeReplied ? const Icon(Icons.reply) : const Icon(Icons.check)),

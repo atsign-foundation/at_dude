@@ -111,7 +111,7 @@ class _MyAppState extends State<MyApp> {
           DudeService.getInstance().atClientManager.atClient.syncService.addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
 
-          await Navigator.of(context).push(MaterialPageRoute(
+          await Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const DudeNavigationScreen(),
           ));
 
