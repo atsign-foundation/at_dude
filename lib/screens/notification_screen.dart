@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import '../controller/dude_controller.dart';
+import '../models/arguments.dart';
 import '../models/dude_model.dart';
-import '../services/navigation_service.dart';
+import '../utils/enums.dart';
 import '../widgets/dude_card.dart';
 import '../widgets/widgets.dart';
-import 'dude_contacts_screen.dart';
 
 class NotificationScreen extends StatefulWidget {
   static String routeName = 'notification';
@@ -69,18 +68,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           style:
                                               ElevatedButton.styleFrom(fixedSize: const Size(double.maxFinite, 61.22)),
                                           onPressed: () async {
-                                            await Navigator.of(context)
-                                                .push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) => ShowCaseWidget(
-                                                        builder: Builder(
-                                                      builder: (context) => const DudeContactsScreen(),
-                                                    )),
-                                                  ),
-                                                )
-                                                .whenComplete(() async => await NavigationService.navKey.currentContext!
-                                                    .read<DudeController>()
-                                                    .getContacts());
+                                            await Navigator.of(context).popAndPushNamed(DudeNavigationScreen.routeName,
+                                                arguments: Arguments(route: Screens.contacts.index));
                                           },
                                           child: const Text('Send Dude'))
                                     ],
