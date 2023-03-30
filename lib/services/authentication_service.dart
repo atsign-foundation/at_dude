@@ -11,17 +11,17 @@ import 'package:at_utils/at_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:showcaseview/showcaseview.dart';
 
-import '../screens/screens.dart';
+import '../models/arguments.dart';
+import '../utils/enums.dart';
 import '../utils/utils.dart';
+import '../widgets/dude_navigation_screen.dart';
 import '../widgets/snackbars.dart';
 import 'services.dart';
 
 /// A singleton that makes all the network calls to the @platform.
 class AuthenticationService {
-  static final AuthenticationService _singleton =
-      AuthenticationService._internal();
+  static final AuthenticationService _singleton = AuthenticationService._internal();
   AuthenticationService._internal();
 
   factory AuthenticationService.getInstance() {
@@ -46,8 +46,7 @@ class AuthenticationService {
   }
 
   Future<void> clearKeychainEntries() async {
-    List<String> atsignList =
-        await KeyChainManager.getInstance().getAtSignListFromKeychain();
+    List<String> atsignList = await KeyChainManager.getInstance().getAtSignListFromKeychain();
     if (atsignList.isEmpty) {
       return;
     } else {
@@ -88,21 +87,13 @@ class AuthenticationService {
     switch (result.status) {
       case AtOnboardingResultStatus.success:
         _logger.finer('Successfully onboarded ${result.atsign}');
-        DudeService.getInstance()
-            .monitorNotifications(NavigationService.navKey.currentContext!);
-        DudeService.getInstance()
-            .atClientManager
-            .atClient
-            .syncService
-            .addProgressListener(MySyncProgressListener());
+        DudeService.getInstance().monitorNotifications(NavigationService.navKey.currentContext!);
+        DudeService.getInstance().atClientManager.atClient.syncService.addProgressListener(MySyncProgressListener());
         initializeContactsService(rootDomain: AtEnv.rootDomain);
-
-        await Navigator.of(NavigationService.navKey.currentContext!)
-            .pushReplacement(MaterialPageRoute(
-          builder: ((context) => ShowCaseWidget(
-                builder: Builder(builder: (context) => const SendDudeScreen()),
-              )),
-        ));
+        await Navigator.popAndPushNamed(NavigationService.navKey.currentContext!, DudeNavigationScreen.routeName,
+            arguments: Arguments(
+              route: Screens.sendDude.index,
+            ));
 
         break;
 
