@@ -207,6 +207,8 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                       IconButton(
                           onPressed: !isDudeReplied
                               ? () async {
+                                  log('called');
+
                                   /// search for dudeBubble atsign in contact list
                                   AtContact? getAtContact() {
                                     var contactIndex = ContactService()
@@ -229,10 +231,11 @@ class _DudeBubbleState extends State<DudeBubble> with SingleTickerProviderStateM
                                         atsign: widget.dude.sender.replaceFirst('@', ''),
                                       ),
                                     );
+                                  } else {
+                                    result = true;
                                   }
 
                                   if (result) {
-                                    atContact = getAtContact();
                                     await Navigator.popAndPushNamed(context, DudeNavigationScreen.routeName,
                                         arguments: Arguments(
                                             route: Screens.sendDude.index,

@@ -52,8 +52,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
         barrierDismissible: true,
         context: context,
         builder: (BuildContext context) {
-          return StatefulBuilder(builder:
-              (BuildContext context, void Function(void Function()) stateSet) {
+          return StatefulBuilder(builder: (BuildContext context, void Function(void Function()) stateSet) {
             return AlertDialog(
                 title: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -101,17 +100,14 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                               onChanged: (bool? value) {
                                 isSelectAll = value!;
                                 if (atsignMap.isNotEmpty) {
-                                  atsignMap.updateAll(
-                                      (String? key, bool? value1) =>
-                                          value1 = value);
+                                  atsignMap.updateAll((String? key, bool? value1) => value1 = value);
                                 }
                                 // atsignMap[atsign] = value;
                                 stateSet(() {});
                               },
                               value: isSelectAll,
                               checkColor: Colors.white,
-                              activeColor:
-                                  const Color.fromARGB(255, 240, 94, 62),
+                              activeColor: const Color.fromARGB(255, 240, 94, 62),
                               title: const Text('Select All',
                                   style: TextStyle(
                                     // fontSize: 14,
@@ -127,12 +123,9 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                   }
                                   stateSet(() {});
                                 },
-                                value: atsignMap.isNotEmpty
-                                    ? atsignMap[atsign]
-                                    : true,
+                                value: atsignMap.isNotEmpty ? atsignMap[atsign] : true,
                                 checkColor: Colors.white,
-                                activeColor:
-                                    const Color.fromARGB(255, 240, 94, 62),
+                                activeColor: const Color.fromARGB(255, 240, 94, 62),
                                 title: Text(atsign),
                                 // trailing: Checkbox,
                               ),
@@ -158,12 +151,9 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                             Row(children: <Widget>[
                               TextButton(
                                 onPressed: () {
-                                  Map<String, bool?> tempAtsignMap =
-                                      <String, bool>{};
+                                  Map<String, bool?> tempAtsignMap = <String, bool>{};
                                   tempAtsignMap.addAll(atsignMap);
-                                  tempAtsignMap.removeWhere(
-                                      (String? key, bool? value) =>
-                                          value == false);
+                                  tempAtsignMap.removeWhere((String? key, bool? value) => value == false);
                                   if (tempAtsignMap.keys.toList().isEmpty) {
                                     isSelectAtsign = true;
                                     stateSet(() {});
@@ -172,8 +162,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                     _resetDevice(tempAtsignMap.keys.toList());
                                   }
                                 },
-                                child: const Text(
-                                    AtOnboardingStrings.removeButton,
+                                child: const Text(AtOnboardingStrings.removeButton,
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Color.fromARGB(255, 240, 94, 62),
@@ -185,8 +174,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Text(
-                                      AtOnboardingStrings.cancelButton,
+                                  child: const Text(AtOnboardingStrings.cancelButton,
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.black,
