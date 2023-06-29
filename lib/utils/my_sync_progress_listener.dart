@@ -15,20 +15,15 @@ class MySyncProgressListener extends SyncProgressListener {
       // bool isKeyPersona = false;
       log(syncProgress.message ?? 'empty message');
       for (var keyInfo in syncProgress.keyInfoList!) {
-        if (keyInfo.key.length >= 36) {
+        if (keyInfo.key.length >= 36 && keyInfo.key.startsWith('cached:@')) {
           isKeyDude = true;
+          log(keyInfo.key);
         }
-        // if (keyInfo.key.contains('dude_persona')) {
-        //   isKeyPersona = true;
-        // }
       }
       BuildContext context = NavigationService.navKey.currentContext!;
       if (isKeyDude) {
         await context.read<DudeController>().getDudes();
       }
-      // if (isKeyPersona) {
-      // await context.read<PersonaController>().getPersona();
-      // }
     }
   }
 }

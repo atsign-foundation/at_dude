@@ -111,6 +111,8 @@ class _MyAppState extends State<MyApp> {
           DudeService.getInstance().atClientManager.atClient.syncService.addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
 
+          await Provider.of<DudeController>(context, listen: false).getDudes();
+
           await Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const DudeNavigationScreen(),
           ));
@@ -174,13 +176,13 @@ class _MyAppState extends State<MyApp> {
                   title: 'Start Duding',
                 ),
               ),
-              Flexible(
+              const Flexible(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 8,
                   ),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Expanded(
                       child: Divider(
                         color: Colors.black,

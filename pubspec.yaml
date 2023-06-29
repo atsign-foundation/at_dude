@@ -7,7 +7,7 @@ environment:
 
 dependencies:
   at_app_flutter: ^5.1.1
-  at_backupkey_flutter: ^4.0.8
+  # at_backupkey_flutter: ^4.0.8
   at_client_mobile: ^3.2.0
   at_contacts_flutter: ^4.0.5
   at_onboarding_flutter: ^6.0.0
@@ -18,10 +18,10 @@ dependencies:
   flutter_dotenv: ^5.0.2
   flutter_local_notifications: ^13.0.0
   flutter_svg: ^1.1.6
-  google_fonts: ^3.0.1
+  google_fonts: ^5.1.0
   path_provider: ^2.0.5
   provider: ^6.0.2
-  rive: ^0.10.1
+  rive: ^0.11.4
   shared_preferences: ^2.0.15
   showcaseview: ^1.1.5
   timezone: ^0.9.0
@@ -29,17 +29,19 @@ dependencies:
   uuid: ^3.0.6
 
 dev_dependencies:
-  flutter_launcher_icons: ^0.9.3
+  # flutter_launcher_icons: ^0.13.1
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
 
 dependency_overrides:
-  at_client:
-    git: 
-      url: https://github.com/atsign-foundation/at_client_sdk
-      path: packages/at_client
-      ref: 932-sync-deleted-cached-keys
+  http: ^1.0.0
+  # image: ^4.0.15
+  # at_client:
+  #   git: 
+  #     url: https://github.com/atsign-foundation/at_client_sdk
+  #     path: packages/at_client
+  #     ref: 932-sync-deleted-cached-keys
 
 flutter:
   uses-material-design: true
@@ -50,8 +52,8 @@ flutter:
     - assets/images/personas/
     - assets/audios/
     - assets/animations/
-flutter_icons:
+flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/images/dude_logo.png"
+  image_path: "assets/images/dude_logo_2.png"

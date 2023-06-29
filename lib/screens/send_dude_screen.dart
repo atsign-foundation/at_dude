@@ -8,10 +8,8 @@ import 'package:at_contacts_flutter/at_contacts_flutter.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 
-import '../controller/controller.dart';
 import '../models/arguments.dart';
 import '../models/dude_model.dart';
 import '../services/services.dart';
@@ -44,9 +42,9 @@ class _SendDudeScreenState extends State<SendDudeScreen> {
   void initState() {
     initializeContactsService(rootDomain: AtEnv.rootDomain);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<DudeController>().getDudes();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   await context.read<DudeController>().getDudes();
+    // });
     onInit = true;
 
     super.initState();

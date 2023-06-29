@@ -23,7 +23,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<DudeController>(context, listen: false).getDudes();
+      // await Provider.of<DudeController>(context, listen: false).getDudes();
     });
 
     super.initState();

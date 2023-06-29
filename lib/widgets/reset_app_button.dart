@@ -1,5 +1,4 @@
 import 'package:at_onboarding_flutter/services/sdk_service.dart';
-import 'package:at_onboarding_flutter/utils/at_onboarding_strings.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -54,10 +53,10 @@ class _ResetAppButtonState extends State<ResetAppButton> {
         builder: (BuildContext context) {
           return StatefulBuilder(builder: (BuildContext context, void Function(void Function()) stateSet) {
             return AlertDialog(
-                title: Column(
+                title: const Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
-                    Text(AtOnboardingStrings.resetDescription,
+                  children: <Widget>[
+                    Text(Texts.resetDescription,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -73,7 +72,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                 ),
                 content: atsignsList == null
                     ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                        const Text(AtOnboardingStrings.noAtsignToReset,
+                        const Text(Texts.noAtsignToReset,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.normal,
@@ -84,7 +83,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: const Text(AtOnboardingStrings.closeButton,
+                              child: const Text(Texts.closeButton,
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: Color.fromARGB(255, 240, 94, 62),
@@ -131,7 +130,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                               ),
                             const Divider(thickness: 0.8),
                             if (isSelectAtsign)
-                              const Text(AtOnboardingStrings.resetErrorText,
+                              const Text(Texts.resetErrorText,
                                   style: TextStyle(
                                     color: Colors.red,
                                     fontSize: 14,
@@ -140,7 +139,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                             const SizedBox(
                               height: 10,
                             ),
-                            const Text(AtOnboardingStrings.resetWarningText,
+                            const Text(Texts.resetWarningText,
                                 style: TextStyle(
                                     // color: ColorConstants.primary,
                                     fontWeight: FontWeight.bold,
@@ -162,7 +161,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                     _resetDevice(tempAtsignMap.keys.toList());
                                   }
                                 },
-                                child: const Text(AtOnboardingStrings.removeButton,
+                                child: const Text(Texts.removeButton,
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Color.fromARGB(255, 240, 94, 62),
@@ -174,7 +173,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Text(AtOnboardingStrings.cancelButton,
+                                  child: const Text(Texts.cancelButton,
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.black,
