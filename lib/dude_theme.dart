@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 // 00b7ff
@@ -7,74 +6,66 @@ import 'package:google_fonts/google_fonts.dart';
 // tide pool blue: 0a569a
 
 const kCaribbeanShallows = Color(0XFF57cbe7);
-const kPrimaryColor = Color(0XFF289ED2);
-const kAlternativeColor = Color(0XFF42C1BA);
+const kPrimaryColor = Color(0XFFF95B5C);
+const kAlternativeColor = Color(0XFF56C7DF);
 
 class DudeTheme {
   // 1
   static TextTheme lightTextTheme = TextTheme(
-    bodyText1: GoogleFonts.barlow(
+    bodyLarge: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    bodyText2: GoogleFonts.barlow(
+    bodyMedium: GoogleFonts.poppins(
       fontSize: 16.0,
       color: Colors.black,
     ),
-    headline1: GoogleFonts.barlow(
+    displayLarge: GoogleFonts.poppins(
       fontSize: 32.0,
       fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
-    headline2: GoogleFonts.barlow(
+    displayMedium: GoogleFonts.poppins(
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    headline3: GoogleFonts.barlow(
+    displaySmall: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    headline6: GoogleFonts.barlow(
+    titleLarge: GoogleFonts.poppins(
       fontSize: 20.0,
       fontWeight: FontWeight.w600,
       color: Colors.black,
     ),
-    // subtitle1: GoogleFonts.barlow(
-    //   fontSize: 16.0,
-    //   color: Colors.white,
-    // ),
-    // subtitle2: GoogleFonts.barlow(
-    //   fontSize: 16.0,
-    //   color: Colors.white,
-    // ),
   );
 
   // 2
   static TextTheme darkTextTheme = TextTheme(
-    bodyText1: GoogleFonts.barlow(
+    bodyLarge: GoogleFonts.poppins(
       fontSize: 14.0,
       fontWeight: FontWeight.w700,
       color: Colors.white,
     ),
-    headline1: GoogleFonts.barlow(
+    displayLarge: GoogleFonts.poppins(
       fontSize: 32.0,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
-    headline2: GoogleFonts.barlow(
+    displayMedium: GoogleFonts.poppins(
       fontSize: 21.0,
       fontWeight: FontWeight.w700,
       color: Colors.white,
     ),
-    headline3: GoogleFonts.barlow(
+    displaySmall: GoogleFonts.poppins(
       fontSize: 16.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
     ),
-    headline6: GoogleFonts.barlow(
+    titleLarge: GoogleFonts.poppins(
       fontSize: 20.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
@@ -84,44 +75,48 @@ class DudeTheme {
   // 3
   static ThemeData light() {
     return ThemeData(
-        primaryColor: kPrimaryColor,
-        brightness: Brightness.light,
-        colorScheme: const ColorScheme.light().copyWith(
-          primary: kPrimaryColor,
+      primaryColor: kPrimaryColor,
+      brightness: Brightness.light,
+      colorScheme: const ColorScheme.light().copyWith(
+        primary: kPrimaryColor,
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateColor.resolveWith(
+          (states) {
+            return Colors.black;
+          },
         ),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateColor.resolveWith(
-            (states) {
-              return Colors.black;
-            },
-          ),
-        ),
-        appBarTheme: AppBarTheme(
-            foregroundColor: Colors.white,
-            backgroundColor: kPrimaryColor,
-            titleTextStyle: lightTextTheme.bodyText1!
-                .copyWith(color: Colors.white, fontSize: 17)),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          foregroundColor: Color(0xFFF8C630),
-          backgroundColor: Colors.black,
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          // backgroundColor: kPrimaryColor,
-          selectedItemColor: kPrimaryColor,
-          selectedLabelStyle: const TextStyle().copyWith(fontSize: 20),
-          unselectedLabelStyle: const TextStyle().copyWith(fontSize: 20),
-        ),
-        textTheme: lightTextTheme,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ),
+      ),
+      appBarTheme: AppBarTheme(
+          foregroundColor: Colors.white,
+          backgroundColor: kPrimaryColor,
+          titleTextStyle: lightTextTheme.bodyLarge!
+              .copyWith(color: Colors.white, fontSize: 17)),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        foregroundColor: Color(0xFFF8C630),
+        backgroundColor: Colors.black,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Color.fromRGBO(254, 245, 230, 74),
+        selectedItemColor: kPrimaryColor,
+        unselectedItemColor: Colors.black,
+      ),
+      textTheme: lightTextTheme,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
             ),
           ),
         ),
-        iconTheme: const IconThemeData(color: kPrimaryColor));
+      ),
+      iconTheme: const IconThemeData(color: kPrimaryColor),
+      cardTheme: CardTheme(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+    );
   }
 
   // 4

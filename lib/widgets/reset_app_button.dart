@@ -1,9 +1,10 @@
 import 'package:at_onboarding_flutter/services/sdk_service.dart';
-import 'package:at_onboarding_flutter/utils/at_onboarding_strings.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../utils/at_error_dialog.dart';
+import '../utils/texts.dart';
+import 'settings_button.dart';
 
 /// Custom reset button widget is to reset an atsign from keychain list,
 
@@ -29,11 +30,10 @@ class _ResetAppButtonState extends State<ResetAppButton> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: _showResetDialog,
-      child: const Text(
-        'Reset App',
-      ),
+    return SettingsButton(
+      icon: Icons.restart_alt_outlined,
+      title: Texts.resetAtsign,
+      onTap: _showResetDialog,
     );
   }
 
@@ -51,13 +51,12 @@ class _ResetAppButtonState extends State<ResetAppButton> {
         barrierDismissible: true,
         context: context,
         builder: (BuildContext context) {
-          return StatefulBuilder(builder:
-              (BuildContext context, void Function(void Function()) stateSet) {
+          return StatefulBuilder(builder: (BuildContext context, void Function(void Function()) stateSet) {
             return AlertDialog(
-                title: Column(
+                title: const Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
-                    Text(AtOnboardingStrings.resetDescription,
+                  children: <Widget>[
+                    Text(Texts.resetDescription,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -73,7 +72,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                 ),
                 content: atsignsList == null
                     ? Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                        const Text(AtOnboardingStrings.noAtsignToReset,
+                        const Text(Texts.noAtsignToReset,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.normal,
@@ -84,7 +83,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: const Text(AtOnboardingStrings.closeButton,
+                              child: const Text(Texts.closeButton,
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: Color.fromARGB(255, 240, 94, 62),
@@ -100,17 +99,14 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                               onChanged: (bool? value) {
                                 isSelectAll = value!;
                                 if (atsignMap.isNotEmpty) {
-                                  atsignMap.updateAll(
-                                      (String? key, bool? value1) =>
-                                          value1 = value);
+                                  atsignMap.updateAll((String? key, bool? value1) => value1 = value);
                                 }
                                 // atsignMap[atsign] = value;
                                 stateSet(() {});
                               },
                               value: isSelectAll,
                               checkColor: Colors.white,
-                              activeColor:
-                                  const Color.fromARGB(255, 240, 94, 62),
+                              activeColor: const Color.fromARGB(255, 240, 94, 62),
                               title: const Text('Select All',
                                   style: TextStyle(
                                     // fontSize: 14,
@@ -126,18 +122,15 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                   }
                                   stateSet(() {});
                                 },
-                                value: atsignMap.isNotEmpty
-                                    ? atsignMap[atsign]
-                                    : true,
+                                value: atsignMap.isNotEmpty ? atsignMap[atsign] : true,
                                 checkColor: Colors.white,
-                                activeColor:
-                                    const Color.fromARGB(255, 240, 94, 62),
+                                activeColor: const Color.fromARGB(255, 240, 94, 62),
                                 title: Text(atsign),
                                 // trailing: Checkbox,
                               ),
                             const Divider(thickness: 0.8),
                             if (isSelectAtsign)
-                              const Text(AtOnboardingStrings.resetErrorText,
+                              const Text(Texts.resetErrorText,
                                   style: TextStyle(
                                     color: Colors.red,
                                     fontSize: 14,
@@ -146,7 +139,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                             const SizedBox(
                               height: 10,
                             ),
-                            const Text(AtOnboardingStrings.resetWarningText,
+                            const Text(Texts.resetWarningText,
                                 style: TextStyle(
                                     // color: ColorConstants.primary,
                                     fontWeight: FontWeight.bold,
@@ -157,12 +150,9 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                             Row(children: <Widget>[
                               TextButton(
                                 onPressed: () {
-                                  Map<String, bool?> tempAtsignMap =
-                                      <String, bool>{};
+                                  Map<String, bool?> tempAtsignMap = <String, bool>{};
                                   tempAtsignMap.addAll(atsignMap);
-                                  tempAtsignMap.removeWhere(
-                                      (String? key, bool? value) =>
-                                          value == false);
+                                  tempAtsignMap.removeWhere((String? key, bool? value) => value == false);
                                   if (tempAtsignMap.keys.toList().isEmpty) {
                                     isSelectAtsign = true;
                                     stateSet(() {});
@@ -171,8 +161,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                     _resetDevice(tempAtsignMap.keys.toList());
                                   }
                                 },
-                                child: const Text(
-                                    AtOnboardingStrings.removeButton,
+                                child: const Text(Texts.removeButton,
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: Color.fromARGB(255, 240, 94, 62),
@@ -184,8 +173,7 @@ class _ResetAppButtonState extends State<ResetAppButton> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Text(
-                                      AtOnboardingStrings.cancelButton,
+                                  child: const Text(Texts.cancelButton,
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.black,

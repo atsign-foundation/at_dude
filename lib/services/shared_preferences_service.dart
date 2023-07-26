@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/dude_model.dart';
+
 class SharedPreferencesService {
-  static final SharedPreferencesService _notificationService =
-      SharedPreferencesService._internal();
+  static final SharedPreferencesService _notificationService = SharedPreferencesService._internal();
 
   factory SharedPreferencesService() {
     return _notificationService;
@@ -45,18 +46,17 @@ class SharedPreferencesService {
     return storage.getBool('navigate_to_contact_status') ?? true;
   }
 
-  /// Set the send_dude_to_favorite_status as false
-  static Future<void> setSendDudeToFavoriteStatus() async {
+  /// Set the filter_favorite_status as false
+  static Future<void> setFilterFavoriteStatus() async {
     final storage = await SharedPreferences.getInstance();
-    final bool result =
-        await storage.setBool('send_dude_to_favorite_status', false);
-    log("favorite status set : $result");
+    final bool result = await storage.setBool('filter_favorite_status', false);
+    log("filter favorite status set : $result");
   }
 
-  /// Returns true if the send_dude_to_favorite_status is null or the result otherwise
-  static Future<bool> getSendDudeToFavoriteStatus() async {
+  /// Returns true if the filter_favorite_status is null or the result otherwise
+  static Future<bool> getFilterFavoriteStatus() async {
     final storage = await SharedPreferences.getInstance();
-    final bool result = storage.getBool('send_dude_to_favorite_status') ?? true;
+    final bool result = storage.getBool('filter_favorite_status') ?? true;
     log("favorite status: $result");
     return result;
   }
@@ -97,5 +97,59 @@ class SharedPreferencesService {
   static Future<bool> getSendDudeContactStatus() async {
     final storage = await SharedPreferences.getInstance();
     return storage.getBool('send_dude_contact_status') ?? true;
+  }
+
+  /// Set the persona_status as false
+  static Future<void> setPersonaStatus() async {
+    final storage = await SharedPreferences.getInstance();
+
+    var result = await storage.setBool('persona_status', false);
+    log('set persona status: $result');
+  }
+
+  /// Return true if persona_status is null or the result otherwise.
+  static Future<bool> getPersonaStatus() async {
+    final storage = await SharedPreferences.getInstance();
+    var result = storage.getBool('persona_status');
+    log("persona status: ${result ?? true}");
+    return result ?? true;
+  }
+
+  /// Set add_contact_status as false
+  static Future<void> setDudeReadStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    final result = await storage.setBool('read_status_' + dudeModel.id, true);
+    log('set dude read status: $result');
+  }
+
+  /// Returns true if the add_contact_status is null or the result otherwise
+  static Future<bool> getDudeReadStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.getBool('read_status_' + dudeModel.id) ?? false;
+  }
+
+  static Future<bool> deleteDudeReadStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.remove('read_status_' + dudeModel.id);
+  }
+
+  // Dude Reply status
+
+  /// Set add_contact_status as false
+  static Future<void> setDudeReplyStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    final result = await storage.setBool('reply_status_' + dudeModel.id, true);
+    log('set dude reply status: $result');
+  }
+
+  /// Returns true if the add_contact_status is null or the result otherwise
+  static Future<bool> getDudeReplyStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.getBool('reply_status_' + dudeModel.id) ?? false;
+  }
+
+  static Future<bool> deleteDudeReplyStatus(DudeModel dudeModel) async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.remove('reply_status_' + dudeModel.id);
   }
 }

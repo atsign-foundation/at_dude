@@ -1,53 +1,59 @@
 name: at_dude
 description: atDude App
-version: 1.0.3+6
+version: 1.0.0+4
 
 environment:
-  sdk: ">=2.12.1 <3.0.0"
+  sdk: ">=2.15.1 <3.0.0"
 
 dependencies:
-  at_app_flutter: ^5.0.0
+  at_app_flutter: ^5.1.1
+  # at_backupkey_flutter: ^4.0.8
   at_client_mobile: ^3.2.0
   at_contacts_flutter: ^4.0.5
+  at_onboarding_flutter: ^6.0.0
   at_utils: ^3.0.9
-  at_onboarding_flutter: ^5.0.0 
-  audioplayers: ^1.0.1
-  badges: ^2.0.2
+  just_audio: ^0.9.31
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2
-  flutter_local_notifications: ^9.4.0
-  glass: ^1.0.1+1
-  google_fonts: ^3.0.1
+  flutter_local_notifications: ^13.0.0
+  flutter_svg: ^1.1.6
+  google_fonts: ^5.1.0
   path_provider: ^2.0.5
   provider: ^6.0.2
+  rive: ^0.11.4
   shared_preferences: ^2.0.15
-  showcaseview: ^1.1.7
-  stop_watch_timer: ^1.3.1
-  timezone: ^0.8.0
+  showcaseview: ^1.1.5
+  timezone: ^0.9.0
+  url_launcher: ^6.1.8
   uuid: ^3.0.6
-  workmanager: ^0.5.0
-  
 
-dependency_overrides:
-  at_client_mobile:
-    git:
-      url: https://github.com/atsign-foundation/at_client_sdk
-      ref: hotfix/get-atsign-return-null
-      path: at_client_mobile
 dev_dependencies:
-  flutter_launcher_icons: ^0.9.3
+  # flutter_launcher_icons: ^0.13.1
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  http: ^1.0.0
+  # image: ^4.0.15
+  # at_client:
+  #   git: 
+  #     url: https://github.com/atsign-foundation/at_client_sdk
+  #     path: packages/at_client
+  #     ref: 932-sync-deleted-cached-keys
 
 flutter:
   uses-material-design: true
   assets:
     - .env
     - assets/images/
+    - assets/images/nav_icons/
+    - assets/images/personas/
     - assets/audios/
-flutter_icons:
+    - assets/animations/
+flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/dude_icon.png"
+  remove_alpha_ios: true
+  image_path: "assets/images/dude_logo_2.png"

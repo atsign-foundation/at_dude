@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "dude_icon.png",
+      "filename" : "Long Logo.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Icon-App-20x20@2x.png",
+      "filename" : "Long Logo-1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Icon-App-20x20@3x.png",
+      "filename" : "Long Logo-2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

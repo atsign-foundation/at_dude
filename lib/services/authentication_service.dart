@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:at_app_flutter/at_app_flutter.dart';
-import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
@@ -12,17 +11,17 @@ import 'package:at_utils/at_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:showcaseview/showcaseview.dart';
 
-import '../screens/screens.dart';
+import '../models/arguments.dart';
+import '../utils/enums.dart';
 import '../utils/utils.dart';
+import '../widgets/dude_navigation_screen.dart';
 import '../widgets/snackbars.dart';
 import 'services.dart';
 
 /// A singleton that makes all the network calls to the @platform.
 class AuthenticationService {
-  static final AuthenticationService _singleton =
-      AuthenticationService._internal();
+  static final AuthenticationService _singleton = AuthenticationService._internal();
   AuthenticationService._internal();
 
   factory AuthenticationService.getInstance() {
@@ -47,8 +46,7 @@ class AuthenticationService {
   }
 
   Future<void> clearKeychainEntries() async {
-    List<String> atsignList =
-        await KeyChainManager.getInstance().getAtSignListFromKeychain();
+    List<String> atsignList = await KeyChainManager.getInstance().getAtSignListFromKeychain();
     if (atsignList.isEmpty) {
       return;
     } else {
@@ -89,28 +87,19 @@ class AuthenticationService {
     switch (result.status) {
       case AtOnboardingResultStatus.success:
         _logger.finer('Successfully onboarded ${result.atsign}');
-        DudeService.getInstance()
-            .monitorNotifications(NavigationService.navKey.currentContext!);
-        DudeService.getInstance()
-            .atClientManager
-            .syncService
-            .addProgressListener(MySyncProgressListener());
+        DudeService.getInstance().monitorNotifications(NavigationService.navKey.currentContext!);
+        DudeService.getInstance().atClientManager.atClient.syncService.addProgressListener(MySyncProgressListener());
         initializeContactsService(rootDomain: AtEnv.rootDomain);
-
-        await Navigator.of(NavigationService.navKey.currentContext!)
-            .pushReplacement(MaterialPageRoute(
-          builder: ((context) => ShowCaseWidget(
-                builder: Builder(builder: (context) => const SendDudeScreen()),
-              )),
-        ));
+        await Navigator.popAndPushNamed(NavigationService.navKey.currentContext!, DudeNavigationScreen.routeName,
+            arguments: Arguments(
+              route: Screens.sendDude.index,
+            ));
 
         break;
 
       case AtOnboardingResultStatus.error:
         _logger.severe('Onboarding throws ${result.message} error');
-        SnackBars.errorSnackBar(
-            content: result.message ?? '',
-            context: NavigationService.navKey.currentContext!);
+        SnackBars.errorSnackBar(content: result.message ?? '');
         break;
 
       case AtOnboardingResultStatus.cancel:
