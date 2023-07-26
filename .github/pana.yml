@@ -1,4 +1,4 @@
-# This workflow will run the pana score on the latest commit to a pull request
+# This workflow will run the pana score workflow on the latest commit to a pull request
 name: pana_score
 on:
   pull_request_target:
