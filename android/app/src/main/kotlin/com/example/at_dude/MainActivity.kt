@@ -1,4 +1,4 @@
-package com.example.at_dude
+package com.atsign.atdude
 
 import io.flutter.embedding.android.FlutterActivity
 

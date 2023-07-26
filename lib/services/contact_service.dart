@@ -1,12 +1,9 @@
 // 🎯 Dart imports:
 import 'dart:async';
-
 import 'dart:typed_data';
 
 import 'package:at_app_flutter/at_app_flutter.dart';
-
 import 'package:at_client_mobile/at_client_mobile.dart';
-
 import 'package:at_contact/at_contact.dart';
 import 'package:at_contacts_flutter/services/contact_service.dart';
 import 'package:at_utils/at_utils.dart';
@@ -41,12 +38,8 @@ class ContactsService {
   }
 
   /// Fetch details for the current atsign
-  Future<dynamic> getCurrentAtsignContactDetails() async {
-    return atContactService
-        .getContactDetails(atClient!.getCurrentAtSign(), null)
-        .then((value) {
-      return value;
-    });
+  AtContact? getCurrentAtsignContactDetails() {
+    return atContactService.loggedInUserDetails;
   }
 
   /// Delete contact from contact list.
