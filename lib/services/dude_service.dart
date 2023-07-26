@@ -1,6 +1,7 @@
 // 🎯 Dart imports:
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:at_app_flutter/at_app_flutter.dart';
@@ -12,7 +13,9 @@ import 'package:at_utils/at_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../models/dude_model.dart';
+import '../models/persona_model.dart';
 import '../models/profile_model.dart';
+import '../utils/texts.dart';
 import 'local_notification_service.dart';
 
 /// A singleton that makes all the network calls to the @platform.
@@ -32,7 +35,9 @@ class DudeService {
 
   /// Saves Dude to the receiver's remote secondary and stats to the sender's local secondary.
   Future<bool> putDude(
-      DudeModel dude, String contactAtsign, BuildContext context) async {
+    DudeModel dude,
+    String contactAtsign,
+  ) async {
     bool isCompleted = false;
     dude.saveSender(atClientManager.atClient.getCurrentAtSign()!);
     dude.saveReceiver(contactAtsign);
@@ -47,17 +52,20 @@ class DudeService {
       ..key = dude.id
       ..sharedBy = dude.sender
       ..sharedWith = dude.receiver
-      ..metadata = metaData
-      ..namespace = '';
+      ..metadata = metaData;
 
     dude.saveTimeSent();
 
-    await atClientManager.notificationService.notify(
-        NotificationParams.forUpdate(
-          key,
-          value: json.encode(dude.toJson()),
-        ),
-        onSuccess: (notification) async {});
+    try {
+      await atClientManager.atClient.notificationService.notify(
+          NotificationParams.forUpdate(
+            key,
+            value: json.encode(dude.toJson()),
+          ),
+          onSuccess: (notification) async {});
+    } on AtClientException {
+      rethrow;
+    }
 
     var profileMetaData = Metadata()
       ..isEncrypted = true
@@ -71,14 +79,10 @@ class DudeService {
 
     try {
       AtValue profileAtValue = await atClientManager.atClient.get(profileKey);
-      ProfileModel profileModel =
-          ProfileModel.fromJson(jsonDecode(profileAtValue.value));
+      ProfileModel profileModel = ProfileModel.fromJson(jsonDecode(profileAtValue.value));
       profileModel.saveId(dude.sender);
       profileModel.dudesSent += 1;
-      profileModel.dudeHours += dude.duration;
-      if (dude.duration > profileModel.longestDude) {
-        profileModel.saveLongestDude(dude.duration);
-      }
+
       await atClientManager.atClient
           .put(
             profileKey,
@@ -95,16 +99,47 @@ class DudeService {
             profileKey,
             json.encode(
               ProfileModel(
-                      id: dude.sender,
-                      dudesSent: 1,
-                      dudeHours: dude.duration,
-                      longestDude: dude.duration)
-                  .toJson(),
+                id: dude.sender,
+                dudesSent: 1,
+              ).toJson(),
             ),
           )
           .whenComplete(() => isCompleted = true)
           .onError((error, stackTrace) => isCompleted = false);
     }
+    return isCompleted;
+  }
+
+  /// Update Dude to the mark as read.
+  Future<bool> updateDude(
+    DudeModel dude,
+  ) async {
+    bool isCompleted = false;
+    dude.saveSender(atClientManager.atClient.getCurrentAtSign()!);
+    var metaData = Metadata()
+      ..isEncrypted = true
+      ..namespaceAware = true
+      ..ttr = -1
+      ..isPublic = false;
+
+    var dudeKey = AtKey()
+      ..key = dude.id
+      ..sharedBy = dude.sender
+      ..metadata = metaData;
+
+    await atClientManager.atClient
+        .put(
+          dudeKey,
+          json.encode(
+            dude.toJson(),
+          ),
+        )
+        .whenComplete(() => isCompleted = true)
+        .onError((error, stackTrace) {
+      log(error.toString());
+      return isCompleted = false;
+    });
+
     return isCompleted;
   }
 
@@ -130,8 +165,15 @@ class DudeService {
       try {
         if (key.sharedBy != null && key.key!.length == 36) {
           AtValue _keyValue = await atClientManager.atClient.get(key);
+          var model = DudeModel.fromJson(jsonDecode(_keyValue.value));
+          model.createdAt = _keyValue.metadata!.createdAt;
+          if (atClientManager.atClient.getCurrentAtSign()! == model.sender) {
+            model.isSender = true;
+          } else {
+            model.isSender = false;
+          }
 
-          dudes.add(DudeModel.fromJson(jsonDecode(_keyValue.value)));
+          dudes.add(model);
         }
       } on Exception catch (e) {
         ScaffoldMessenger(child: SnackBar(content: Text(e.toString())));
@@ -142,21 +184,14 @@ class DudeService {
 
   /// Subscribes to the stream of data being sent to the current atsign.
   void monitorNotifications(BuildContext context) {
-    atClientManager.notificationService
-        .subscribe(regex: 'at_skeleton_app')
-        .listen(
+    atClientManager.atClient.notificationService.subscribe(regex: Texts.atDude).listen(
       (AtNotification notification) async {
-        String? currentAtsign = DudeService.getInstance()
-            .atClientManager
-            .atClient
-            .getCurrentAtSign();
+        String? currentAtsign = DudeService.getInstance().atClientManager.atClient.getCurrentAtSign();
 
         if (currentAtsign == notification.to) {
-          await LocalNotificationService().showNotifications(
-              notification.id.length,
-              'Dude',
-              '${notification.from} sent you a dude',
-              1);
+          await LocalNotificationService.getInstance()
+              .showNotifications(notification.id.length, 'Dude', '${notification.from} sent you a dude', 1);
+          // var audioPlayer = AudioPlayer();
         }
       },
     );
@@ -169,18 +204,14 @@ class DudeService {
 
   /// Fetch the current atsign profile image
   Future<Uint8List?> getCurrentAtsignProfileImage() async {
-    return contactService
-        .getContactDetails(atClientManager.atClient.getCurrentAtSign(), null)
-        .then((value) {
+    return contactService.getContactDetails(atClientManager.atClient.getCurrentAtSign(), null).then((value) {
       return value['image'];
     });
   }
 
   /// Fetch details for the current atsign
   Future<dynamic> getCurrentAtsignContactDetails() async {
-    return contactService
-        .getContactDetails(atClientManager.atClient.getCurrentAtSign(), null)
-        .then((value) {
+    return contactService.getContactDetails(atClientManager.atClient.getCurrentAtSign(), null).then((value) {
       return value;
     });
   }
@@ -193,17 +224,20 @@ class DudeService {
           sharedBy: atClientManager.atClient.getCurrentAtSign(),
         )
         .then(
-          (value) => atClientManager.atClient.get(value[0]).then(
-                (value) => ProfileModel.fromJson(
-                  jsonDecode(value.value),
-                ),
-              ),
+          (value) => atClientManager.atClient.get(value.first).then(
+            (value) {
+              var model = ProfileModel.fromJson(
+                jsonDecode(value.value),
+              );
+              model.createdAt = value.metadata!.createdAt;
+              return model;
+            },
+          ),
         );
   }
 
   /// Save senders atsign to the current atsign local secondary.
-  Future<void> putSenderAtsign(
-      {required String senderAtsign, required String receiverAtsign}) async {
+  Future<void> putSenderAtsign({required String senderAtsign, required String receiverAtsign}) async {
     var metaData = Metadata()
       ..isEncrypted = true
       ..namespaceAware = true
@@ -216,7 +250,7 @@ class DudeService {
       ..sharedWith = receiverAtsign
       ..namespace = '';
     try {
-      await atClientManager.notificationService.notify(
+      await atClientManager.atClient.notificationService.notify(
         NotificationParams.forUpdate(
           key,
           value: senderAtsign,
@@ -234,8 +268,7 @@ class DudeService {
     // @blizzard30:some_uuid.at_skeleton_app@assault30
     // @blizzard30:signing_privatekey@blizzard30
 
-    List<AtKey> keysList =
-        await atClientManager.atClient.getAtKeys(regex: 'dude_sender_atsigns_');
+    List<AtKey> keysList = await atClientManager.atClient.getAtKeys(regex: 'dude_sender_atsigns_');
 
     List<String> senderAtsigns = [];
     for (AtKey key in keysList) {
@@ -254,8 +287,7 @@ class DudeService {
   /// Delete dude sent to the current atsign.
   Future<bool> deleteDude(DudeModel dude) async {
     try {
-      List<AtKey> dudeAtKey =
-          await atClientManager.atClient.getAtKeys(regex: dude.id);
+      List<AtKey> dudeAtKey = await atClientManager.atClient.getAtKeys(regex: dude.id);
       bool isDeleted = await atClientManager.atClient.delete(dudeAtKey[0]);
 
       return isDeleted;
@@ -281,5 +313,56 @@ class DudeService {
       _logger.severe('❌ Exception : ${e.toString()}');
       return false;
     }
+  }
+
+  /// Get the profile stats for the current atsign
+  Future<PersonaModel> getPersona() async {
+    return await atClientManager.atClient
+        .getAtKeys(
+          regex: 'dude_persona',
+          sharedBy: atClientManager.atClient.getCurrentAtSign(),
+        )
+        .then(
+          (value) => atClientManager.atClient.get(value.first).then(
+            (value) {
+              return PersonaModel.fromJson(
+                jsonDecode(value.value),
+              );
+            },
+          ),
+        );
+  }
+
+  /// Saves Dude to the receiver's remote secondary and stats to the sender's local secondary.
+  Future<bool> putPersona(
+    PersonaModel persona,
+  ) async {
+    bool isCompleted = false;
+
+    var profileKey = AtKey.self('dude_persona', sharedBy: atClientManager.atClient.getCurrentAtSign()!).build();
+
+    await atClientManager.atClient
+        .put(
+          profileKey,
+          json.encode(
+            persona.toJson(),
+          ),
+        )
+        .whenComplete(() => isCompleted = true)
+        .onError((error, stackTrace) => isCompleted = false);
+
+    return isCompleted;
+  }
+
+  Future<bool> deleteAllData() async {
+    // will delate all instances that match the key
+
+    var success = true;
+    var atKeys = await AtClientManager.getInstance().atClient.getAtKeys(regex: 'cached:@');
+    for (var atKey in atKeys) {
+      success = success && await AtClientManager.getInstance().atClient.delete(atKey);
+    }
+    _logger.info('delete returning success = $success');
+    return success;
   }
 }

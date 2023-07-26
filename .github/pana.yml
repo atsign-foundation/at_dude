@@ -1,0 +1,9 @@
+# This workflow will run the pana score workflow on the latest commit to a pull request
+name: pana_score
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+jobs:
+  build:
+    uses: atsign-foundation/.github/blob/pana-pr/workflows/pana_pr_workflow.yml
+    
