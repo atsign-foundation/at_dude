@@ -5,5 +5,5 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    uses: atsign-foundation/.github/blob/pana-pr/workflows/pana_pr_workflow.yaml
+    uses: atsign-foundation/.github/blob/pana-pr/workflows/pana_pr_workflow.yml
     
