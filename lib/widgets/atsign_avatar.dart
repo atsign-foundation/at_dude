@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
-import '../screens/profile_screen.dart';
+import '../screens/stats_screen.dart';
 import '../services/services.dart';
 
 class AtsignAvatar extends StatefulWidget {
@@ -46,7 +46,7 @@ class _AtsignAvatarState extends State<AtsignAvatar> {
       ),
       onTap: () {
         Navigator.of(context)
-            .pushNamed(ProfileScreen.routeName, arguments: profileName);
+            .pushNamed(StatsScreen.routeName, arguments: profileName);
       },
     );
   }

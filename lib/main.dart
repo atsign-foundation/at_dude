@@ -4,41 +4,34 @@ import 'dart:async';
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 // ignore: implementation_imports
 
-import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_contacts_flutter/utils/init_contacts_service.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart';
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:path_provider/path_provider.dart'
-    show getApplicationSupportDirectory;
+import 'package:path_provider/path_provider.dart' show getApplicationSupportDirectory;
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import 'controller/controller.dart';
 import 'dude_theme.dart';
-import 'screens/profile_screen.dart';
-import 'screens/screens.dart';
+import 'screens/custom_blocked_screen.dart';
 import 'services/services.dart';
 import 'utils/utils.dart';
+import 'widgets/settings_button.dart';
 import 'widgets/widgets.dart';
 
-final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
+AtSignLogger _logger = AtSignLogger('at_dude');
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await LocalNotificationService().initNotification();
-
   // * AtEnv is an abstraction of the flutter_dotenv package used to
   // * load the environment variables set by at_app
-  AtSignLogger.root_level = 'FINER';
+
+  AtSignLogger.root_level = 'Finer';
+  await AtEnv.load();
   await AuthenticationService.getInstance().checkFirstRun();
-  try {
-    await AtEnv.load();
-  } catch (e) {
-    _logger.finer('Environment failed to load from .env: ', e);
-  }
+
+  await LocalNotificationService().initNotification();
 
   runApp(
     MultiProvider(
@@ -52,9 +45,13 @@ Future<void> main() async {
           home: const MyApp(),
           theme: DudeTheme.light(),
           routes: {
-            SendDudeScreen.routeName: (context) => const SendDudeScreen(),
-            HistoryScreen.routeName: (context) => const HistoryScreen(),
-            ProfileScreen.routeName: (context) => const ProfileScreen(),
+            DudeNavigationScreen.routeName: (context) => const DudeNavigationScreen(),
+            // SendDudeScreen.routeName: (context) => const SendDudeScreen(),
+            // NotificationScreen.routeName: (context) => const NotificationScreen(),
+            // StatsScreen.routeName: (context) => const StatsScreen(),
+            // DudeContactsScreen.routeName: (context) => const DudeContactsScreen(),
+            // SettingsScreen.routeName: (context) => const SettingsScreen(),
+            CustomBlockedScreen.routeName: (context) => const CustomBlockedScreen()
           },
           navigatorKey: NavigationService.navKey,
         )),
@@ -90,8 +87,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _handleOnboard(context));
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    _handleOnboard(context);
   }
 
   /// Signs user into the @platform.
@@ -111,25 +108,20 @@ class _MyAppState extends State<MyApp> {
           _logger.finer('Successfully onboarded ${result.atsign}');
           // dudeService..atClient = result.
           DudeService.getInstance().monitorNotifications(context);
-          DudeService.getInstance()
-              .atClientManager
-              .syncService
-              .addProgressListener(MySyncProgressListener());
+          DudeService.getInstance().atClientManager.atClient.syncService.addProgressListener(MySyncProgressListener());
           initializeContactsService(rootDomain: AtEnv.rootDomain);
 
+          await Provider.of<DudeController>(context, listen: false).getDudes();
+
           await Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: ((context) => ShowCaseWidget(
-                  builder:
-                      Builder(builder: (context) => const SendDudeScreen()),
-                )),
+            builder: (context) => const DudeNavigationScreen(),
           ));
 
           break;
 
         case AtOnboardingResultStatus.error:
           _logger.severe('Onboarding throws ${result.message} error');
-          SnackBars.errorSnackBar(
-              content: result.message ?? '', context: context);
+          SnackBars.errorSnackBar(content: result.message ?? '');
           break;
 
         case AtOnboardingResultStatus.cancel:
@@ -145,57 +137,81 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitDown,
     ]);
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('atDude'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IconButton(
-            iconSize: 200,
-            icon: Image.asset('assets/images/dude_logo.png'),
-            onPressed: null,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _handleOnboard(context);
-            },
-            child: const Text('Start Duding'),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.black,
-                    ),
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      body: Stack(children: [
+        const AppBackground(
+          alignment: Alignment.bottomCenter,
+        ),
+        SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 24, top: 24),
+                  child: Image.asset(
+                    'assets/images/dude_logo.png',
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Text(
-                      'Or',
-                      textAlign: TextAlign.center,
-                    ),
+                ),
+              ),
+              const Text(
+                'Saying "Hi" is too mainstream',
+                style: TextStyle(color: Color(0xff417C88)),
+              ),
+              Expanded(
+                flex: 2,
+                child: Image.asset(
+                  'assets/images/splash_img.png',
+                ),
+              ),
+              Flexible(
+                child: SettingsButton(
+                  icon: Icons.surfing_outlined,
+                  onTap: () {
+                    _handleOnboard(context);
+                  },
+                  title: 'Start Duding',
+                ),
+              ),
+              const Flexible(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
                   ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.black,
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                ]),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Text(
+                        'Or',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+              const Flexible(
+                child: ResetAppButton(
+                  buttonText: 'Reset @sign',
+                ),
+              ),
+            ],
           ),
-          const ResetAppButton(
-            buttonText: 'Reset @sign',
-          ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 }
